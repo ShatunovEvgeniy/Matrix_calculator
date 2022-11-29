@@ -10,8 +10,8 @@ class Sqr_matrix : private Matrix
 public:
     Sqr_matrix() = delete;
     Sqr_matrix(int n); // n = dimension
-    Sqr_matrix(const vector<long double>& num);
-    Sqr_matrix(const vector<vector<long double>> &num);
+    Sqr_matrix(const std::vector<long double>& num);
+    Sqr_matrix(const std::vector<std::vector<long double>> &num);
     Sqr_matrix(int n, long double x); // matrix with same numbers
 
     Sqr_matrix operator+ (const Sqr_matrix& mat) const; // sum of 2 matrixes
@@ -41,7 +41,7 @@ public:
 
     long double det(); // calculation of determination
 
-    vector<long double> get_num() const override;
+    std::vector<long double> get_num() const override;
     int get_width() const override;
     int get_length() const override;
 
@@ -50,7 +50,7 @@ private:
     int dimension{0}; // dimension is size of a square matrix (dimension x dimension)
 };
 
-ostream& operator<< (ostream& os, Sqr_matrix& mat); // to print a matrix in the console
+std::ostream& operator<< (std::ostream& os, Sqr_matrix& mat); // to print a matrix in the console
 
 Sqr_matrix ones(int n);
 

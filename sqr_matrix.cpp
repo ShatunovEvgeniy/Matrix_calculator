@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+using namespace std;
+
 /// Constructors
 Sqr_matrix::Sqr_matrix (int n)  : // empty matrix
     dimension{n}, Matrix{n, n}
@@ -50,7 +52,20 @@ Sqr_matrix Sqr_matrix::T() const // returns transpose matrix
 }
 
 long double Sqr_matrix::det() // calculation of determination
-{}
+{
+    if (numbers.size() == 1)
+        return numbers[0];
+
+    (*this).triangle();
+
+    vector<long double> num;
+    for (int j = 0; j < dimension * dimension; ++j)
+        if (!(j < dimension || (j % dimension == 0))) // if not (first row or first column)
+            num.push_back(numbers[j]);
+
+    Sqr_matrix m{num};
+    return numbers[0] * m.det();
+}
 
 vector<long double> Sqr_matrix::get_num() const
 {

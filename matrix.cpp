@@ -8,15 +8,19 @@ Matrix::Matrix(const int n, const int m) : // empty matrix
     length{n}, width{m}
 {
     if (n <= 0 and m <= 0)
-        throw Bad_value();
+        throw runtime_error("Dimensions of a matrix have to be more than zero");
 }
 
 Matrix::Matrix(const vector<vector<long double>>& num) :
     length{num.size()}, width{num[0].size()}
 {
     for (auto x : num)
+    {
+        if (x.size() != width)
+            throw runtime_error("Strings of a matrix are different");
         for (auto y : x)
             numbers.push_back(y);
+    }
 }
 
 Matrix::Matrix(const int n, const int m, const long double value) : // matrix with same numbers
@@ -30,13 +34,13 @@ Matrix::Matrix(const vector<long double>& num, const int n, const int m) : // fo
     numbers{num}, length{n}, width{m}
 {
     if (n <= 0 and m <= 0)
-        throw Bad_value();
+        throw runtime_error("Dimensions of a matrix have to be more than zero");
 }
-/*
+
 Matrix::Matrix(const Column &c) :
     length {c.get_length()}, width {1}, numbers {c.get_num()}
 {}
-*/
+
 Matrix::Matrix(const Row &r) :
     length {1}, width {r.get_width()}, numbers {r.get_num()}
 {}
@@ -78,11 +82,11 @@ Matrix Matrix::operator+ (const Matrix& mat) const // sum of 2 matrixes
 
     if (mat.length != length || mat.width != width)
     {
-        throw Impossible_operation();
+        throw runtime_error("You can't add matrixes of different sizes");
     }
-    else if (numbers.empty())
+    else if (numbers.empty() || mat.get_num().empty())
     {
-        throw Impossible_operation();
+        throw runtime_error("The matrix are empty");
     }
 
     for (int i = 0; i < numbers.size(); ++i)
@@ -101,11 +105,11 @@ Matrix Matrix::operator- (const Matrix& mat) const // difference of 2 matrixes
 
     if (mat.length != length || mat.width != width)
     {
-        throw Impossible_operation();
+        throw runtime_error("You can't subtract matrixes of different sizes");
     }
-    else if (numbers.empty())
+    else if (numbers.empty() || mat.get_num().empty())
     {
-        throw Impossible_operation();
+        throw runtime_error("The matrix are empty");
     }
 
     for (int i = 0; i < numbers.size(); ++i)
@@ -124,7 +128,7 @@ Matrix Matrix::operator* (const double& number) const // product of every number
 
     if (numbers.empty())
     {
-        throw Impossible_operation();
+        throw runtime_error("The matrix are empty");
     }
 
     for (int i = 0; i < numbers.size(); ++i)
@@ -143,7 +147,7 @@ Matrix Matrix::operator/ (const double& number) const // product of every number
 
     if (numbers.empty())
     {
-        throw Impossible_operation();
+        throw runtime_error("The matrix are empty");
     }
 
     for (int i = 0; i < numbers.size(); ++i)
@@ -159,7 +163,7 @@ void Matrix::operator/= (const double& number) // product of every numbers of a 
 Matrix Matrix::operator* (const Matrix& mat) const // product of 2 matrixes
 {
     if (width != mat.length)
-        throw Impossible_operation();
+        throw runtime_error("Wrong size of matrixes");
 
     Matrix result{length, mat.width};
     for (int i = 0; i < length; ++i)
@@ -192,8 +196,8 @@ ostream& operator<< (ostream& os, Matrix& mat) // to print a matrix in the conso
 }
 
 
-/*Matrix operator* (const Column& c, const Row& r)
+Matrix operator* (const Column& c, const Row& r)
 {
     return Matrix(c) * Matrix(r);
 }
-*/
+

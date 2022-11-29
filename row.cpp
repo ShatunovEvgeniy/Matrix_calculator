@@ -1,7 +1,9 @@
 #include "row.h"
 
+using namespace std;
+
 /// Constructors
-Row::Row(vector <long double>& num) :
+Row::Row(const vector <long double>& num) :
     Matrix{num, 1, (int)num.size()}
 {}
 
@@ -25,7 +27,7 @@ int Row:: get_length() const
     return length;
 }
 
-///Operators
+/// Operators
 long double Row::operator[] (int i) const // take a number of the row
 {
     return numbers[i];
@@ -36,22 +38,19 @@ Row Row::operator+ (const Row& row) const // sum of 2 rows
     Row result{length};
 
     if (row.length != length)
-    {
-        throw Impossible_operation();
-    }
-    else if (numbers.empty())
-    {
-        throw Impossible_operation();
-    }
+        throw runtime_error("Rows have different size");
+
+    else if (numbers.empty() || row.get_num().empty())
+        throw runtime_error("Row is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
             result.numbers.push_back(numbers[i] + row.numbers[i]);
     return result;
 }
 
-void Row::operator+= (const Row& row1) // sum of 2 rows
+void Row::operator+= (const Row& row) // sum of 2 rows
 {
-    *this = *this + row1;
+    *this = *this + row;
 }
 
 Row Row::operator- (const Row& row) const // difference of 2 rows
@@ -59,33 +58,29 @@ Row Row::operator- (const Row& row) const // difference of 2 rows
     Row result{length};
 
     if (row.length != length)
-    {
-        throw Impossible_operation();
-    }
-    else if (numbers.empty())
-    {
-        throw Impossible_operation();
-    }
+        throw runtime_error("Rows have different size");
+
+    else if (numbers.empty() || row.get_num().empty())
+        throw runtime_error("Row is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
             result.numbers.push_back(numbers[i] - row.numbers[i]);
     return result;
 }
 
-void Row::operator-= (const Row& row1) // difference of 2 rows
+void Row::operator-= (const Row& row) // difference of 2 rows
 {
-    *this = *this - row1;
+    *this = *this - row;
 }
 
 Row Row::operator* (double num) const // product of a row and a number
 {
     Row result{length};
     if (numbers.empty())
-    {
-        throw Impossible_operation();
-    }
+        throw runtime_error("Row is empty");
+
     for (int i = 0; i < numbers.size(); ++i)
-            result.numbers.push_back(numbers[i]*num);
+            result.numbers.push_back(numbers[i] * num);
     return result;
 }
 
@@ -98,9 +93,11 @@ Row Row::operator/ (double num) const // quotient of a row and a number
 {
     Row result{length};
     if (numbers.empty())
-    {
-        throw Impossible_operation();
-    }
+        throw runtime_error("Row is empty");
+
+    else if (num == 0)
+        throw runtime_error("Divided by zero");
+
     for (int i = 0; i < numbers.size(); ++i)
             result.numbers.push_back(numbers[i]/num);
     return result;
@@ -113,11 +110,9 @@ void Row::operator/= (double num) // quotient of a row and a number
 
 ostream& operator<< (ostream& os, Row& r) // to print a row in the console
 {
-    for (int i = 0; i < r.get_width() * r.get_length(); ++i)
+    for (int i = 0; i < r.get_length(); ++i)
     {
         os << r.get_num()[i] << " ";
-        if ((i + 1) % r.get_width() == 0)
-            os << endl;
     }
     os << endl;
     return os;
