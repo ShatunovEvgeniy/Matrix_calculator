@@ -10,23 +10,30 @@ using namespace std;
 class Row : private Matrix
 {
 public:
+    Row() = delete;
+    Row(int n); // empty row
     Row(vector<long double>& num);
-    Row(int n);
-    void operator+= (const Row& row1);
-    void operator-= (const Row& row1);
-    void operator*= (double num);
-    void operator/= (double num);
-    Row operator+ (const Row& row1);
-    Row operator- (const Row& row1);
-    Row operator* (double num);
-    Row operator/ (double num);
-    long double operator[] (int i);
-    void get_row();
-    int get_width() const;
-    int get_length() const;
-    int get_num() const;
+
+    Row operator+ (const Row& row1) const; // sum of 2 rows
+    void operator+= (const Row& row1); // sum of 2 rows
+
+    Row operator- (const Row& row1) const; // difference of 2 rows
+    void operator-= (const Row& row1); // difference of 2 rows
+
+    Row operator* (double num) const; // product of a row and a number
+    void operator*= (double num); // product of a row and a number
+
+    Row operator/ (double num) const; // quotient of a row and a number
+    void operator/= (double num); // quotient of a row and a number
+
+    long double operator[] (int i) const; // take a number of the row
+
+
+    vector<long double> get_num() const override;
+    int get_width() const override;
+    int get_length() const override;
 };
-template <typename T>
-vector<T> slicing(vector<T> const& v, int X, int Y);
+
+ostream& operator<< (ostream& os, Row& r); // to print a row in the console
 
 #endif // ROW_H

@@ -4,25 +4,11 @@
 #include "sqr_matrix.h"
 
 /// Constructors
-Matrix::Matrix(const vector<long double>& num, const int n, const int m) : // for columns and rows
-    numbers{num}, length{n}, width{m}
-{
-    if (n <= 0 and m <= 0)
-        throw Bad_value();
-}
-
 Matrix::Matrix(const int n, const int m) : // empty matrix
     length{n}, width{m}
 {
     if (n <= 0 and m <= 0)
         throw Bad_value();
-}
-
-Matrix::Matrix(const int n, const int m, const long double value) : // matrix with same numbers
-    length{n}, width{m}
-{
-    for (int i = 0; i < n*m; ++i)
-        numbers.push_back(value);
 }
 
 Matrix::Matrix(const vector<vector<long double>>& num) :
@@ -33,14 +19,28 @@ Matrix::Matrix(const vector<vector<long double>>& num) :
             numbers.push_back(y);
 }
 
-/*Matrix::Matrix(const Column &c) :
+Matrix::Matrix(const int n, const int m, const long double value) : // matrix with same numbers
+    length{n}, width{m}
+{
+    for (int i = 0; i < n*m; ++i)
+        numbers.push_back(value);
+}
+
+Matrix::Matrix(const vector<long double>& num, const int n, const int m) : // for columns and rows
+    numbers{num}, length{n}, width{m}
+{
+    if (n <= 0 and m <= 0)
+        throw Bad_value();
+}
+/*
+Matrix::Matrix(const Column &c) :
     length {c.get_length()}, width {1}, numbers {c.get_num()}
 {}
-
+*/
 Matrix::Matrix(const Row &r) :
     length {1}, width {r.get_width()}, numbers {r.get_num()}
 {}
-*/
+
 Matrix::Matrix(const Sqr_matrix& m) :
     length {m.get_length()}, width {m.get_width()}, numbers {m.get_num()}
 {}

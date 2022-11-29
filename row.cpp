@@ -1,78 +1,37 @@
 #include "row.h"
 
+/// Constructors
 Row::Row(vector <long double>& num) :
     Matrix{num, 1, (int)num.size()}
 {}
 
-Row::Row(int n)
-    :Matrix{n, 1}
+Row::Row(int n) : // empty row
+    Matrix{n, 1}
 {}
 
-void Row::operator+=(const Row& row1)
+/// Methods
+vector<long double> Row::get_num() const
 {
-    if (row1.numbers.size() != numbers.size()) {
-        throw Bad_value();
-    }
-    for (int i = 0; i < numbers.size(); i++) {
-        numbers[i] += row1.numbers[i];
-    }
-    return;
+    return numbers;
 }
 
-void Row::operator-=(const Row& row1)
+int Row::get_width() const
 {
-    if (row1.numbers.size() != numbers.size()) {
-        throw Bad_value();
-    }
-    for (int i = 0; i < numbers.size(); i++) {
-        numbers[i] -= row1.numbers[i];
-    }
-    return;
+    return width;
 }
 
-void Row::operator*=(double num)
+int Row:: get_length() const
 {
-    for (int i = 0; i < numbers.size(); i++) {
-        numbers[i] *= num;
-    }
-    return;
+    return length;
 }
 
-void Row::operator/=(double num)
-{
-    for (int i = 0; i < numbers.size(); i++) {
-        numbers[i] /= num;
-    }
-    return;
-}
-
-long double Row::operator[] (int i)
+///Operators
+long double Row::operator[] (int i) const // take a number of the row
 {
     return numbers[i];
 }
 
-template <typename T>
-vector<T> slicing(vector<T> const& v, int X, int Y)
-{
-
-    // Begin and End iterator
-    auto first = v.begin() + X;
-    auto last = v.begin() + Y + 1;
-
-    // Copy the element
-    vector<T> vector(first, last);
-
-    // Return the results
-    return vector;
-}
-
-void Row::get_row()
-{
-    for (long double i : numbers)
-        cout<<i<<" ";
-}
-
-Row Row::operator+ (const Row& row) // sum of 2 rows
+Row Row::operator+ (const Row& row) const // sum of 2 rows
 {
     Row result{length};
 
@@ -90,7 +49,12 @@ Row Row::operator+ (const Row& row) // sum of 2 rows
     return result;
 }
 
-Row Row::operator- (const Row& row) // difference of 2 rows
+void Row::operator+= (const Row& row1) // sum of 2 rows
+{
+    *this = *this + row1;
+}
+
+Row Row::operator- (const Row& row) const // difference of 2 rows
 {
     Row result{length};
 
@@ -108,7 +72,12 @@ Row Row::operator- (const Row& row) // difference of 2 rows
     return result;
 }
 
-Row Row::operator* (double num) // product of 2 rows
+void Row::operator-= (const Row& row1) // difference of 2 rows
+{
+    *this = *this - row1;
+}
+
+Row Row::operator* (double num) const // product of a row and a number
 {
     Row result{length};
     if (numbers.empty())
@@ -120,7 +89,12 @@ Row Row::operator* (double num) // product of 2 rows
     return result;
 }
 
-Row Row::operator/ (double num) // division of 2 rows
+void Row::operator*= (double num) // product of a row and a number
+{
+    *this = *this * num;
+}
+
+Row Row::operator/ (double num) const // quotient of a row and a number
 {
     Row result{length};
     if (numbers.empty())
@@ -130,4 +104,21 @@ Row Row::operator/ (double num) // division of 2 rows
     for (int i = 0; i < numbers.size(); ++i)
             result.numbers.push_back(numbers[i]/num);
     return result;
+}
+
+void Row::operator/= (double num) // quotient of a row and a number
+{
+    *this = *this / num;
+}
+
+ostream& operator<< (ostream& os, Row& r) // to print a row in the console
+{
+    for (int i = 0; i < r.get_width() * r.get_length(); ++i)
+    {
+        os << r.get_num()[i] << " ";
+        if ((i + 1) % r.get_width() == 0)
+            os << endl;
+    }
+    os << endl;
+    return os;
 }

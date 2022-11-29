@@ -1,11 +1,9 @@
 #ifndef OTHERS_FUNCTIONS_H
 #define OTHERS_FUNCTIONS_H
 
+#include <vector>
 
-class Others_functions
-{
-public:
-    Others_functions();
-};
+template <typename T>
+std::vector<T> slicing(std::vector<T> const& v, int X, int Y); // slice of a vector
 
 #endif // OTHERS_FUNCTIONS_H
