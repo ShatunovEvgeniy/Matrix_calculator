@@ -7,6 +7,7 @@ using namespace std;
 
 class Column;
 class Row;
+class Sqr_matrix;
 
 class Matrix
 {
@@ -16,33 +17,35 @@ public:
     Matrix(const vector<vector<long double>>& num);
     Matrix(int n, int m, long double value); // matrix with same numbers
 
-    Matrix operator+ (const Matrix& mat); // sum of 2 matrixes
+    Matrix(const vector<long double>& num, int n, int m); // for columns and rows
+    Matrix(const Column& c);
+    Matrix(const Row& r);
+    Matrix(const Sqr_matrix& m);
+
+    Matrix operator+ (const Matrix& mat) const ; // sum of 2 matrixes
     void operator+= (const Matrix& mat); // sum of 2 matrixes
 
-    Matrix operator- (const Matrix& mat); // difference of 2 matrixes
+    Matrix operator- (const Matrix& mat) const; // difference of 2 matrixes
     void operator-= (const Matrix& mat); // difference of 2 matrixes
 
-    Matrix operator* (const Matrix& mat); // product of 2 matrixes
+    Matrix operator* (const Matrix& mat) const; // product of 2 matrixes
     void operator*= (const Matrix& mat); // product of 2 matrixes
 
-    Matrix operator* (const double& number); // product of every numbers of a matrix and a number
+    Matrix operator* (const double& number) const; // product of every numbers of a matrix and a number
     void operator*= (const double& number); // product of every numbers of a matrix and a number
 
-    Matrix operator/ (const double& number); // qoutient of every numbers of a matrix and a number
+    Matrix operator/ (const double& number) const; // qoutient of every numbers of a matrix and a number
     void operator/= (const double& number); // quotient of every numbers of a matrix and a number
 
-    Row operator[] (const int index); // take a row of the matrix
+    Row operator[] (const int index) const; // take a row of the matrix
 
-    vector<long double> get_num();
-    int get_width();
-    int get_length();
+    virtual vector<long double> get_num() const;
+    virtual int get_width() const;
+    virtual int get_length() const;
 
-    void zeros();
+    virtual void zeros();
 
 protected:
-    Matrix(const vector<long double>& num, int n, int m); // for columns and rows
-
-private:
     int length{0};
     int width{0};
     vector<long double> numbers;

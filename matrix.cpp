@@ -1,6 +1,7 @@
 #include "matrix.h"
 #include "row.h"
 #include "column.h"
+#include "sqr_matrix.h"
 
 /// Constructors
 Matrix::Matrix(const vector<long double>& num, const int n, const int m) : // for columns and rows
@@ -32,16 +33,28 @@ Matrix::Matrix(const vector<vector<long double>>& num) :
             numbers.push_back(y);
 }
 
+/*Matrix::Matrix(const Column &c) :
+    length {c.get_length()}, width {1}, numbers {c.get_num()}
+{}
+
+Matrix::Matrix(const Row &r) :
+    length {1}, width {r.get_width()}, numbers {r.get_num()}
+{}
+*/
+Matrix::Matrix(const Sqr_matrix& m) :
+    length {m.get_length()}, width {m.get_width()}, numbers {m.get_num()}
+{}
+
 /// Methods
-vector<long double> Matrix:: get_num()
+vector<long double> Matrix:: get_num() const
 {
     return numbers;
 }
-int Matrix::get_width()
+int Matrix::get_width() const
 {
     return width;
 }
-int Matrix::get_length()
+int Matrix::get_length() const
 {
     return length;
 }
@@ -52,14 +65,14 @@ void Matrix::zeros()
 }
 
 /// Operators
-Row Matrix::operator[] (const int i) // take a row of the matrix
+Row Matrix::operator[] (const int i) const // take a row of the matrix
 {
     vector<long double> num(width);
     copy(numbers.begin() + width*i, numbers.begin() + width*(i+1), num.begin());
     return Row{num};
 }
 
-Matrix Matrix::operator+ (const Matrix& mat) // sum of 2 matrixes
+Matrix Matrix::operator+ (const Matrix& mat) const // sum of 2 matrixes
 {
     Matrix result{length, width};
 
@@ -80,10 +93,9 @@ Matrix Matrix::operator+ (const Matrix& mat) // sum of 2 matrixes
 void Matrix::operator+= (const Matrix& mat) // sum of 2 matrixes
 {
     *this = *this + mat;
-    return;
 }
 
-Matrix Matrix::operator- (const Matrix& mat) // difference of 2 matrixes
+Matrix Matrix::operator- (const Matrix& mat) const // difference of 2 matrixes
 {
     Matrix result{length, width};
 
@@ -104,10 +116,9 @@ Matrix Matrix::operator- (const Matrix& mat) // difference of 2 matrixes
 void Matrix::operator-= (const Matrix& mat) // difference of 2 matrixes
 {
     *this = *this - mat;
-    return;
 }
 
-Matrix Matrix::operator* (const double& number) // product of every numbers of a matrix and a number
+Matrix Matrix::operator* (const double& number) const // product of every numbers of a matrix and a number
 {
     Matrix result{length, width};
 
@@ -124,10 +135,9 @@ Matrix Matrix::operator* (const double& number) // product of every numbers of a
 void Matrix::operator*= (const double& number) // product of every numbers of a matrix and a number
 {
     *this = *this * number;
-    return;
 }
 
-Matrix Matrix::operator/ (const double& number) // product of every numbers of a matrix and a number
+Matrix Matrix::operator/ (const double& number) const // product of every numbers of a matrix and a number
 {
     Matrix result{length, width};
 
@@ -144,10 +154,9 @@ Matrix Matrix::operator/ (const double& number) // product of every numbers of a
 void Matrix::operator/= (const double& number) // product of every numbers of a matrix and a number
 {
     *this = *this / number;
-    return;
 }
 
-Matrix Matrix::operator* (const Matrix& mat) // product of 2 matrixes
+Matrix Matrix::operator* (const Matrix& mat) const // product of 2 matrixes
 {
     if (width != mat.length)
         throw Impossible_operation();
@@ -167,7 +176,7 @@ Matrix Matrix::operator* (const Matrix& mat) // product of 2 matrixes
 
 void Matrix::operator*= (const Matrix& mat) // product of 2 matrixes
 {
-    (*this) * mat;
+    *this = (*this) * mat;
 }
 
 ostream& operator<< (ostream& os, Matrix& mat) // to print a matrix in the console
@@ -183,9 +192,8 @@ ostream& operator<< (ostream& os, Matrix& mat) // to print a matrix in the conso
 }
 
 
-//Matrix operator* (const Column& c, const Row& r)
-//{
-//    m1 = Matrix(c);
-//    m2 = Matrix(r);
-//    return m1 * m2;
-//}
+/*Matrix operator* (const Column& c, const Row& r)
+{
+    return Matrix(c) * Matrix(r);
+}
+*/
