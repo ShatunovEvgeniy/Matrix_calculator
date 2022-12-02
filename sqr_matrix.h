@@ -9,10 +9,10 @@ class Sqr_matrix : private Matrix
 {
 public:
     Sqr_matrix() = delete;
-    Sqr_matrix(int n); // n = dimension
+    Sqr_matrix(const int d); // n = dimension
     Sqr_matrix(const std::vector<long double>& num);
     Sqr_matrix(const std::vector<std::vector<long double>> &num);
-    Sqr_matrix(int n, long double x); // matrix with same numbers
+    Sqr_matrix(const int d, const long double value); // matrix with same numbers
 
     Sqr_matrix operator+ (const Sqr_matrix& mat) const; // sum of 2 matrixes
     void operator+= (const Sqr_matrix& mat); // sum of 2 matrixes
@@ -37,13 +37,16 @@ public:
     Sqr_matrix symmetric() const; // returns symmetric matrix
     Sqr_matrix skew_symmetric() const; // returns skew symmetric matrix
     Sqr_matrix T() const; // returns transpose matrix
-    void zeros() override;
+    Sqr_matrix column_sort() const; // returns matrix where max element of each rows places on position (i, i)
 
-    long double det(); // calculation of determination
+    void zeros() override; // fill the matrix with zeros
+    void ones(); // fill the matrix with ones
 
-    std::vector<long double> get_num() const override;
-    int get_width() const override;
-    int get_length() const override;
+    long double det() const; // calculation of determination
+
+    std::vector<long double> get_num() const override; // returns vector numbers
+    int get_width() const override; // returns width
+    int get_length() const override; // returns length
 
 private:
     Sqr_matrix(const Matrix& m);

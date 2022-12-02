@@ -3,11 +3,13 @@
 #include "column.h"
 #include "sqr_matrix.h"
 
+using namespace std;
+
 /// Constructors
-Matrix::Matrix(const int n, const int m) : // empty matrix
-    length{n}, width{m}
+Matrix::Matrix(const int len, const int wid) : // empty matrix
+    length{len}, width{wid}
 {
-    if (n <= 0 and m <= 0)
+    if (len <= 0 and wid <= 0)
         throw runtime_error("Dimensions of a matrix have to be more than zero");
 }
 
@@ -23,17 +25,19 @@ Matrix::Matrix(const vector<vector<long double>>& num) :
     }
 }
 
-Matrix::Matrix(const int n, const int m, const long double value) : // matrix with same numbers
-    length{n}, width{m}
+Matrix::Matrix(const int len, const int wid, const long double value) : // matrix with same numbers
+    length{len}, width{wid}
 {
-    for (int i = 0; i < n*m; ++i)
-        numbers.push_back(value);
+    if (len <= 0 || wid <= 0)
+        throw runtime_error("Dimensions of a matrix have to be more than zero");
+
+    numbers = vector<long double>(len * wid, value);
 }
 
-Matrix::Matrix(const vector<long double>& num, const int n, const int m) : // for columns and rows
-    numbers{num}, length{n}, width{m}
+Matrix::Matrix(const vector<long double>& num, const int len, const int wid) : // for columns and rows
+    numbers{num}, length{len}, width{wid}
 {
-    if (n <= 0 and m <= 0)
+    if (len <= 0 and wid <= 0)
         throw runtime_error("Dimensions of a matrix have to be more than zero");
 }
 
@@ -50,23 +54,21 @@ Matrix::Matrix(const Sqr_matrix& m) :
 {}
 
 /// Methods
-vector<long double> Matrix:: get_num() const
-{
-    return numbers;
-}
-int Matrix::get_width() const
-{
-    return width;
-}
-int Matrix::get_length() const
-{
-    return length;
-}
+vector<long double> Matrix:: get_num() const // returns vector numbers
+{ return numbers; }
+
+int Matrix::get_width() const // returns width
+{ return width; }
+
+int Matrix::get_length() const // returns length
+{ return length; }
+
 void Matrix::zeros()
-{
-    for (int i = 0; i < numbers.size(); ++i)
-        numbers[i] = 0;
-}
+{ for (auto number : numbers) number = 0; }
+
+void Matrix::ones()
+{ for (auto number : numbers) number = 1; }
+
 
 /// Operators
 Row Matrix::operator[] (const int i) const // take a row of the matrix
@@ -90,14 +92,12 @@ Matrix Matrix::operator+ (const Matrix& mat) const // sum of 2 matrixes
     }
 
     for (int i = 0; i < numbers.size(); ++i)
-            result.numbers.push_back(numbers[i] + mat.numbers[i]);
+        result.numbers.push_back(numbers[i] + mat.numbers[i]);
     return result;
 }
 
 void Matrix::operator+= (const Matrix& mat) // sum of 2 matrixes
-{
-    *this = *this + mat;
-}
+{ *this = *this + mat; }
 
 Matrix Matrix::operator- (const Matrix& mat) const // difference of 2 matrixes
 {
@@ -113,14 +113,12 @@ Matrix Matrix::operator- (const Matrix& mat) const // difference of 2 matrixes
     }
 
     for (int i = 0; i < numbers.size(); ++i)
-            result.numbers.push_back(numbers[i] - mat.numbers[i]);
+        result.numbers.push_back(numbers[i] - mat.numbers[i]);
     return result;
 }
 
 void Matrix::operator-= (const Matrix& mat) // difference of 2 matrixes
-{
-    *this = *this - mat;
-}
+{ *this = *this - mat; }
 
 Matrix Matrix::operator* (const double& number) const // product of every numbers of a matrix and a number
 {
@@ -132,14 +130,12 @@ Matrix Matrix::operator* (const double& number) const // product of every number
     }
 
     for (int i = 0; i < numbers.size(); ++i)
-            result.numbers.push_back(numbers[i] * number);
+        result.numbers.push_back(numbers[i] * number);
     return result;
 }
 
 void Matrix::operator*= (const double& number) // product of every numbers of a matrix and a number
-{
-    *this = *this * number;
-}
+{ *this = *this * number; }
 
 Matrix Matrix::operator/ (const double& number) const // product of every numbers of a matrix and a number
 {
@@ -151,14 +147,12 @@ Matrix Matrix::operator/ (const double& number) const // product of every number
     }
 
     for (int i = 0; i < numbers.size(); ++i)
-            result.numbers.push_back(numbers[i] / number);
+        result.numbers.push_back(numbers[i] / number);
     return result;
 }
 
 void Matrix::operator/= (const double& number) // product of every numbers of a matrix and a number
-{
-    *this = *this / number;
-}
+{ *this = *this / number; }
 
 Matrix Matrix::operator* (const Matrix& mat) const // product of 2 matrixes
 {
@@ -172,16 +166,14 @@ Matrix Matrix::operator* (const Matrix& mat) const // product of 2 matrixes
             long double sum{0};
             for (int k = 0; k < width; ++k)
                 sum += numbers[i * width + k] * mat.numbers[k * mat.width + j]; // i * width - row[i] of first matrix
-                                                                                                          // k * mat.width (0 < k < mat.length) - numbers of columns[j] of second matrix
+            // k * mat.width (0 < k < mat.length) - numbers of columns[j] of second matrix
             result.numbers.push_back(sum);
         }
-   return result;
+    return result;
 }
 
 void Matrix::operator*= (const Matrix& mat) // product of 2 matrixes
-{
-    *this = (*this) * mat;
-}
+{ *this = (*this) * mat; }
 
 ostream& operator<< (ostream& os, Matrix& mat) // to print a matrix in the console
 {
@@ -197,7 +189,5 @@ ostream& operator<< (ostream& os, Matrix& mat) // to print a matrix in the conso
 
 
 Matrix operator* (const Column& c, const Row& r)
-{
-    return Matrix(c) * Matrix(r);
-}
+{ return Matrix(c) * Matrix(r); }
 

@@ -1,35 +1,43 @@
 #include "column.h"
 
+using namespace std;
+
 /// Constructors
+Column::Column(const int len) : // empty column
+    Matrix{1, len}
+{}
+
 Column::Column(const vector <long double>& num) :
     Matrix{num, (int)num.size(), 1}
 {}
 
-Column::Column(int n) : // empty column
-    Matrix{1, n}
+Column::Column(const std::vector<std::vector<long double>>& num) :
+    Matrix(num)
+{}
+
+Column::Column(const int len, const long double value) : // column with same numbers
+    Matrix(len, 1, value)
 {}
 
 /// Methods
-vector<long double> Column::get_num() const
-{
-    return numbers;
-}
+vector<long double> Column::get_num() const // returns vector numbers
+{ return numbers; }
 
-int Column::get_width() const
-{
-    return width;
-}
+int Column::get_width() const // returns width
+{ return width; }
 
-int Column:: get_length() const
-{
-    return length;
-}
+int Column:: get_length() const  // returns length
+{ return length; }
+
+void Column::zeros() // fill the column with zeros
+{ for (auto number : numbers) number = 0; }
+
+void Column::ones() // fill the column with ones
+{ for (auto number : numbers) number = 1; }
 
 /// Operators
-long double Column::operator[] (int i) const // take a number of the column
-{
-    return numbers[i];
-}
+long double Column::operator[] (const int index) const // take a number of the column
+{ return numbers[index]; }
 
 Column Column::operator+ (const Column& col) const // sum of 2 columns
 {
@@ -42,14 +50,12 @@ Column Column::operator+ (const Column& col) const // sum of 2 columns
         throw runtime_error("Column is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
-            result.numbers.push_back(numbers[i] + col.numbers[i]);
+        result.numbers.push_back(numbers[i] + col.numbers[i]);
     return result;
 }
 
 void Column::operator+= (const Column& Column) // sum of 2 columns
-{
-    *this = *this + Column;
-}
+{ *this = *this + Column; }
 
 Column Column::operator- (const Column& col) const // difference of 2 columns
 {
@@ -62,32 +68,28 @@ Column Column::operator- (const Column& col) const // difference of 2 columns
         throw runtime_error("Column is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
-            result.numbers.push_back(numbers[i] - col.numbers[i]);
+        result.numbers.push_back(numbers[i] - col.numbers[i]);
     return result;
 }
 
 void Column::operator-= (const Column& col) // difference of 2 columns
-{
-    *this = *this - col;
-}
+{ *this = *this - col; }
 
-Column Column::operator* (double num) const // product of a column and a number
+Column Column::operator* (const double num) const // product of a column and a number
 {
     Column result{length};
     if (numbers.empty())
         throw runtime_error("Column is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
-            result.numbers.push_back(numbers[i] * num);
+        result.numbers.push_back(numbers[i] * num);
     return result;
 }
 
-void Column::operator*= (double num) // product of a column and a number
-{
-    *this = *this * num;
-}
+void Column::operator*= (const double num) // product of a column and a number
+{ *this = *this * num; }
 
-Column Column::operator/ (double num) const // quotient of a column and a number
+Column Column::operator/ (const double num) const // quotient of a column and a number
 {
     Column result{length};
     if (numbers.empty())
@@ -97,14 +99,12 @@ Column Column::operator/ (double num) const // quotient of a column and a number
         throw runtime_error("Divided by zero");
 
     for (int i = 0; i < numbers.size(); ++i)
-            result.numbers.push_back(numbers[i]/num);
+        result.numbers.push_back(numbers[i]/num);
     return result;
 }
 
-void Column::operator/= (double num) // quotient of a column and a number
-{
-    *this = *this / num;
-}
+void Column::operator/= (const double num) // quotient of a column and a number
+{ *this = *this / num; }
 
 ostream& operator<< (ostream& os, Column& c) // to print a column in the console
 {

@@ -16,6 +16,7 @@ int main()
         vector<vector<long double>> v{{1, 2, 3, 6}, {4, 5, 6, 7}, {8, 9, 10, 11}};
         Matrix y{v};
         Matrix z{2, 3, 5};
+        cout << z;
         vector<long double> v1{1, 2, 3, 4, 5, 6, 7, 8};
         Matrix o{v1, 2, 4};
 
@@ -30,6 +31,16 @@ int main()
         vector<long double> p {1, 2, 3};
         Vectors v2{p};
         cout << v2[1] << endl;
+
+        vector<vector<long double>> b {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        Sqr_matrix k{b};
+        cout << k;
+        //        cout << k.det() << endl;
+        Sqr_matrix l = k.diagonalization();
+        cout << l;
+        k = k.triangle();
+        cout << k;
+
     }
 
     catch(runtime_error e)

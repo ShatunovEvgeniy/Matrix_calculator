@@ -13,11 +13,11 @@ class Matrix
 {
 public:
     Matrix() = delete;
-    Matrix(const int n, const int m); // empty matrix
+    Matrix(const int len, const int wid); // empty matrix
     Matrix(const std::vector<std::vector<long double>>& num);
-    Matrix(int n, int m, long double value); // matrix with same numbers
+    Matrix(const std::vector<long double>& num, const int len, const int wid);
+    Matrix(const int len, const int wid, const long double value); // matrix with same numbers
 
-    Matrix(const std::vector<long double>& num, int n, int m); // for columns and rows
     Matrix(const Column& c);
     Matrix(const Row& r);
     Matrix(const Sqr_matrix& m);
@@ -39,11 +39,12 @@ public:
 
     Row operator[] (const int index) const; // take a row of the matrix
 
-    virtual std::vector<long double> get_num() const;
-    virtual int get_width() const;
-    virtual int get_length() const;
+    virtual std::vector<long double> get_num() const; // returns vector numbers
+    virtual int get_width() const; // returns width
+    virtual int get_length() const; // returns length
 
-    virtual void zeros();
+    virtual void zeros(); // fill the matrix with zeros
+    virtual void ones(); // fill the matrix with ones
 
 protected:
     int length{0};
