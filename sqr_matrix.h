@@ -8,7 +8,6 @@
 class Sqr_matrix : private Matrix
 {
 public:
-    Sqr_matrix() = delete;
     Sqr_matrix(const int d); // n = dimension
     Sqr_matrix(const std::vector<long double>& num);
     Sqr_matrix(const std::vector<std::vector<long double>> &num);
@@ -29,7 +28,7 @@ public:
     Sqr_matrix operator/ (const double& number) const; // qoutient of every numbers of a matrix and a number
     void operator/= (const double& number); // quotient of every numbers of a matrix and a number
 
-    Row operator[] (const int index) const; // take a row of the matrix
+    using Matrix::operator[]; // take a row of the matrix
 
     Sqr_matrix triangle() const; // returns matrix in triangle form
     Sqr_matrix diagonalization() const; // returns matrix in diagonale forn
@@ -49,6 +48,7 @@ public:
     int get_length() const override; // returns length
 
 private:
+    Sqr_matrix() = delete;
     Sqr_matrix(const Matrix& m);
     int dimension{0}; // dimension is size of a square matrix (dimension x dimension)
 };

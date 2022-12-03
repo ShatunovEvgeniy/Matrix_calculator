@@ -8,7 +8,6 @@
 class Row : private Matrix
 {
 public:
-    Row() = delete;
     Row(const int len); // empty row
     Row(const std::vector<long double>& num);
     Row(const std::vector<std::vector<long double>>& num);
@@ -34,6 +33,9 @@ public:
 
     void zeros() override; // fill the row with zeros
     void ones() override; // fill the row with ones
+
+private:
+    Row() = delete;
 };
 
 std::ostream& operator<< (std::ostream& os, Row& r); // to print a row in the console

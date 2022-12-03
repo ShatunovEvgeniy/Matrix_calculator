@@ -30,14 +30,22 @@ int Column:: get_length() const  // returns length
 { return length; }
 
 void Column::zeros() // fill the column with zeros
-{ for (auto number : numbers) number = 0; }
+{ numbers = vector<long double>(length, 0); }
 
 void Column::ones() // fill the column with ones
-{ for (auto number : numbers) number = 1; }
+{ numbers = vector<long double>(length, 1); }
 
 /// Operators
 long double Column::operator[] (const int index) const // take a number of the column
-{ return numbers[index]; }
+{
+    if (index < 0)
+        throw runtime_error("Index mustn't be less than zero");
+
+    else if (numbers.empty())
+            throw runtime_error("Column is empty");
+
+    return numbers[index];
+}
 
 Column Column::operator+ (const Column& col) const // sum of 2 columns
 {

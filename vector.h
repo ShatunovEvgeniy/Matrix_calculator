@@ -8,7 +8,6 @@
 class Vectors: private Column
 {
 public:
-    Vectors() = delete;
     Vectors(const int count); // empty vector
     Vectors(const std::vector<long double> &num);
 
@@ -41,6 +40,9 @@ public:
 
     void zeros() override; // fill the vector with zeros
     void ones() override; // fill the vector with ones
+
+private:
+    Vectors() = delete;
 };
 
 std::ostream& operator<< (std::ostream& os, Vectors& vec); // to print a vector in the console

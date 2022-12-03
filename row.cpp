@@ -13,10 +13,7 @@ Row::Row(const vector<long double>& num) :
 
 Row::Row(const vector<vector<long double>>& num) :
     Matrix{num}
-{
-    if (num.size() != 1)
-        throw runtime_error("Wrong vector for initialization of the row");
-}
+{}
 
 Row::Row(const int len, const long double value) : // row with same numbers
     Matrix(1, len, value)
@@ -33,14 +30,22 @@ int Row:: get_length() const // returns length
 { return length; }
 
 void Row::zeros() // fill the row with zeros
-{ for (auto number : numbers) number = 0; }
+{ numbers = vector<long double>(length, 0); }
 
 void Row::ones() // fill the row with ones
-{ for (auto number : numbers) number = 1; }
+{ numbers = vector<long double>(length, 1); }
 
 /// Operators
-long double Row::operator[] (const int i) const // take a number of the row
-{ return numbers[i]; }
+long double Row::operator[] (const int index) const // take a number of the row
+{
+    if (index < 0)
+        throw runtime_error("Index mustn't be less than zero");
+
+    else if (numbers.empty())
+            throw runtime_error("Row is empty");
+
+    return numbers[index];
+}
 
 Row Row::operator+ (const Row& row) const // sum of 2 rows
 {

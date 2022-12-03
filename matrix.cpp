@@ -20,6 +20,7 @@ Matrix::Matrix(const vector<vector<long double>>& num) :
     {
         if (x.size() != width)
             throw runtime_error("Strings of a matrix are different");
+
         for (auto y : x)
             numbers.push_back(y);
     }
@@ -63,16 +64,22 @@ int Matrix::get_width() const // returns width
 int Matrix::get_length() const // returns length
 { return length; }
 
-void Matrix::zeros()
-{ for (auto number : numbers) number = 0; }
+void Matrix::zeros() // fill the matrix with zeros
+{ numbers = vector<long double>(length, 0); }
 
-void Matrix::ones()
-{ for (auto number : numbers) number = 1; }
+void Matrix::ones() // fill the matrix with ones
+{ numbers = vector<long double>(length, 1); }
 
 
 /// Operators
 Row Matrix::operator[] (const int i) const // take a row of the matrix
 {
+    if (i < 0)
+        throw runtime_error("Index mustn't be less than zero");
+
+    else if (numbers.empty())
+            throw runtime_error("Matrix is empty");
+
     vector<long double> num(width);
     copy(numbers.begin() + width*i, numbers.begin() + width*(i+1), num.begin());
     return Row{num};
@@ -84,7 +91,7 @@ Matrix Matrix::operator+ (const Matrix& mat) const // sum of 2 matrixes
 
     if (mat.length != length || mat.width != width)
     {
-        throw runtime_error("You can't add matrixes of different sizes");
+        throw runtime_error("You can't sum matrixes of different sizes");
     }
     else if (numbers.empty() || mat.get_num().empty())
     {
@@ -165,8 +172,9 @@ Matrix Matrix::operator* (const Matrix& mat) const // product of 2 matrixes
         {
             long double sum{0};
             for (int k = 0; k < width; ++k)
-                sum += numbers[i * width + k] * mat.numbers[k * mat.width + j]; // i * width - row[i] of first matrix
-            // k * mat.width (0 < k < mat.length) - numbers of columns[j] of second matrix
+                // i * width - row[i] of first matrix
+                // k * mat.width (0 < k < mat.length) - numbers of columns[j] of second matrix
+                sum += numbers[i * width + k] * mat.numbers[k * mat.width + j];
             result.numbers.push_back(sum);
         }
     return result;
@@ -180,7 +188,7 @@ ostream& operator<< (ostream& os, Matrix& mat) // to print a matrix in the conso
     for (int i = 0; i < mat.get_width() * mat.get_length(); ++i)
     {
         os << mat.get_num()[i] << " ";
-        if ((i + 1) % mat.get_width() == 0)
+        if ((i + 1) % mat.get_width() == 0) // end of a row
             os << endl;
     }
     os << endl;

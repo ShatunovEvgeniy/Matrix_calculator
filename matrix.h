@@ -12,7 +12,6 @@ class Sqr_matrix;
 class Matrix
 {
 public:
-    Matrix() = delete;
     Matrix(const int len, const int wid); // empty matrix
     Matrix(const std::vector<std::vector<long double>>& num);
     Matrix(const std::vector<long double>& num, const int len, const int wid);
@@ -50,6 +49,9 @@ protected:
     int length{0};
     int width{0};
     std::vector<long double> numbers;
+
+private:
+    Matrix() = delete;
 };
 
 std::ostream& operator<< (std::ostream& os, Matrix& mat); // to print a matrix in the console

@@ -56,10 +56,10 @@ int Vectors::get_length() const // returns length
 { return length; }
 
 void Vectors::zeros() // fill the vector with zeros
-{ for (auto number : numbers) number = 0; }
+{ numbers = vector<long double>(length, 0); }
 
 void Vectors::ones() // fill the vector with ones
-{ for (auto number : numbers) number = 1; }
+{ numbers = vector<long double>(length, 1); }
 
 
 /// Operators

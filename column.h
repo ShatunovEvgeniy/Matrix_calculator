@@ -8,7 +8,6 @@
 class Column : protected Matrix
 {
 public:
-    Column() = delete;
     Column(const int len); // empty column
     Column(const std::vector<long double>& num);
     Column(const std::vector<std::vector<long double>>& num);
@@ -34,6 +33,9 @@ public:
 
     void zeros() override; // fill the column with zeros
     void ones() override;  // fill the column with ones
+
+private:
+    Column() = delete;
 };
 
 std::ostream& operator<< (std::ostream& os, Column& r); // to print a column in the console

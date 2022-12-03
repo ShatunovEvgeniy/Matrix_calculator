@@ -101,10 +101,10 @@ Sqr_matrix Sqr_matrix:: column_sort() const // returns matrix where max element 
 }
 
 void Sqr_matrix::zeros() // fill the sqr_matrix with zeros
-{ for (auto number : numbers) number = 0; }
+{ numbers = vector<long double>(length, 0); }
 
 void Sqr_matrix::ones() // fill the sqr_matrix with ones
-{ for (auto number : numbers) number = 1; }
+{ numbers = vector<long double>(length, 1); }
 
 long double Sqr_matrix::det() const // calculation of determination
 {
@@ -123,13 +123,13 @@ long double Sqr_matrix::det() const // calculation of determination
     return mat.numbers[0] * m.det();
 }
 
-vector<long double> Sqr_matrix::get_num() const
+vector<long double> Sqr_matrix::get_num() const // returns vector numbers
 { return numbers; }
 
-int Sqr_matrix::get_width() const
+int Sqr_matrix::get_width() const // returns width
 { return dimension; }
 
-int Sqr_matrix::get_length() const
+int Sqr_matrix::get_length() const // returns length
 { return dimension; }
 
 /// Operators
@@ -162,9 +162,6 @@ Sqr_matrix Sqr_matrix::operator/ (const double& number) const // qoutient of eve
 
 void Sqr_matrix::operator/= (const double& number) // quotient of every numbers of a matrix and a number
 { *this = (*this) / number; }
-
-Row Sqr_matrix::operator[] (const int index) const // take a row of the matrix
-{ return Matrix(*this)[index]; }
 
 ostream& operator<< (ostream& os, Sqr_matrix& mat) // to print a matrix in the console
 {
