@@ -72,16 +72,16 @@ void Matrix::ones() // fill the matrix with ones
 
 
 /// Operators
-Row Matrix::operator[] (const int i) const // take a row of the matrix
+Row Matrix::operator[] (const int index) const // take a row of the matrix
 {
-    if (i < 0)
+    if (index < 0)
         throw runtime_error("Index mustn't be less than zero");
 
     else if (numbers.empty())
             throw runtime_error("Matrix is empty");
 
     vector<long double> num(width);
-    copy(numbers.begin() + width*i, numbers.begin() + width*(i+1), num.begin());
+    copy(numbers.begin() + width * index, numbers.begin() + width * (index + 1), num.begin());
     return Row{num};
 }
 

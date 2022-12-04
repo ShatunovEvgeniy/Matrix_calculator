@@ -3,10 +3,12 @@
 #include "column.h"
 #include "vector.h"
 #include "sqr_matrix.h"
+#include "Calc_window.h"
 
 #include <iostream>
 
 using namespace std;
+using namespace Graph_lib;
 
 int main()
 {
@@ -40,6 +42,10 @@ int main()
         cout << l;
         k = k.triangle();
         cout << k;
+
+        Calc_window winMy = {Point{100, 100}, 1200, 600, "Calc_window"};
+
+        Graph_lib::gui_main();
 
     }
 
