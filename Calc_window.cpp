@@ -2,6 +2,7 @@
 
 using namespace Graph_lib;
 
+/// Constructors and destructors
 Calc_window::Calc_window(Point xy, int w, int h, const std::string& title) // the top left corner, width, length, title
     : Simple_window{xy, w, h, title}
 
@@ -77,6 +78,7 @@ Calc_window::~Calc_window()
     delete right_matrix_in;
 }
 
+/// Methods
 void Calc_window::save_left(Address, Address widget) // get value of left_column and left_rows
 {
     auto& btn = reference_to<Graph_lib::Button>(widget);

@@ -1,4 +1,5 @@
 #include "column.h"
+#include "row.h"
 
 using namespace std;
 
@@ -34,6 +35,11 @@ void Column::zeros() // fill the column with zeros
 
 void Column::ones() // fill the column with ones
 { numbers = vector<long double>(length, 1); }
+
+Row Column::T() const
+{
+    return Row(this->numbers);
+}
 
 /// Operators
 long double Column::operator[] (const int index) const // take a number of the column
@@ -116,9 +122,9 @@ void Column::operator/= (const double num) // quotient of a column and a number
 
 ostream& operator<< (ostream& os, Column& c) // to print a column in the console
 {
-    for (int i = 0; i < c.get_width(); ++i)
+    for (auto i : c.get_num())
     {
-        os << c.get_num()[i] << endl;
+        os << i << endl;
     }
     return os;
 }

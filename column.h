@@ -27,6 +27,8 @@ public:
 
     long double operator[] (const int index) const; // take a number of the column
 
+    Row T() const;
+
     std::vector<long double> get_num() const override; // returns vector numbers
     int get_width() const override;  // returns width
     int get_length() const override; // returns length

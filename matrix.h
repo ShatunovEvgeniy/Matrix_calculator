@@ -38,6 +38,8 @@ public:
 
     Row operator[] (const int index) const; // take a row of the matrix
 
+    Matrix T() const;
+
     virtual std::vector<long double> get_num() const; // returns vector numbers
     virtual int get_width() const; // returns width
     virtual int get_length() const; // returns length

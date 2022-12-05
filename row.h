@@ -25,6 +25,8 @@ public:
     Row operator/ (const double num) const; // quotient of a row and a number
     void operator/= (const double num); // quotient of a row and a number
 
+    Column T() const;
+
     long double operator[] (const int i) const; // take a number of the row
 
     std::vector<long double> get_num() const override; // returns vector numbers
