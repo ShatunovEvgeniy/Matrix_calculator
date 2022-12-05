@@ -7,16 +7,14 @@
 
 using namespace Graph_lib;
 
-/// Constructors
 Matrix_in::Matrix_in(Point xy, int w, int h, int x, int y)
     : Widget{ xy, w, h, "Matrix_in", nullptr}, count_row{x}, count_column{y}
 {
     for(int j = 0; j < y; ++j)
         for(int i = 0; i < x; ++i)
-            in_boxes.push_back(new In_box{Point{xy.x + w / x * i, xy.y + h / y * j}, w / x, h / y, ""}); // before last arg has to be the same to make a sqr
+            in_boxes.push_back(new In_box{Point{xy.x + w / x * i, xy.y + h / y * j}, w / x, h / y, ""}); // last arg is the same to make a sqr
 }
 
-/// Methods
 int Matrix_in::attach(In_box& b)
 {
     b.width = width;
@@ -51,18 +49,20 @@ void Matrix_in::hide ()
         in_boxes[i].hide();
 }
 
-void Matrix_in::read_matrix()
+Matrix Matrix_in::read_matrix()
 {
-    std::vector<int> vec;
+    std::vector<long double> vec;
     for(int j = 0; j < this->count_row; ++j)
     {
         for(int i = 0; i < this->count_column; ++i)
         {                                       // x = 3, y = 4, 1000 2000 3000      0 4 8  1 5 9  2 6 10  3 7 11
-            int k = in_boxes[i + j * this->count_row].get_int();
-            vec.push_back(k);
-            std::cout << k;
+            std::string k = in_boxes[i + j * this->count_row].get_string();
+            std::stringstream ss;
+            ss << k;
+            long double num = 0;
+            ss >> num;
+            vec.push_back(num);
         }
     }
-    //return (Matrix)(this->count_row, this->count_column, vec);
+    return Matrix {vec, this->count_row, this->count_column};
 }
-

@@ -39,7 +39,7 @@ public:
     Sqr_matrix column_sort() const; // returns matrix where max element of each rows places on position (i, i)
 
     void zeros() override; // fill the matrix with zeros
-    void ones() override; // fill the matrix with ones
+    void ones(); // fill the matrix with ones
 
     long double det() const; // calculation of determination
 

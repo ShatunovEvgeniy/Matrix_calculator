@@ -1,6 +1,7 @@
 #ifndef MATRIX_IN_H
 #define MATRIX_IN_H
 
+#include "matrix.h"
 #include "GUI.h"
 
 namespace Graph_lib {
@@ -16,7 +17,7 @@ struct Matrix_in : Widget
     int attach (In_box* p);
     void attach (Window& win);
 
-    void read_matrix(); // read all boxes
+    Matrix read_matrix(); // read all boxes
 
     void show ();  // show all in_boxes
     void hide ();   // hide all in_boxes

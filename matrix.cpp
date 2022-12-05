@@ -1,12 +1,11 @@
 #include "matrix.h"
+
 #include "row.h"
 #include "column.h"
 #include "sqr_matrix.h"
 
 using namespace std;
-///
-///Концепты!!!!!!!!!!!
-///
+
 /// Constructors
 Matrix::Matrix(const int len, const int wid) : // empty matrix
     length{len}, width{wid}
@@ -72,14 +71,7 @@ void Matrix::zeros() // fill the matrix with zeros
 void Matrix::ones() // fill the matrix with ones
 { numbers = vector<long double>(length, 1); }
 
-Matrix Matrix::T() const
-{
-    Matrix m(this->width, this->length, 0);
-    for (int i = 0; i < m.length; ++i)
-        for (int j = 0; j < m.width; ++j)
-            m.numbers[i * m.width + j] = numbers[j * m.length + i];
-    return m;
-}
+
 /// Operators
 Row Matrix::operator[] (const int index) const // take a row of the matrix
 {
@@ -207,4 +199,3 @@ ostream& operator<< (ostream& os, Matrix& mat) // to print a matrix in the conso
 
 Matrix operator* (const Column& c, const Row& r)
 { return Matrix(c) * Matrix(r); }
-

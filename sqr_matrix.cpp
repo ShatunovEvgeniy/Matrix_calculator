@@ -37,12 +37,6 @@ Sqr_matrix Sqr_matrix::triangle() const // returns matrix in triangle form
     for (int i = 1; i < dimension; ++i)
         for (int k = i * dimension; k < dimension * dimension; k += dimension)
         {
-            if (m.numbers[(i - 1) * dimension + i - 1] == 0)
-            {
-                m = m.column_sort();
-                if (m.numbers[(i - 1) * dimension + i - 1] == 0)
-                    return m;
-            }
             long double sub = m.numbers[k + i - 1] /  m.numbers[(i - 1) * dimension + i - 1];
             for (int j = i - 1; j < dimension; ++j)
                 m.numbers[k + j] -= m.numbers[(i - 1) * dimension + j] * sub;
@@ -60,12 +54,6 @@ Sqr_matrix Sqr_matrix::diagonalization() const // returns matrix in diagonale fo
     for (int i = 1; i < dimension; ++i)
         for (int k = i * dimension; k < dimension * dimension; k += dimension)
         {
-            if (m.numbers[(i - 1) * dimension + i - 1] == 0)
-            {
-                m = m.column_sort();
-                if (m.numbers[(i - 1) * dimension + i - 1] == 0)
-                    return m;
-            }
             long double sub = m.numbers[k + i - 1] /  m.numbers[(i - 1) * dimension + i - 1];
             for (int j = i - 1; j < dimension; ++j)
                 m.numbers[k + j] -= m.numbers[(i - 1) * dimension + j] * sub;
