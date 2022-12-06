@@ -5,6 +5,8 @@
 
 #include <vector>
 
+class Vectors;
+
 class Column : protected Matrix
 {
 public:
@@ -12,6 +14,8 @@ public:
     Column(const std::vector<long double>& num);
     Column(const std::vector<std::vector<long double>>& num);
     Column(const int len, const long double value); // column with same numbers
+
+    Column(const Vectors& vec);
 
     Column operator+ (const Column& col) const; // sum of 2 columns
     void operator+= (const Column& col);             // sum of 2 columns

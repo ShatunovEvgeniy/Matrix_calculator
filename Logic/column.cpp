@@ -1,5 +1,6 @@
 #include "column.h"
 #include "row.h"
+#include "vector.h"
 
 using namespace std;
 
@@ -9,7 +10,7 @@ Column::Column(const int len) : // empty column
 {}
 
 Column::Column(const vector <long double>& num) :
-    Matrix{num, (int)num.size(), 1}
+    Matrix{num, num.size(), 1}
 {}
 
 Column::Column(const std::vector<std::vector<long double>>& num) :
@@ -18,6 +19,10 @@ Column::Column(const std::vector<std::vector<long double>>& num) :
 
 Column::Column(const int len, const long double value) : // column with same numbers
     Matrix(len, 1, value)
+{}
+
+Column::Column(const Vectors& vec) :
+    Matrix(vec.get_num(), vec.get_length(), 1)
 {}
 
 /// Methods
