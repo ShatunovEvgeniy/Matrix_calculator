@@ -1,8 +1,10 @@
 #ifndef MATRIX_IN_H
 #define MATRIX_IN_H
-
-#include "../Logic/matrix.h"
-#include <Graph_lib/GUI.h>
+#include "GUI.h"
+#include "matrix.h"
+#include "sqr_matrix.h"
+#include "column.h"
+#include "row.h"
 
 namespace Graph_lib {
 
@@ -14,7 +16,12 @@ struct Matrix_in : Widget
     int attach (In_box* p);
     void attach (Window& win);
 
-    Matrix read_matrix(); // read matrix from in_boxes
+    std::vector<long double> read_vector(); // read vector from in_boxes
+    Matrix read_matrix();
+    Sqr_matrix read_sqr_matrix();
+    Row read_row();
+    Column read_column();
+
 
     void show ();  // show all in_boxes
     void hide ();   // hide all in_boxes

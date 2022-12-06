@@ -3,7 +3,7 @@
 
 #include "Matrix_in.h"
 
-#include <Graph_lib/Graph.h>
+#include "Graph.h"
 
 struct Calc_window : Graph_lib::Window
 {
@@ -45,23 +45,64 @@ private:
     // buttons realization
     static void make_left(Graph_lib::Address, Graph_lib::Address widget); // get value of left_column and left_rows
     static void make_right(Graph_lib::Address, Graph_lib::Address widget); // get value of right_column and right_rows
+    static void cb_left_trans(Graph_lib::Address, Graph_lib::Address widet);
+    static void cb_right_trans(Graph_lib::Address, Graph_lib::Address widet);
+    static void cb_left_mult_num(Graph_lib::Address, Graph_lib::Address widet);
+    static void cb_right_mult_num(Graph_lib::Address, Graph_lib::Address widet);
+    static void cb_left_del_num(Graph_lib::Address, Graph_lib::Address widet);
+    static void cb_right_del_num(Graph_lib::Address, Graph_lib::Address widet);
+
     static void cb_btn(Graph_lib::Address, Graph_lib::Address widget); // call reference
     static void cb_quit(Graph_lib::Address, Graph_lib::Address widget); // call quit
     static void cb_plus(Graph_lib::Address, Graph_lib::Address widget); // call plus
     static void cb_minus(Graph_lib::Address, Graph_lib::Address widget); // call minus
     static void cb_mult(Graph_lib::Address, Graph_lib::Address widget); // call mult
+    static void cb_left_triangle(Graph_lib::Address, Graph_lib::Address widget); //call triangle
+    static void cb_right_triangle(Graph_lib::Address, Graph_lib::Address widget); //call triangle
+    static void cb_left_diagonal(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_diagonal(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_left_inverse(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_inverse(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_left_determinant(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_determinant(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_left_symmetric(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_symmetric(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_left_skew_symmtric(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_skew_symmtric(Graph_lib::Address, Graph_lib::Address widget);
+
+
 
     void reference(); // call void answer answer
     void quit(){ hide(); } // hide window
+    void left_trans();
+    void right_trans();
+    void left_mult_num();
+    void right_mult_num();
+    void left_del_num();
+    void right_del_num();
+
     void plus(); // matrix sum
     void minus(); // matrix difference
     void mult(); // matrix multiplication
+    void left_triangle();
+    void right_triangle();
+    void left_diagonal();
+    void right_diagonal();
+    void left_inverse();
+    void right_inverse();
+    void left_determinant();
+    void right_determinant();
+    void left_symmetric();
+    void right_symmetric();
+    void left_skew_symmtric();
+    void right_skew_symmtric();
 
 
     void in_left_col_row(); // get count of columns and rows
     void in_right_col_row(); // get count of columns and rows
 
     void answer(Matrix matrix); // print answer
+    void answer_num(long double ans); //print number answer
 };
 
 #endif // CALC_WINDOW_H
