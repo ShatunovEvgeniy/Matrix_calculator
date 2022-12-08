@@ -15,30 +15,29 @@ istream& operator>> (istream& is, vector<long double>& vector)
     double ch {0};
     while (true)
     {
-//        while (is.peek() == ' ')
-//            is.get();
-        if (is.peek() == '\n' || is.eof())
+        while (is.peek() == ' ')
+            is.get();
+        if (is.peek() == '\n' || is.peek() == '\0' || is.eof())
         {
             is.get();
             break;
         }
-        is >> ch;
+        is>>ch;
         vector.push_back(ch);
     }
-    for (long double i : vector)
-        cout << i << " ";
     return is;
 }
 
-void fill(ifstream& ist, vector<vector<long double>>& vec)
+void fill(istream& ist, vector<vector<long double>>& vec)
 {
     while (true)
     {
         vector<long double> a;
-        ist >> a;
-        cout << '\n';
+        ist>>a;
+        if (a.size() == 0)
+            break;
         vec.push_back(a);
-        if (a.size() == 0 || ist.eof())
+        if (ist.eof())
             break;
     }
 }
@@ -116,10 +115,10 @@ void calculate(const string& name, const string& out_name){
                 Sqr_matrix sq{m};
                 write(sq.diagonalization(), out_name);
             }
+        }
         else if (word == "transpon")
         {
             write(m.T(), out_name);
-        }
         }
     }
 
@@ -127,32 +126,34 @@ void calculate(const string& name, const string& out_name){
     {
         vector<vector<long double>> v1;
         vector<vector<long double>> v2;
+
         fill(ist, v1);
-        for (vector<long double> i : v1)
-        {
-            for (long double j : i)
-                cout<<j<<' ';
-            cout<<'\n';
-        }
+
+        while (ist.peek() == '\n' || ist.peek() == ' ')
+            ist.get();
+
         fill(ist, v2);
+
         Matrix m1{v1};
         Matrix m2{v2};
+
         if (word == "+")
         {
             m1 += m2;
             write(m1, out_name);
         }
+
         else if (word == "-")
         {
             m1 -= m2;
             write(m1, out_name);
         }
+
         else if (word == "*")
         {
             m1 *= m2;
             write(m1, out_name);
         }
-
     }
 
     else
