@@ -1,10 +1,10 @@
 #ifndef MATRIX_IN_H
 #define MATRIX_IN_H
-#include "GUI.h"
-#include "matrix.h"
-#include "sqr_matrix.h"
-#include "column.h"
-#include "row.h"
+#include <Graph_lib/GUI.h>
+#include "../Logic/matrix.h"
+#include "../Logic/sqr_matrix.h"
+#include "../Logic/column.h"
+#include "../Logic/row.h"
 
 namespace Graph_lib {
 

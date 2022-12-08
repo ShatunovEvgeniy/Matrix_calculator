@@ -3,7 +3,7 @@
 
 #include "Matrix_in.h"
 
-#include "Graph.h"
+#include <Graph_lib/Graph.h>
 
 struct Calc_window : Graph_lib::Window
 {

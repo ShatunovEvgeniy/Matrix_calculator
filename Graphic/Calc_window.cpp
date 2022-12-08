@@ -1,9 +1,9 @@
 #include "Calc_window.h"
 #include "Matrix_out.h"
-#include "matrix.h"
+#include "../Logic/matrix.h"
 #include <sstream>
 
-#include "Simple_window.h"
+#include <Graph_lib/Simple_window.h>
 
 using namespace Graph_lib;
 
@@ -38,8 +38,7 @@ Calc_window::Calc_window(Point xy, int w, int h, const std::string& title) // th
     , right_rows{Point{ind + simple_work_place * 2 + length_top_inbox * 3 / 2, ind}, simple_work_place / 3 / 2, ind, "Row:"}
 
 {
-    size_range (w, h,
-                w, h);      // control size window
+    size_range (w, h, w, h);      // control size window
 
     left_matrix_in = new Matrix_in {Point{ind, 2 * ind}, simple_work_place, y_max() - ind * 9, 3, 3};   // last 2 args are counts of rows and columns (3 X 3 by default)
     right_matrix_in = new Matrix_in {Point{ind + simple_work_place * 2, 2 * ind}, simple_work_place, y_max() - ind * 9, 3, 3}; // last 2 args are counts of rows and columns (3 X 3 by default)
@@ -276,6 +275,16 @@ void Calc_window::left_del_num()
     std::stringstream s;
     s << num_btn.get_string();
     s >> num;
+    if (num == 0 || num != num)
+    {
+        Simple_window win_error{Point{300, 300}, 700, 300, "Error"};
+        Text error_what{Point{win_error.x_max() / 2 - 50, win_error.y_max() / 2}, "Division by zero"};
+        win_error.attach(error_what);
+        this->hide();
+        win_error.wait_for_button();
+        this->show();
+        return;
+    }
     answer(left_matrix/num);
 }
 void Calc_window::right_del_num()
@@ -285,6 +294,17 @@ void Calc_window::right_del_num()
     std::stringstream s;
     s << num_btn.get_string();
     s >> num;
+    std::cout << num;
+    if (num == 0 || num != num)
+    {
+        Simple_window win_error{Point{300, 300}, 700, 300, "Error"};
+        Text error_what{Point{win_error.x_max() / 2 - 50, win_error.y_max() / 2}, "Division by zero"};
+        win_error.attach(error_what);
+        this->hide();
+        win_error.wait_for_button();
+        this->show();
+        return;
+    }
     answer(right_matrix/num);
 }
 

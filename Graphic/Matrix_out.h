@@ -1,8 +1,8 @@
 #ifndef MATRIX_OUT_H
 #define MATRIX_OUT_H
 
-#include "Matrix.h"
-#include "GUI.h"
+#include "../Logic/Matrix.h"
+#include <Graph_lib/GUI.h>
 
 namespace Graph_lib {
 

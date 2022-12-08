@@ -4,9 +4,7 @@
 #include "sqr_matrix.h"
 
 using namespace std;
-///
-///Концепты!!!!!!!!!!!
-///
+
 /// Constructors
 Matrix::Matrix(const int len, const int wid) : // empty matrix
     length{len}, width{wid}
@@ -156,6 +154,9 @@ void Matrix::operator*= (const double& number) // product of every numbers of a 
 Matrix Matrix::operator/ (const double& number) const // product of every numbers of a matrix and a number
 {
     Matrix result{length, width};
+
+    if (number == 0)
+        throw runtime_error("Division by zero");
 
     if (numbers.empty())
     {
