@@ -58,8 +58,33 @@ std::vector<long double> Matrix_in::read_vector() // read vector from in_boxes
             std::stringstream ss;
             ss << in_boxes[i + j * this->count_row].get_string(); // put string number from inbox to stringstream
             long double num = 0;
+
+            char first;
+            ss >> first;
+            if((first = first) && ((first < 48) || (first > 57)))
+            {
+                std::string str{"Matrix has NO number, what this shit? masafaka, please rewrite NUMBER for Matrix"};
+                throw str;
+            }
+            ss.putback(first);
+
             ss >> num;
-            vec.push_back(num);
+            std::string ost;
+            ss >> ost;
+            std::cout << ost;
+            if(ost != ""){
+                if(ost[0] == ','){
+                    std::string str = ost + "We used '.', please rewrite number";
+                    throw str;
+                }
+                else
+                {
+                    std::string str{ost +" : what this shit? masafaka, please rewrite NUMBER"};
+                    throw str;
+                }
+            }
+            else
+                vec.push_back(num);
         }
     return vec;
 }

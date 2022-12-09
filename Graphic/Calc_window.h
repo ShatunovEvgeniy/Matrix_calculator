@@ -3,7 +3,7 @@
 
 #include "Matrix_in.h"
 
-#include <Graph_lib/Graph.h>
+#include "Graph.h"
 
 struct Calc_window : Graph_lib::Window
 {
@@ -52,7 +52,8 @@ private:
     static void cb_left_del_num(Graph_lib::Address, Graph_lib::Address widet);
     static void cb_right_del_num(Graph_lib::Address, Graph_lib::Address widet);
 
-    static void cb_btn(Graph_lib::Address, Graph_lib::Address widget); // call reference
+    static void cb_save_file(Graph_lib::Address, Graph_lib::Address widget);
+
     static void cb_quit(Graph_lib::Address, Graph_lib::Address widget); // call quit
     static void cb_plus(Graph_lib::Address, Graph_lib::Address widget); // call plus
     static void cb_minus(Graph_lib::Address, Graph_lib::Address widget); // call minus
@@ -71,9 +72,8 @@ private:
     static void cb_right_skew_symmtric(Graph_lib::Address, Graph_lib::Address widget);
 
 
-
-    void reference(); // call void answer answer
     void quit(){ hide(); } // hide window
+    void save_file();
     void left_trans();
     void right_trans();
     void left_mult_num();
@@ -101,6 +101,7 @@ private:
     void in_left_col_row(); // get count of columns and rows
     void in_right_col_row(); // get count of columns and rows
 
+    bool check_matrix(Graph_lib::Matrix_in* matrix_in);
     void answer(Matrix matrix); // print answer
     void answer_num(long double ans); //print number answer
 };
