@@ -69,7 +69,7 @@ Calc_window::Calc_window(Point xy, int w, int h, const std::string& title) // th
     attach (private_left_2_menu);
 
     private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Determinant", cb_right_determinant));
-    private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Symmetricr", cb_right_symmetric));
+    private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Symmetric", cb_right_symmetric));
     private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Skew symmetric", cb_right_skew_symmtric));
     attach (private_right_2_menu);
 
@@ -299,12 +299,7 @@ void Calc_window::left_del_num()
         std::cout << num;
         if (num == 0 || num != num)
         {
-            Simple_window win_error{Point{300, 300}, 700, 300, "Error"};
-            Text error_what{Point{win_error.x_max() / 2 - 50, win_error.y_max() / 2}, "Division by zero"};
-            win_error.attach(error_what);
-            this->hide();
-            win_error.wait_for_button();
-            this->show();
+            error_output("Division by zero");
             return;
         }
         answer(left_matrix/num);
@@ -321,12 +316,7 @@ void Calc_window::right_del_num()
         std::cout << num;
         if (num == 0 || num != num)
         {
-            Simple_window win_error{Point{300, 300}, 700, 300, "Error"};
-            Text error_what{Point{win_error.x_max() / 2 - 50, win_error.y_max() / 2}, "Division by zero"};
-            win_error.attach(error_what);
-            this->hide();
-            win_error.wait_for_button();
-            this->show();
+            error_output("Division by zero");
             return;
         }
         answer(right_matrix/num);
@@ -339,8 +329,10 @@ void Calc_window::plus() // matrix sum
     {
         Matrix left_matrix{left_matrix_in->read_matrix()};
         Matrix right_matrix{right_matrix_in->read_matrix()};
-
-        answer(left_matrix + right_matrix);
+        if(left_matrix.get_length() == right_matrix.get_length() && left_matrix.get_width() == right_matrix.get_width())
+            answer(left_matrix + right_matrix);
+        else
+            error_output("these matrices cannot be sumed up");
     }
 }
 void Calc_window::minus() // matrix difference
@@ -349,8 +341,10 @@ void Calc_window::minus() // matrix difference
     {
         Matrix left_matrix{left_matrix_in->read_matrix()};
         Matrix right_matrix{right_matrix_in->read_matrix()};
-
-        answer(left_matrix - right_matrix);
+        if(left_matrix.get_length() == right_matrix.get_length() && left_matrix.get_width() == right_matrix.get_width())
+            answer(left_matrix - right_matrix);
+        else
+            error_output("these matrices cannot be minused");
     }
 }
 void Calc_window::mult() // matrix multiplication
@@ -359,8 +353,10 @@ void Calc_window::mult() // matrix multiplication
     {
         Matrix left_matrix{left_matrix_in->read_matrix()};
         Matrix right_matrix{right_matrix_in->read_matrix()};
-
-        answer(left_matrix * right_matrix);
+        if(left_matrix.get_width() == right_matrix.get_length())
+            answer(left_matrix * right_matrix);
+        else
+          error_output("these matrices cannot be multiplied");
     }
 }
 
@@ -463,6 +459,7 @@ void Calc_window::right_skew_symmtric()
 }
 
 // Other methods
+
 bool Calc_window::check_matrix(Matrix_in* matrix_in){
     try
     {
@@ -470,12 +467,7 @@ bool Calc_window::check_matrix(Matrix_in* matrix_in){
     }
     catch (std::string e)
     {
-        Simple_window win_error{Point{300, 300}, 700, 300, "Number wrong"};
-        Text error_what{Point{win_error.x_max() / 2 - 50, win_error.y_max() / 2}, e};
-        win_error.attach(error_what);
-        this->hide();
-        win_error.wait_for_button();
-        this->show();
+        error_output(e);
         return false;
     }
     return true;
@@ -484,7 +476,6 @@ bool Calc_window::check_matrix(Matrix_in* matrix_in){
 void Calc_window::answer(Matrix matrix) // print answer
 {
     Simple_window win{Point{100, 100}, 600, 300, "Matrix_out_window"};
-
     Matrix_out matrix_out{Point{0, 0}, 530, 300, matrix};
     matrix_out.attach(win);
     matrix_out.put();
@@ -494,7 +485,6 @@ void Calc_window::answer(Matrix matrix) // print answer
 void Calc_window::answer_num(long double ans)
 {
     Simple_window win{Point{100, 100}, 600, 300, "Matrix_out_window"};
-
     Out_box out_box{Point{0, 0}, 530, 300, ""};
     win.attach(out_box);
     std::stringstream s;
@@ -505,87 +495,155 @@ void Calc_window::answer_num(long double ans)
 
 void Calc_window::in_left_col_row() // get count of columns and rows
 {
-    //std::string col_count = left_columns.get_string(); // count of columns
-    //std::string row_count = left_rows.get_string(); // count of rows
-    /*
-    for(int i = 0; i < len(col_count) ; ++i)
+    detach(*left_matrix_in); // detach old matrix
+    delete left_matrix_in;
+    bool flag = true;                                        // if true, then it means a normal matrix
+    std::string col_string = left_columns.get_string(); // count of columns
+    std::string row_string = left_rows.get_string(); // count of rows
+    for(int i; i < (int)col_string.size() ; ++i)
     {
-        if((col_count[i] != col_count[i]) || ((col_count[i] < 48) || (col_count[i] > 57)))
+        if((col_string[i] != col_string[i]) || ((col_string[i] < 48) || (col_string[i] > 57)))
         {
-            Simple_window win{Point{300, 300}, 700, 300, "The Council"};
-            Text more{Point{win.x_max() / 2 - 50, win.y_max() / 2}, "Set the dimensions of the matrix as positive integers"};
-            win.attach(more);
-            this->hide();
-            win.wait_for_button();
-            this->show();
+            error_output("Set the dimensions of the matrix as positive integers");
+            flag = false;
+            break;
         }
     }
-    for()
+    if(flag)
     {
-        if((row_count[i] != row_count[i]) || ((row_count[i] < 48) || (row_count[i] > 57)))
+        for(int i; i < (int)row_string.size() ; ++i)
         {
-
+            if((row_string[i] != row_string[i]) || ((row_string[i] < 48) || (row_string[i] > 57)))
+            {
+                error_output("Set the dimensions of the matrix as positive integers");
+                flag = false;
+                break;
+            }
         }
     }
-
-
-
-        if( col_count > 20 or row_count > 20)
+    if(flag)
     {
-        Simple_window win{Point{300, 300}, 700, 300, "The Council"};
-        Text more{Point{win.x_max() / 2 - 50, win.y_max() / 2}, "A lot of matrix cells, use the input via file"};
-        win.attach(more);
-        this->hide();
-        win.wait_for_button();
-        this->show();
-    }
-    else
-    {*/
-        int col_count = left_columns.get_int(); // count of columns
-        int row_count = left_rows.get_int(); // count of rows
-
-        detach(*left_matrix_in); // detach old matrix
-        delete left_matrix_in;
-
-        if (col_count == row_count)
+        int col_count;
+        int row_count;
+        std::stringstream s;
+        std::stringstream ss;
+        s << col_string;
+        s >> col_count;
+        ss << row_string;
+        ss >> row_count;
+        if( col_count < 1 or row_count < 1)
         {
-            private_left_1_menu.show();
-            private_left_2_menu.show();
+            error_output("Set the dimensions of the matrix as positive integers");
+            flag = false;
+        }
+        else if( col_count > 10 or row_count > 10)
+        {
+            error_output("A lot of matrix cells, use the input via file");
+            flag = false;
         }
         else
         {
-            private_left_1_menu.hide();
-            private_left_2_menu.hide();
+            if (col_count == row_count)
+            {
+                private_left_1_menu.show();
+                private_left_2_menu.show();
+            }
+            else
+            {
+                private_left_1_menu.hide();
+                private_left_2_menu.hide();
+            }
+            left_matrix_in = new Matrix_in {Point{ ind, 2 * ind }, (simple_work_place), (y_max() - 9 * ind), col_count, row_count}; // buttons = 5 indent, edges = 2 indent
         }
-
-        left_matrix_in = new Matrix_in {Point{ ind, 2 * ind }, (simple_work_place), (y_max() - 9 * ind), col_count, row_count}; // buttons = 5 indent, edges = 2 indent
-
-        (*left_matrix_in).attach(*this); // attach new matrix
-        redraw();
-    //}
+    }
+    if(!flag)
+    {
+        private_left_1_menu.show();
+        private_left_2_menu.show();
+        left_matrix_in = new Matrix_in {Point{ind, 2 * ind}, simple_work_place, y_max() - ind * 9, 3, 3};
+    }
+    (*left_matrix_in).attach(*this); // attach new matrix
+    redraw();
 }
 
 void Calc_window::in_right_col_row() // get count of columns and rows
 {
-    int col_count = right_columns.get_int(); // count of columns
-    int row_count = right_rows.get_int(); // count of rows
-
     detach(*right_matrix_in); // detach old matrix
     delete right_matrix_in;
-
-    if( col_count == row_count)
+    bool flag = true;                                        // if true, then it means a normal matrix
+    std::string col_string = right_columns.get_string(); // count of columns
+    std::string row_string = right_rows.get_string(); // count of rows
+    for(int i; i < (int)col_string.size() ; ++i)
+    {
+        if((col_string[i] != col_string[i]) || ((col_string[i] < 48) || (col_string[i] > 57)))
+        {
+            error_output("Set the dimensions of the matrix as positive integers");
+            flag = false;
+            break;
+        }
+    }
+    if(flag)
+    {
+        for(int i; i < (int)row_string.size() ; ++i)
+        {
+            if((row_string[i] != row_string[i]) || ((row_string[i] < 48) || (row_string[i] > 57)))
+            {
+                error_output("Set the dimensions of the matrix as positive integers");
+                flag = false;
+                break;
+            }
+        }
+    }
+    if(flag)
+    {
+        int col_count;
+        int row_count;
+        std::stringstream s;
+        std::stringstream ss;
+        s << col_string;
+        s >> col_count;
+        ss << row_string;
+        ss >> row_count;
+        if( col_count < 1 or row_count < 1)
+        {
+            error_output("Set the dimensions of the matrix as positive integers");
+            flag = false;
+        }
+        else if( col_count > 10 or row_count > 10)
+        {
+            error_output("A lot of matrix cells, use the input via file");
+            flag = false;
+        }
+        else
+        {
+            if (col_count == row_count)
+            {
+                private_right_1_menu.show();
+                private_right_2_menu.show();
+            }
+            else
+            {
+                private_right_1_menu.hide();
+                private_right_2_menu.hide();
+            }
+            right_matrix_in = new Matrix_in {Point{ind + simple_work_place * 2, 2 * ind}, simple_work_place, y_max() - ind * 9, col_count, row_count};
+        }
+    }
+    if(!flag)
     {
         private_right_1_menu.show();
         private_right_2_menu.show();
+        right_matrix_in = new Matrix_in {Point{ind + simple_work_place * 2, 2 * ind}, simple_work_place, y_max() - ind * 9, 3, 3};
     }
-    else
-    {
-        private_right_1_menu.hide();
-        private_right_2_menu.hide();
-    }
-
-    right_matrix_in = new Matrix_in { Point{ ind + simple_work_place * 2, 2 * ind}, (simple_work_place), (y_max() - 9 * ind), col_count, row_count}; // buttons = 5 indent, edges = 2 indent
-
     (*right_matrix_in).attach(*this); // attach new matrix
     redraw();
+}
+
+void Calc_window::error_output(std::string ass){
+    Simple_window win{Point{300, 300}, 700, 300, "The fallibility"};
+    Text more{Point{win.x_max() / 2 - 100, win.y_max() / 2}, ass};
+    win.attach(more);
+    this->hide();
+    win.wait_for_button();
+    this->show();
 }

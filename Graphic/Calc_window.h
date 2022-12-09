@@ -104,6 +104,7 @@ private:
     bool check_matrix(Graph_lib::Matrix_in* matrix_in);
     void answer(Matrix matrix); // print answer
     void answer_num(long double ans); //print number answer
+    void error_output(std::string ass);
 };
 
 #endif // CALC_WINDOW_H
