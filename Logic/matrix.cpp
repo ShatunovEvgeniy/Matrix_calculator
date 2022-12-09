@@ -3,6 +3,8 @@
 #include "column.h"
 #include "sqr_matrix.h"
 
+#include <iomanip>
+
 using namespace std;
 
 /// Constructors
@@ -38,6 +40,8 @@ Matrix::Matrix(const int len, const int wid, const long double value) : // matri
 Matrix::Matrix(const vector<long double>& num, const int len, const int wid) : // for columns and rows
     numbers{num}, length{len}, width{wid}
 {
+    if (len * wid != num.size())
+        throw runtime_error("Vector have wrong size");
     if (len <= 0 and wid <= 0)
         throw runtime_error("Dimensions of a matrix have to be more than zero");
 }
@@ -195,16 +199,16 @@ void Matrix::operator*= (const Matrix& mat) // product of 2 matrixes
 
 ostream& operator<< (ostream& os, Matrix& mat) // to print a matrix in the console
 {
+    os << fixed << setprecision(2) << left;
     for (int i = 0; i < mat.get_width() * mat.get_length(); ++i)
     {
-        os << mat.get_num()[i] << " ";
+        os << setw(8) << mat.get_num()[i] << setw(8);
         if ((i + 1) % mat.get_width() == 0) // end of a row
             os << endl;
     }
     os << endl;
     return os;
 }
-
 
 Matrix operator* (const Column& c, const Row& r)
 { return Matrix(c) * Matrix(r); }

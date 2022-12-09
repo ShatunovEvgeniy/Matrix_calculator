@@ -34,11 +34,3 @@ vector<T> slicing(vector<T> const& v, int X, int Y) // slice of a vector
     // Return the results
     return vec;
 }
-
-template <typename T>
-vector<T> operator+ (const vector<T>& vec1, const vector<T>& vec2) // vectors concatenation
-{
-    vector<T> result = vec1;
-    result.insert(result.end(), vec2.begin(), vec2.end());
-    return result;
-}

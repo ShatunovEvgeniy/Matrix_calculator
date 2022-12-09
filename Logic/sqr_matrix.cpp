@@ -60,9 +60,15 @@ Sqr_matrix Sqr_matrix:: column_sort() // returns matrix which has max element of
         long double max_num{INT_MIN};
         int max_index{-1};
         for (int j = i * dimension; j < dimension * dimension; j += dimension)
+<<<<<<< Updated upstream
             if (m.numbers[i + j] > max_num)
             {
                 max_num = m.numbers[i + j];
+=======
+            if (abs(m.numbers[i + j]) > max_num)
+            {
+                max_num = abs(m.numbers[i + j]);
+>>>>>>> Stashed changes
                 max_index = j / dimension * dimension; // remember a string where max number with index (i, i) places
             }
 
