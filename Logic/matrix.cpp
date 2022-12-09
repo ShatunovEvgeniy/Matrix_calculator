@@ -136,7 +136,7 @@ void Matrix::operator-= (const Matrix& mat) // difference of 2 matrixes
 
 Matrix Matrix::operator* (const double& number) const // product of every numbers of a matrix and a number
 {
-    Matrix result{length, width};
+    Matrix result {length, width};
 
     if (numbers.empty())
     {
@@ -153,7 +153,7 @@ void Matrix::operator*= (const double& number) // product of every numbers of a 
 
 Matrix Matrix::operator/ (const double& number) const // product of every numbers of a matrix and a number
 {
-    Matrix result{length, width};
+    Matrix result {length, width};
 
     if (number == 0)
         throw runtime_error("Division by zero");

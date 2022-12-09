@@ -51,6 +51,49 @@ Sqr_matrix Sqr_matrix::triangle() const // returns matrix in triangle form
     return m;
 }
 
+Sqr_matrix Sqr_matrix:: column_sort() // returns matrix which has max element of each rows places on position (i, i)
+{
+    Sqr_matrix m = *this;
+
+    for (int i = 0; i < dimension; ++i)
+    {
+        long double max_num{INT_MIN};
+        int max_index{-1};
+        for (int j = i * dimension; j < dimension * dimension; j += dimension)
+            if (m.numbers[i + j] > max_num)
+            {
+                max_num = m.numbers[i + j];
+                max_index = j / dimension * dimension; // remember a string where max number with index (i, i) places
+            }
+
+        if (max_index != i * dimension)
+        {
+            m.permutations++;
+            for (int j = 0; j < dimension; ++j)
+                swap(m.numbers[i * dimension + j], m.numbers[max_index + j]); // changing places of string (max index) and i-string
+        }
+    }
+    return m;
+}
+
+long double Sqr_matrix::det() const // calculation of determination
+{
+    if (numbers.size() == 1)
+        return numbers[0];
+
+    Sqr_matrix mat = *this;
+    mat = mat.triangle(); // triangle matrix
+
+    vector<long double> num; // new numbers vector
+    for (int j = 0; j < dimension * dimension; ++j)
+        if (!(j < dimension || (j % dimension == 0))) // if not (first row or first column)
+            num.push_back(mat.numbers[j]);
+
+    Sqr_matrix m{num}; // matrix with less size to call new det function
+
+    return pow(-1, mat.permutations) * mat.numbers[0] * m.det();
+}
+
 Sqr_matrix Sqr_matrix::diagonalization() const // returns matrix in diagonale forn
 {
     Sqr_matrix m = *this;
@@ -74,12 +117,39 @@ Sqr_matrix Sqr_matrix::diagonalization() const // returns matrix in diagonale fo
     return m;
 }
 
-Sqr_matrix Sqr_matrix::inverse() const // returns inverse matrix
-{}
+Sqr_matrix Sqr_matrix::inverse() const // returns inverse matrix using adjugate matrix divided by detemination
+{
+    long double determinate = this->det();
+    if (determinate == 0)
+        throw runtime_error("Impossible to find inverse matrix: determinate = 0");
+
+    Sqr_matrix m{dimension, 0};
+    for (int i = 0; i < dimension; ++i)
+        for (int j = 0; j < dimension; ++j)
+        {
+            Sqr_matrix elem_minor = this->minor(i, j); // finds the minor of (i, j) element
+            m.numbers[i * dimension + j] = pow(-1, i + j) * numbers[i * dimension + j] * elem_minor.det() / determinate;
+        }
+    return m;
+}
+
 Sqr_matrix Sqr_matrix::symmetric() const // returns symmetric matrix
-{}
+{
+    Sqr_matrix m = *this;
+    for (int i = 1; i < dimension; ++i)
+        for (int k = 0; k < i; ++k)
+            m.numbers[i * dimension + k] = numbers[k * dimension + i];
+    return m;
+}
+
 Sqr_matrix Sqr_matrix::skew_symmetric() const // returns skew symmetric matrix
-{}
+{
+    Sqr_matrix m = *this;
+    for (int i = 0; i < dimension; ++i)
+        for (int k = 0; k < dimension - i - 1; ++k)
+            m.numbers[(dimension - k - 1) * dimension + dimension - i - 1] = numbers[i * dimension + k];
+    return m;
+}
 
 Sqr_matrix Sqr_matrix::T() const // returns transpose matrix
 {
@@ -90,25 +160,14 @@ Sqr_matrix Sqr_matrix::T() const // returns transpose matrix
     return m;
 }
 
-Sqr_matrix Sqr_matrix:: column_sort() const // returns matrix where max element of each columns places on position (i, i)
+Sqr_matrix Sqr_matrix:: minor(int i, int j) const // finds a minor of an element
 {
-    Sqr_matrix m = *this;
-
-    for (int i = 0; i < dimension; ++i)
-    {
-        long double max_num{INT_MIN};
-        int max_index{-1};
-        for (int j = i * dimension; j < dimension * dimension; j += dimension)
-            if (m.numbers[i + j] > max_num)
-            {
-                max_num = m.numbers[i + j];
-                max_index = j / dimension * dimension; // remember a string where max number with index (i, i) places
-            }
-        for (int j = 0; j < dimension; ++j)
-            swap(m.numbers[i * dimension + j], m.numbers[max_index + j]); // changing places of string (max index) and i-string
-    }
-
-    return m;
+    Sqr_matrix res{dimension - 1};
+    for (int row = 0; row < dimension; ++row)
+        for (int column = 0; column < dimension; ++column)
+            if(row != i & column != j)
+                res.numbers.push_back((*this)[row][column]);
+    return res;
 }
 
 void Sqr_matrix::zeros() // fill the sqr_matrix with zeros
@@ -116,23 +175,6 @@ void Sqr_matrix::zeros() // fill the sqr_matrix with zeros
 
 void Sqr_matrix::ones() // fill the sqr_matrix with ones
 { numbers = vector<long double>(length, 1); }
-
-long double Sqr_matrix::det() const // calculation of determination
-{
-    if (numbers.size() == 1)
-        return numbers[0];
-
-    Sqr_matrix mat = (*this).triangle(); // triangle matrix
-
-    vector<long double> num; // new numbers vector
-    for (int j = 0; j < dimension * dimension; ++j)
-        if (!(j < dimension || (j % dimension == 0))) // if not (first row or first column)
-            num.push_back(mat.numbers[j]);
-
-    Sqr_matrix m{num}; // matrix with less size to call new det function
-
-    return mat.numbers[0] * m.det();
-}
 
 vector<long double> Sqr_matrix::get_num() const // returns vector numbers
 { return numbers; }

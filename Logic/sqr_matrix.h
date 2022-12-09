@@ -33,12 +33,13 @@ public:
     using Matrix::operator[]; // take a row of the matrix
 
     Sqr_matrix triangle() const; // returns matrix in triangle form
+    Sqr_matrix column_sort(); // returns matrix which has max element of each rows places on position (i, i)
     Sqr_matrix diagonalization() const; // returns matrix in diagonale forn
     Sqr_matrix inverse() const; // returns inverse matrix
     Sqr_matrix symmetric() const; // returns symmetric matrix
     Sqr_matrix skew_symmetric() const; // returns skew symmetric matrix
     Sqr_matrix T() const; // returns transpose matrix
-    Sqr_matrix column_sort() const; // returns matrix where max element of each rows places on position (i, i)
+    Sqr_matrix minor(int i, int j) const; // finds a minor of an element
 
     void zeros() override; // fill the matrix with zeros
     void ones() override; // fill the matrix with ones
@@ -52,6 +53,7 @@ public:
 private:
     Sqr_matrix() = delete;
     int dimension{0}; // dimension is size of a square matrix (dimension x dimension)
+    int permutations{0}; // count of permutations
 };
 
 std::ostream& operator<< (std::ostream& os, Sqr_matrix& mat); // to print a matrix in the console
