@@ -46,22 +46,6 @@ long double Vectors::vec_length() const // length of the vector
     return sqrt(result);
 }
 
-vector<long double> Vectors:: get_num() const // returns vector numbers
-{ return numbers; }
-
-int Vectors::get_width() const // returns width
-{ return width; }
-
-int Vectors::get_length() const // returns length
-{ return length; }
-
-void Vectors::zeros() // fill the vector with zeros
-{ numbers = vector<long double>(length, 0); }
-
-void Vectors::ones() // fill the vector with ones
-{ numbers = vector<long double>(length, 1); }
-
-
 /// Operators
 Vectors Vectors::operator+ (const Vectors& vec) const // sum of 2 vectors
 {
@@ -141,7 +125,7 @@ void Vectors::operator/= (const double num)  // quotient a vector and a number
 
 ostream& operator<< (ostream& os, Vectors& vec) // to print a column in the console
 {
-    for (int i = 0; i < vec.get_width(); ++i)
+    for (int i = 0; i < vec.get_columns_count(); ++i)
     {
         os << vec.get_num()[i] << endl;
     }

@@ -1,25 +1,3 @@
-<<<<<<< Updated upstream
-#ifndef STREAMS_H
-#define STREAMS_H
-
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include "../Logic/sqr_matrix.h"
-
-using namespace std;
-
-bool in_aviable(const std::vector<string>& v, const string& a);
-void write(Matrix m, const string& out_name);
-void write_det(long double det, const string& out_name);
-istream& operator>> (istream& is, vector<long double>& vector);
-void fill(istream& ist, vector<vector<long double>>& vec);
-string get_first_string(istream& ist);
-void calculate(const string& name1, const string& name2);
-
-#endif // STREAMS_H
-=======
 #ifndef STREAMS_H
 #define STREAMS_H
 
@@ -53,4 +31,3 @@ void Matrix_division(Matrix& m1, Matrix& m2, ofstream& ofs); // choose the opera
 void calculate(const string& name1, const string& name2); // choose an operation and write result
 
 #endif // STREAMS_H
->>>>>>> Stashed changes

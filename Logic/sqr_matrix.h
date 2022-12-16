@@ -24,11 +24,11 @@ public:
     Sqr_matrix operator* (const Sqr_matrix& mat) const; // product of 2 matrixes
     void operator*= (const Sqr_matrix& mat); // product of 2 matrixes
 
-    Sqr_matrix operator* (const double& number) const; // product of every numbers of a matrix and a number
-    void operator*= (const double& number); // product of every numbers of a matrix and a number
+    Sqr_matrix operator* (const double number) const; // product of every numbers of a matrix and a number
+    void operator*= (const double number); // product of every numbers of a matrix and a number
 
-    Sqr_matrix operator/ (const double& number) const; // qoutient of every numbers of a matrix and a number
-    void operator/= (const double& number); // quotient of every numbers of a matrix and a number
+    Sqr_matrix operator/ (const double number) const; // qoutient of every numbers of a matrix and a number
+    void operator/= (const double number); // quotient of every numbers of a matrix and a number
 
     using Matrix::operator[]; // take a row of the matrix
 
@@ -41,14 +41,15 @@ public:
     Sqr_matrix T() const; // returns transpose matrix
     Sqr_matrix minor(int i, int j) const; // finds a minor of an element
 
-    void zeros() override; // fill the matrix with zeros
-    void ones() override; // fill the matrix with ones
+    using Matrix :: zeros; // fill the column with zeros
+    using Matrix :: ones;  // fill the main diagonal with ones
+
+    using Matrix :: get_num; // returns vector numbers
+    using Matrix :: get_rows_count; // returns count of columns
+    using Matrix :: get_columns_count; // returns count of rows
+
 
     long double det() const; // calculation of determination
-
-    std::vector<long double> get_num() const override; // returns vector numbers
-    int get_width() const override; // returns width
-    int get_length() const override; // returns length
 
 private:
     Sqr_matrix() = delete;

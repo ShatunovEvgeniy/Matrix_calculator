@@ -9,18 +9,18 @@ using namespace std;
 
 /// Constructors
 Matrix::Matrix(const int len, const int wid) : // empty matrix
-    length{len}, width{wid}
+    row_count{len}, column_count{wid}, numbers{vector<long double>(len * wid)}
 {
     if (len <= 0 and wid <= 0)
         throw runtime_error("Dimensions of a matrix have to be more than zero");
 }
 
 Matrix::Matrix(const vector<vector<long double>>& num) :
-    length{num.size()}, width{num[0].size()}
+    row_count{num.size()}, column_count{num[0].size()}
 {
     for (auto x : num)
     {
-        if (x.size() != width)
+        if (x.size() != column_count)
             throw runtime_error("Rows of a matrix are different");
 
         for (auto y : x)
@@ -29,7 +29,7 @@ Matrix::Matrix(const vector<vector<long double>>& num) :
 }
 
 Matrix::Matrix(const int len, const int wid, const long double value) : // matrix with same numbers
-    length{len}, width{wid}
+    row_count{len}, column_count{wid}
 {
     if (len <= 0 || wid <= 0)
         throw runtime_error("Dimensions of a matrix have to be more than zero");
@@ -38,7 +38,7 @@ Matrix::Matrix(const int len, const int wid, const long double value) : // matri
 }
 
 Matrix::Matrix(const vector<long double>& num, const int len, const int wid) : // for columns and rows
-    numbers{num}, length{len}, width{wid}
+    numbers{num}, row_count{len}, column_count{wid}
 {
     if (len * wid != num.size())
         throw runtime_error("Vector have wrong size");
@@ -47,39 +47,43 @@ Matrix::Matrix(const vector<long double>& num, const int len, const int wid) : /
 }
 
 Matrix::Matrix(const Column &c) :
-    length {c.get_length()}, width {1}, numbers {c.get_num()}
+    row_count {c.get_rows_count()}, column_count {1}, numbers {c.get_num()}
 {}
 
 Matrix::Matrix(const Row &r) :
-    length {1}, width {r.get_width()}, numbers {r.get_num()}
+    row_count {1}, column_count {r.get_columns_count()}, numbers {r.get_num()}
 {}
 
 Matrix::Matrix(const Sqr_matrix& m) :
-    length {m.get_length()}, width {m.get_width()}, numbers {m.get_num()}
+    row_count {m.get_rows_count()}, column_count {m.get_columns_count()}, numbers {m.get_num()}
 {}
 
 /// Methods
 vector<long double> Matrix:: get_num() const // returns vector numbers
 { return numbers; }
 
-int Matrix::get_width() const // returns width
-{ return width; }
+int Matrix::get_columns_count() const // returns width
+{ return column_count; }
 
-int Matrix::get_length() const // returns length
-{ return length; }
+int Matrix::get_rows_count() const // returns length
+{ return row_count; }
 
 void Matrix::zeros() // fill the matrix with zeros
-{ numbers = vector<long double>(length, 0); }
+{ this->numbers = vector<long double>(row_count * column_count, 0); }
 
 void Matrix::ones() // fill the matrix with ones
-{ numbers = vector<long double>(length, 1); }
+{
+    this->numbers = vector<long double>(row_count * column_count, 0);
+    for (int i = 0; i < min(row_count, column_count); ++i)
+        this->numbers[i + i * column_count] = 1;
+}
 
 Matrix Matrix::T() const
 {
-    Matrix m(this->width, this->length, 0);
-    for (int i = 0; i < m.length; ++i)
-        for (int j = 0; j < m.width; ++j)
-            m.numbers[i * m.width + j] = numbers[j * m.length + i];
+    Matrix m(this->column_count, this->row_count, 0);
+    for (int i = 0; i < m.row_count; ++i)
+        for (int j = 0; j < m.column_count; ++j)
+            m.numbers[i * m.column_count + j] = numbers[j * m.row_count + i];
     return m;
 }
 /// Operators
@@ -91,16 +95,16 @@ Row Matrix::operator[] (const int index) const // take a row of the matrix
     else if (numbers.empty())
             throw runtime_error("Matrix is empty");
 
-    vector<long double> num(width);
-    copy(numbers.begin() + width * index, numbers.begin() + width * (index + 1), num.begin());
+    vector<long double> num(column_count);
+    copy(numbers.begin() + column_count * index, numbers.begin() + column_count * (index + 1), num.begin());
     return Row{num};
 }
 
 Matrix Matrix::operator+ (const Matrix& mat) const // sum of 2 matrixes
 {
-    Matrix result{length, width};
+    Matrix result{row_count, column_count};
 
-    if (mat.length != length || mat.width != width)
+    if (mat.row_count != row_count || mat.column_count != column_count)
     {
         throw runtime_error("You can't sum matrixes of different sizes");
     }
@@ -119,9 +123,9 @@ void Matrix::operator+= (const Matrix& mat) // sum of 2 matrixes
 
 Matrix Matrix::operator- (const Matrix& mat) const // difference of 2 matrixes
 {
-    Matrix result{length, width};
+    Matrix result{row_count, column_count};
 
-    if (mat.length != length || mat.width != width)
+    if (mat.row_count != row_count || mat.column_count != column_count)
     {
         throw runtime_error("You can't subtract matrixes of different sizes");
     }
@@ -138,9 +142,9 @@ Matrix Matrix::operator- (const Matrix& mat) const // difference of 2 matrixes
 void Matrix::operator-= (const Matrix& mat) // difference of 2 matrixes
 { *this = *this - mat; }
 
-Matrix Matrix::operator* (const double& number) const // product of every numbers of a matrix and a number
+Matrix Matrix::operator* (const double number) const // product of every numbers of a matrix and a number
 {
-    Matrix result {length, width};
+    Matrix result {row_count, column_count};
 
     if (numbers.empty())
     {
@@ -152,12 +156,12 @@ Matrix Matrix::operator* (const double& number) const // product of every number
     return result;
 }
 
-void Matrix::operator*= (const double& number) // product of every numbers of a matrix and a number
+void Matrix::operator*= (const double number) // product of every numbers of a matrix and a number
 { *this = *this * number; }
 
-Matrix Matrix::operator/ (const double& number) const // product of every numbers of a matrix and a number
+Matrix Matrix::operator/ (const double number) const // product of every numbers of a matrix and a number
 {
-    Matrix result {length, width};
+    Matrix result {row_count, column_count};
 
     if (number == 0)
         throw runtime_error("Division by zero");
@@ -172,23 +176,23 @@ Matrix Matrix::operator/ (const double& number) const // product of every number
     return result;
 }
 
-void Matrix::operator/= (const double& number) // product of every numbers of a matrix and a number
+void Matrix::operator/= (const double number) // product of every numbers of a matrix and a number
 { *this = *this / number; }
 
 Matrix Matrix::operator* (const Matrix& mat) const // product of 2 matrixes
 {
-    if (width != mat.length)
+    if (column_count != mat.row_count)
         throw runtime_error("Wrong size of matrixes");
 
-    Matrix result{length, mat.width};
-    for (int i = 0; i < length; ++i)
-        for (int j = 0; j < mat.width; ++j)
+    Matrix result{row_count, mat.column_count};
+    for (int i = 0; i < row_count; ++i)
+        for (int j = 0; j < mat.column_count; ++j)
         {
             long double sum{0};
-            for (int k = 0; k < width; ++k)
+            for (int k = 0; k < column_count; ++k)
                 // i * width - row[i] of first matrix
                 // k * mat.width (0 < k < mat.length) - numbers of columns[j] of second matrix
-                sum += numbers[i * width + k] * mat.numbers[k * mat.width + j];
+                sum += numbers[i * column_count + k] * mat.numbers[k * mat.column_count + j];
             result.numbers.push_back(sum);
         }
     return result;
@@ -200,10 +204,10 @@ void Matrix::operator*= (const Matrix& mat) // product of 2 matrixes
 ostream& operator<< (ostream& os, Matrix& mat) // to print a matrix in the console
 {
     os << fixed << setprecision(2) << left;
-    for (int i = 0; i < mat.get_width() * mat.get_length(); ++i)
+    for (int i = 0; i < mat.get_columns_count() * mat.get_rows_count(); ++i)
     {
         os << setw(8) << mat.get_num()[i] << setw(8);
-        if ((i + 1) % mat.get_width() == 0) // end of a row
+        if ((i + 1) % mat.get_columns_count() == 0) // end of a row
             os << endl;
     }
     os << endl;

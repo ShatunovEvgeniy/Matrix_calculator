@@ -22,25 +22,10 @@ Column::Column(const int len, const long double value) : // column with same num
 {}
 
 Column::Column(const Vectors& vec) :
-    Matrix(vec.get_num(), vec.get_length(), 1)
+    Matrix(vec.get_num(), vec.get_rows_count(), 1)
 {}
 
 /// Methods
-vector<long double> Column::get_num() const // returns vector numbers
-{ return numbers; }
-
-int Column::get_width() const // returns width
-{ return width; }
-
-int Column:: get_length() const  // returns length
-{ return length; }
-
-void Column::zeros() // fill the column with zeros
-{ numbers = vector<long double>(length, 0); }
-
-void Column::ones() // fill the column with ones
-{ numbers = vector<long double>(length, 1); }
-
 Row Column::T() const
 {
     return Row(this->numbers);
@@ -60,9 +45,9 @@ long double Column::operator[] (const int index) const // take a number of the c
 
 Column Column::operator+ (const Column& col) const // sum of 2 columns
 {
-    Column result{length};
+    Column result{row_count};
 
-    if (col.length != length)
+    if (col.row_count != row_count)
         throw runtime_error("Columns have different size");
 
     else if (numbers.empty() || col.get_num().empty())
@@ -78,9 +63,9 @@ void Column::operator+= (const Column& Column) // sum of 2 columns
 
 Column Column::operator- (const Column& col) const // difference of 2 columns
 {
-    Column result{length};
+    Column result{row_count};
 
-    if (col.length != length)
+    if (col.row_count != row_count)
         throw runtime_error("Columns have different size");
 
     else if (numbers.empty() || col.get_num().empty())
@@ -96,7 +81,7 @@ void Column::operator-= (const Column& col) // difference of 2 columns
 
 Column Column::operator* (const double num) const // product of a column and a number
 {
-    Column result{length};
+    Column result{row_count};
     if (numbers.empty())
         throw runtime_error("Column is empty");
 
@@ -110,7 +95,7 @@ void Column::operator*= (const double num) // product of a column and a number
 
 Column Column::operator/ (const double num) const // quotient of a column and a number
 {
-    Column result{length};
+    Column result{row_count};
     if (numbers.empty())
         throw runtime_error("Column is empty");
 

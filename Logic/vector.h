@@ -34,12 +34,13 @@ public:
 
     long double vec_length() const; // length of the vector
 
-    std::vector<long double> get_num() const override; // returns vector numbers
-    int get_width() const override; // returns width
-    int get_length() const override; // returns length
+    using Matrix :: zeros; // fill the column with zeros
+    using Matrix :: ones;  // fill the main diagonal with ones
 
-    void zeros() override; // fill the vector with zeros
-    void ones() override; // fill the vector with ones
+    using Matrix :: get_num; // returns vector numbers
+    using Matrix :: get_rows_count; // returns count of columns
+    using Matrix :: get_columns_count; // returns count of rows
+
 
 private:
     Vectors() = delete;

@@ -21,21 +21,6 @@ Row::Row(const int len, const long double value) : // row with same numbers
 {}
 
 /// Methods
-vector<long double> Row::get_num() const // returns vector numbers
-{ return numbers; }
-
-int Row::get_width() const // returns width
-{ return width; }
-
-int Row:: get_length() const // returns length
-{ return length; }
-
-void Row::zeros() // fill the row with zeros
-{ numbers = vector<long double>(length, 0); }
-
-void Row::ones() // fill the row with ones
-{ numbers = vector<long double>(length, 1); }
-
 Column Row::T() const
 {
     return Column(this->numbers);
@@ -55,9 +40,9 @@ long double Row::operator[] (const int index) const // take a number of the row
 
 Row Row::operator+ (const Row& row) const // sum of 2 rows
 {
-    Row result{length};
+    Row result{row_count};
 
-    if (row.length != length)
+    if (row.row_count != row_count)
         throw runtime_error("Rows have different size");
 
     else if (numbers.empty() || row.get_num().empty())
@@ -73,9 +58,9 @@ void Row::operator+= (const Row& row) // sum of 2 rows
 
 Row Row::operator- (const Row& row) const // difference of 2 rows
 {
-    Row result{length};
+    Row result{row_count};
 
-    if (row.length != length)
+    if (row.row_count != row_count)
         throw runtime_error("Rows have different size");
 
     else if (numbers.empty() || row.get_num().empty())
@@ -91,7 +76,7 @@ void Row::operator-= (const Row& row) // difference of 2 rows
 
 Row Row::operator* (const double num) const // product of a row and a number
 {
-    Row result{length};
+    Row result{row_count};
     if (numbers.empty())
         throw runtime_error("Row is empty");
 
@@ -105,7 +90,7 @@ void Row::operator*= (const double num) // product of a row and a number
 
 Row Row::operator/ (const double num) const // quotient of a row and a number
 {
-    Row result{length};
+    Row result{row_count};
     if (numbers.empty())
         throw runtime_error("Row is empty");
 

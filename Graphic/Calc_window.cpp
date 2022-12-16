@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 #include "Calc_window.h"
 #include "Matrix_out.h"
 #include "../Logic/matrix.h"
@@ -27,7 +26,7 @@ Calc_window::Calc_window(Point xy, int w, int h, const std::string& title) // th
     , num_btn{Point{x_max() / 2 - ind, y_max() - 13 * ind}, simple_work_place / 4, 2 * ind, "Input a number"}
     , input_file{Point{x_max() / 2 - simple_work_place / 4, y_max() - 10 * ind}, simple_work_place / 2, 2 * ind, "Input file"}
     , output_file{Point{x_max() / 2 - simple_work_place / 4, y_max() - 7 * ind}, simple_work_place / 2, 2 * ind, "Output file"}
-    , save_btn{Point{x_max() / 2 - simple_work_place / btn_count / 2, y_max() - 4 * ind}, simple_work_place / btn_count, 2 * ind, "Save", cb_quit}
+    , save_btn{Point{x_max() / 2 - simple_work_place / btn_count / 2, y_max() - 4 * ind}, simple_work_place / btn_count, 2 * ind, "Save", cb_save_file}
 
 
     , left_make_btn{Point{ind + length_top_inbox * 2, ind}, simple_work_place / 3, ind, "Make", make_left}
@@ -70,7 +69,7 @@ Calc_window::Calc_window(Point xy, int w, int h, const std::string& title) // th
     attach (private_left_2_menu);
 
     private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Determinant", cb_right_determinant));
-    private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Symmetricr", cb_right_symmetric));
+    private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Symmetric", cb_right_symmetric));
     private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Skew symmetric", cb_right_skew_symmtric));
     attach (private_right_2_menu);
 
@@ -119,10 +118,10 @@ void Calc_window::make_right(Address, Address widget) // get value of right_colu
     dynamic_cast<Calc_window&>(btn.window()).in_right_col_row();
 }
 
-void Calc_window::cb_btn(Address, Address widget) // call reference
+void Calc_window::cb_save_file(Address, Address widget)
 {
     auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).reference();
+    dynamic_cast<Calc_window&>(btn.window()).save_file();
 }
 
 void Calc_window::cb_quit(Address, Address widget) // call quit
@@ -130,6 +129,7 @@ void Calc_window::cb_quit(Address, Address widget) // call quit
     auto& btn = reference_to<Graph_lib::Button>(widget);
     dynamic_cast<Calc_window&>(btn.window()).quit();
 }
+
 
 void Calc_window::cb_left_trans(Address, Address widget) // call quit
 {
@@ -241,161 +241,241 @@ void Calc_window::cb_right_skew_symmtric(Address, Address widget)
 }
 
 
+void Calc_window::save_file()
+{
+    input_file.get_string();
+    output_file.get_string();
+}
+
+
 void Calc_window::left_trans()
 {
-    Matrix left_matrix{left_matrix_in->read_matrix()};
-    answer(left_matrix.T());
+    if(check_matrix(left_matrix_in))
+    {
+        Matrix left_matrix{left_matrix_in->read_matrix()};
+        answer(left_matrix.T());
+    }
 }
 void Calc_window::right_trans()
 {
-    Matrix right_matrix{right_matrix_in->read_matrix()};
-    answer(right_matrix.T());
+    if(check_matrix(right_matrix_in))
+    {
+        Matrix right_matrix{right_matrix_in->read_matrix()};
+        answer(right_matrix.T());
+    }
 }
 void Calc_window::left_mult_num()
 {
-    Matrix left_matrix{left_matrix_in->read_matrix()};
-    long double num;
-    std::stringstream s;
-    s << num_btn.get_string();
-    s >> num;
-    answer(left_matrix*num);
+    if(check_matrix(left_matrix_in))
+    {
+        Matrix left_matrix{left_matrix_in->read_matrix()};
+        long double num;
+        std::stringstream s;
+        s << num_btn.get_string();
+        s >> num;
+        answer(left_matrix*num);
+    }
 }
 void Calc_window::right_mult_num()
 {
-    Matrix right_matrix{right_matrix_in->read_matrix()};
-    long double num;
-    std::stringstream s;
-    s << num_btn.get_string();
-    s >> num;
-    answer(right_matrix*num);
+    if(check_matrix(right_matrix_in))
+    {
+        Matrix right_matrix{right_matrix_in->read_matrix()};
+        long double num;
+        std::stringstream s;
+        s << num_btn.get_string();
+        s >> num;
+        answer(right_matrix*num);
+    }
 }
 void Calc_window::left_del_num()
 {
-    Matrix left_matrix{left_matrix_in->read_matrix()};
-    long double num;
-    std::stringstream s;
-    s << num_btn.get_string();
-    s >> num;
-    if (num == 0 || num != num)
-    {
-        Simple_window win_error{Point{300, 300}, 700, 300, "Error"};
-        Text error_what{Point{win_error.x_max() / 2 - 50, win_error.y_max() / 2}, "Division by zero"};
-        win_error.attach(error_what);
-        this->hide();
-        win_error.wait_for_button();
-        this->show();
-        return;
+    if(check_matrix(left_matrix_in)){
+        Matrix left_matrix{left_matrix_in->read_matrix()};
+        long double num;
+        std::stringstream s;
+        s << num_btn.get_string();
+        s >> num;
+        std::cout << num;
+        if (num == 0 || num != num)
+        {
+            error_output("Division by zero");
+            return;
+        }
+        answer(left_matrix/num);
     }
-    answer(left_matrix/num);
 }
 void Calc_window::right_del_num()
 {
-    Matrix right_matrix{right_matrix_in->read_matrix()};
-    long double num;
-    std::stringstream s;
-    s << num_btn.get_string();
-    s >> num;
-    std::cout << num;
-    if (num == 0 || num != num)
-    {
-        Simple_window win_error{Point{300, 300}, 700, 300, "Error"};
-        Text error_what{Point{win_error.x_max() / 2 - 50, win_error.y_max() / 2}, "Division by zero"};
-        win_error.attach(error_what);
-        this->hide();
-        win_error.wait_for_button();
-        this->show();
-        return;
+    if(check_matrix(right_matrix_in)){
+        Matrix right_matrix{right_matrix_in->read_matrix()};
+        long double num;
+        std::stringstream s;
+        s << num_btn.get_string();
+        s >> num;
+        std::cout << num;
+        if (num == 0 || num != num)
+        {
+            error_output("Division by zero");
+            return;
+        }
+        answer(right_matrix/num);
     }
-    answer(right_matrix/num);
 }
 
 void Calc_window::plus() // matrix sum
 {
-    Matrix left_matrix{left_matrix_in->read_matrix()};
-    Matrix right_matrix{right_matrix_in->read_matrix()};
-
-    answer(left_matrix + right_matrix);
+    if(check_matrix(left_matrix_in) && check_matrix(right_matrix_in))
+    {
+        Matrix left_matrix{left_matrix_in->read_matrix()};
+        Matrix right_matrix{right_matrix_in->read_matrix()};
+        if(left_matrix.get_rows_count() == right_matrix.get_rows_count() && left_matrix.get_columns_count() == right_matrix.get_columns_count())
+            answer(left_matrix + right_matrix);
+        else
+            error_output("these matrices cannot be sumed up");
+    }
 }
 void Calc_window::minus() // matrix difference
 {
-    Matrix left_matrix{left_matrix_in->read_matrix()};
-    Matrix right_matrix{right_matrix_in->read_matrix()};
-
-    answer(left_matrix - right_matrix);
+    if(check_matrix(left_matrix_in) && check_matrix(right_matrix_in))
+    {
+        Matrix left_matrix{left_matrix_in->read_matrix()};
+        Matrix right_matrix{right_matrix_in->read_matrix()};
+        if(left_matrix.get_rows_count() == right_matrix.get_rows_count() && left_matrix.get_columns_count() == right_matrix.get_columns_count())
+            answer(left_matrix - right_matrix);
+        else
+            error_output("these matrices cannot be minused");
+    }
 }
 void Calc_window::mult() // matrix multiplication
 {
-    Matrix left_matrix{left_matrix_in->read_matrix()};
-    Matrix right_matrix{right_matrix_in->read_matrix()};
-
-    answer(left_matrix * right_matrix);
+    if(check_matrix(left_matrix_in) && check_matrix(right_matrix_in))
+    {
+        Matrix left_matrix{left_matrix_in->read_matrix()};
+        Matrix right_matrix{right_matrix_in->read_matrix()};
+        if(left_matrix.get_columns_count() == right_matrix.get_rows_count())
+            answer(left_matrix * right_matrix);
+        else
+          error_output("these matrices cannot be multiplied");
+    }
 }
 
-void Calc_window::left_triangle(){
-    Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-    answer(Matrix(sqr.triangle()));
+void Calc_window::left_triangle()
+{
+    if(check_matrix(left_matrix_in))
+    {
+        Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
+        answer(Matrix(sqr.triangle()));
+    }
 }
-void Calc_window::right_triangle(){
-    Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-    answer(Matrix(sqr.triangle()));
+void Calc_window::right_triangle()
+{
+    if(check_matrix(right_matrix_in))
+    {
+        Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
+        answer(Matrix(sqr.triangle()));
+    }
 }
 void Calc_window::left_diagonal()
 {
-    Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-    answer(sqr.diagonalization());
+    if(check_matrix(left_matrix_in))
+    {
+        Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
+        answer(sqr.diagonalization());
+    }
 }
 void Calc_window::right_diagonal()
 {
-    Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-    answer(sqr.diagonalization());
+    if(check_matrix(right_matrix_in))
+    {
+        Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
+        answer(sqr.diagonalization());
+    }
 }
 void Calc_window::left_inverse()
 {
-    Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-    answer(sqr.inverse());
+    if(check_matrix(left_matrix_in))
+    {
+        Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
+        answer(sqr.inverse());
+    }
 }
 void Calc_window::right_inverse()
 {
-    Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-    answer(sqr.inverse());
+    if(check_matrix(right_matrix_in))
+    {
+        Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
+        answer(sqr.inverse());
+    }
 }
 
-void Calc_window::left_determinant(){
-    Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-    answer_num(sqr.det());
-}
-void Calc_window::right_determinant(){
-    Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-    answer_num(sqr.det());
-}
-void Calc_window::left_symmetric(){
-    Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-    answer(sqr.symmetric());
-}
-void Calc_window::right_symmetric(){
-    Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-    answer(sqr.symmetric());
-}
-void Calc_window::left_skew_symmtric(){
-    Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-    answer(sqr.skew_symmetric());
-}
-void Calc_window::right_skew_symmtric(){
-    Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-    answer(sqr.skew_symmetric());
-}
-
-void Calc_window::reference() // call void answer answer
+void Calc_window::left_determinant()
 {
-    Matrix matrix{left_matrix_in->read_matrix()};
-    answer(matrix);
+    if(check_matrix(left_matrix_in))
+    {
+        Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
+        answer_num(sqr.det());
+    }
+}
+void Calc_window::right_determinant()
+{
+    if(check_matrix(right_matrix_in))
+    {
+        Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
+        answer_num(sqr.det());
+    }
+}
+void Calc_window::left_symmetric()
+{
+    if(check_matrix(left_matrix_in))
+    {
+        Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
+        answer(sqr.symmetric());
+    }
+}
+void Calc_window::right_symmetric()
+{
+    if(check_matrix(right_matrix_in))
+    {
+        Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
+        answer(sqr.symmetric());
+    }
+}
+void Calc_window::left_skew_symmtric()
+{
+    if(check_matrix(left_matrix_in))
+    {
+        Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
+        answer(sqr.skew_symmetric());
+    }
+}
+void Calc_window::right_skew_symmtric()
+{
+    if(check_matrix(right_matrix_in))
+    {
+        Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
+        answer(sqr.skew_symmetric());
+    }
 }
 
 // Other methods
+
+bool Calc_window::check_matrix(Matrix_in* matrix_in){
+    try
+    {
+        Matrix{matrix_in->read_matrix()};
+    }
+    catch (std::string e)
+    {
+        error_output(e);
+        return false;
+    }
+    return true;
+}
+
 void Calc_window::answer(Matrix matrix) // print answer
 {
     Simple_window win{Point{100, 100}, 600, 300, "Matrix_out_window"};
-
     Matrix_out matrix_out{Point{0, 0}, 530, 300, matrix};
     matrix_out.attach(win);
     matrix_out.put();
@@ -405,7 +485,6 @@ void Calc_window::answer(Matrix matrix) // print answer
 void Calc_window::answer_num(long double ans)
 {
     Simple_window win{Point{100, 100}, 600, 300, "Matrix_out_window"};
-
     Out_box out_box{Point{0, 0}, 530, 300, ""};
     win.attach(out_box);
     std::stringstream s;
@@ -416,516 +495,155 @@ void Calc_window::answer_num(long double ans)
 
 void Calc_window::in_left_col_row() // get count of columns and rows
 {
-    int col_count = left_columns.get_int(); // count of columns
-    int row_count = left_rows.get_int(); // count of rows
-
     detach(*left_matrix_in); // detach old matrix
     delete left_matrix_in;
-
-    if (col_count == row_count)
+    bool flag = true;                                        // if true, then it means a normal matrix
+    std::string col_string = left_columns.get_string(); // count of columns
+    std::string row_string = left_rows.get_string(); // count of rows
+    for(int i; i < (int)col_string.size() ; ++i)
+    {
+        if((col_string[i] != col_string[i]) || ((col_string[i] < 48) || (col_string[i] > 57)))
+        {
+            error_output("Set the dimensions of the matrix as positive integers");
+            flag = false;
+            break;
+        }
+    }
+    if(flag)
+    {
+        for(int i; i < (int)row_string.size() ; ++i)
+        {
+            if((row_string[i] != row_string[i]) || ((row_string[i] < 48) || (row_string[i] > 57)))
+            {
+                error_output("Set the dimensions of the matrix as positive integers");
+                flag = false;
+                break;
+            }
+        }
+    }
+    if(flag)
+    {
+        int col_count;
+        int row_count;
+        std::stringstream s;
+        std::stringstream ss;
+        s << col_string;
+        s >> col_count;
+        ss << row_string;
+        ss >> row_count;
+        if( col_count < 1 or row_count < 1)
+        {
+            error_output("Set the dimensions of the matrix as positive integers");
+            flag = false;
+        }
+        else if( col_count > 10 or row_count > 10)
+        {
+            error_output("A lot of matrix cells, use the input via file");
+            flag = false;
+        }
+        else
+        {
+            if (col_count == row_count)
+            {
+                private_left_1_menu.show();
+                private_left_2_menu.show();
+            }
+            else
+            {
+                private_left_1_menu.hide();
+                private_left_2_menu.hide();
+            }
+            left_matrix_in = new Matrix_in {Point{ ind, 2 * ind }, (simple_work_place), (y_max() - 9 * ind), col_count, row_count}; // buttons = 5 indent, edges = 2 indent
+        }
+    }
+    if(!flag)
     {
         private_left_1_menu.show();
         private_left_2_menu.show();
+        left_matrix_in = new Matrix_in {Point{ind, 2 * ind}, simple_work_place, y_max() - ind * 9, 3, 3};
     }
-    else
-    {
-        private_left_1_menu.hide();
-        private_left_2_menu.hide();
-    }
-
-    left_matrix_in = new Matrix_in {Point{ ind, 2 * ind }, (simple_work_place), (y_max() - 9 * ind), col_count, row_count}; // buttons = 5 indent, edges = 2 indent
-
     (*left_matrix_in).attach(*this); // attach new matrix
     redraw();
 }
 
 void Calc_window::in_right_col_row() // get count of columns and rows
 {
-    int col_count = right_columns.get_int(); // count of columns
-    int row_count = right_rows.get_int(); // count of rows
-
     detach(*right_matrix_in); // detach old matrix
     delete right_matrix_in;
-
-    if( col_count == row_count)
+    bool flag = true;                                        // if true, then it means a normal matrix
+    std::string col_string = right_columns.get_string(); // count of columns
+    std::string row_string = right_rows.get_string(); // count of rows
+    for(int i; i < (int)col_string.size() ; ++i)
+    {
+        if((col_string[i] != col_string[i]) || ((col_string[i] < 48) || (col_string[i] > 57)))
+        {
+            error_output("Set the dimensions of the matrix as positive integers");
+            flag = false;
+            break;
+        }
+    }
+    if(flag)
+    {
+        for(int i; i < (int)row_string.size() ; ++i)
+        {
+            if((row_string[i] != row_string[i]) || ((row_string[i] < 48) || (row_string[i] > 57)))
+            {
+                error_output("Set the dimensions of the matrix as positive integers");
+                flag = false;
+                break;
+            }
+        }
+    }
+    if(flag)
+    {
+        int col_count;
+        int row_count;
+        std::stringstream s;
+        std::stringstream ss;
+        s << col_string;
+        s >> col_count;
+        ss << row_string;
+        ss >> row_count;
+        if( col_count < 1 or row_count < 1)
+        {
+            error_output("Set the dimensions of the matrix as positive integers");
+            flag = false;
+        }
+        else if( col_count > 10 or row_count > 10)
+        {
+            error_output("A lot of matrix cells, use the input via file");
+            flag = false;
+        }
+        else
+        {
+            if (col_count == row_count)
+            {
+                private_right_1_menu.show();
+                private_right_2_menu.show();
+            }
+            else
+            {
+                private_right_1_menu.hide();
+                private_right_2_menu.hide();
+            }
+            right_matrix_in = new Matrix_in {Point{ind + simple_work_place * 2, 2 * ind}, simple_work_place, y_max() - ind * 9, col_count, row_count};
+        }
+    }
+    if(!flag)
     {
         private_right_1_menu.show();
         private_right_2_menu.show();
+        right_matrix_in = new Matrix_in {Point{ind + simple_work_place * 2, 2 * ind}, simple_work_place, y_max() - ind * 9, 3, 3};
     }
-    else
-    {
-        private_right_1_menu.hide();
-        private_right_2_menu.hide();
-    }
-
-    right_matrix_in = new Matrix_in { Point{ ind + simple_work_place * 2, 2 * ind}, (simple_work_place), (y_max() - 9 * ind), col_count, row_count}; // buttons = 5 indent, edges = 2 indent
-
     (*right_matrix_in).attach(*this); // attach new matrix
     redraw();
 }
-=======
-#include "Calc_window.h"
-#include "Matrix_out.h"
-#include "../Logic/matrix.h"
-#include <sstream>
 
-#include <Graph_lib/Simple_window.h>
-
-using namespace Graph_lib;
-
-/// Constructors
-Calc_window::Calc_window(Point xy, int w, int h, const std::string& title) // the top left corner, width, length, title
-    : Window{xy, w, h, title}
-
-    , general_left_menu{Point{ind, y_max() - 7 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_gl"}
-    , general_right_menu{Point{x_max() - ind - simple_work_place, y_max() - 7 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_gr"}
-
-    , private_left_1_menu{Point{ind, y_max() - 5 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_pl"}
-    , private_right_1_menu{Point{x_max() - ind - simple_work_place, y_max() - 5 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_pr"}
-
-    , private_left_2_menu{Point{ind, y_max() - 3 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_pl"}
-    , private_right_2_menu{Point{x_max() - ind - simple_work_place, y_max() - 3 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_pr"}
-
-    , middle_menu{Point{x_max() / 2 - simple_work_place / btn_count / 2, 4* ind}, simple_work_place / btn_count, 2 * ind, Menu::vertical,"Buttons_ml"}
-
-    , using_vec{Point{x_max() / 2 - simple_work_place / 4, ind}, simple_work_place / 2, 2 * ind, "Using vector", cb_quit}
-    , num_btn{Point{x_max() / 2 - ind, y_max() - 13 * ind}, simple_work_place / 4, 2 * ind, "Input a number"}
-    , input_file{Point{x_max() / 2 - simple_work_place / 4, y_max() - 10 * ind}, simple_work_place / 2, 2 * ind, "Input file"}
-    , output_file{Point{x_max() / 2 - simple_work_place / 4, y_max() - 7 * ind}, simple_work_place / 2, 2 * ind, "Output file"}
-    , save_btn{Point{x_max() / 2 - simple_work_place / btn_count / 2, y_max() - 4 * ind}, simple_work_place / btn_count, 2 * ind, "Save", cb_quit}
-
-
-    , left_make_btn{Point{ind + length_top_inbox * 2, ind}, simple_work_place / 3, ind, "Make", make_left}
-    , left_columns{Point{ind + length_top_inbox / 2, ind}, simple_work_place / 3 / 2, ind, "Сolumn:"}
-    , left_rows{Point{ind + length_top_inbox*3/2, ind}, simple_work_place / 3 / 2, ind, "Row:"}
-
-    , right_make_btn{Point{ind + simple_work_place * 2 + length_top_inbox * 2, ind}, simple_work_place / 3, ind, "Make", make_right}
-    , right_columns{Point{ind + simple_work_place * 2 + length_top_inbox / 2, ind}, simple_work_place / 3 / 2, ind, "Сolumn:"}
-    , right_rows{Point{ind + simple_work_place * 2 + length_top_inbox * 3 / 2, ind}, simple_work_place / 3 / 2, ind, "Row:"}
-
-{
-    size_range (w, h, w, h);      // control size window
-
-    left_matrix_in = new Matrix_in {Point{ind, 2 * ind}, simple_work_place, y_max() - ind * 9, 3, 3};   // last 2 args are counts of rows and columns (3 X 3 by default)
-    right_matrix_in = new Matrix_in {Point{ind + simple_work_place * 2, 2 * ind}, simple_work_place, y_max() - ind * 9, 3, 3}; // last 2 args are counts of rows and columns (3 X 3 by default)
-
-    general_left_menu.attach(new Button(Point{0, 0}, 0, 0, "Transpose", cb_left_trans));
-    general_left_menu.attach(new Button(Point{0, 0}, 0, 0, "* number", cb_left_mult_num));
-    general_left_menu.attach(new Button(Point{0, 0}, 0, 0, "/ number", cb_left_del_num));
-    attach (general_left_menu);
-
-    general_right_menu.attach(new Button(Point{0, 0}, 0, 0, "Transpose", cb_right_trans));
-    general_right_menu.attach(new Button(Point{0, 0}, 0, 0, "* number", cb_right_mult_num));
-    general_right_menu.attach(new Button(Point{0, 0}, 0, 0, "/ number", cb_right_del_num));
-    attach (general_right_menu);
-
-    private_left_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Triangulating", cb_left_triangle));
-    private_left_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Diagonalization", cb_left_diagonal));
-    private_left_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Inverse", cb_left_inverse));
-    attach (private_left_1_menu);
-
-    private_right_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Triangulating", cb_right_triangle));
-    private_right_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Diagonalization", cb_right_diagonal));
-    private_right_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Inverse", cb_right_inverse));
-    attach (private_right_1_menu);
-
-    private_left_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Determinant", cb_left_determinant));
-    private_left_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Symmetric", cb_left_symmetric));
-    private_left_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Skew symmetric", cb_left_skew_symmtric));
-    attach (private_left_2_menu);
-
-    private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Determinant", cb_right_determinant));
-    private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Symmetricr", cb_right_symmetric));
-    private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Skew symmetric", cb_right_skew_symmtric));
-    attach (private_right_2_menu);
-
-    middle_menu.attach(new Button(Point{0, 0}, 0, 0, "+", cb_plus));
-    middle_menu.attach(new Button(Point{0, 0}, 0, 0, "-", cb_minus));
-    middle_menu.attach(new Button(Point{0, 0}, 0, 0, "*", cb_mult));
-    attach (middle_menu);
-
-    attach (using_vec);
-    attach (num_btn);
-    attach (input_file);
-    attach (output_file);
-    attach (save_btn);
-
-    attach (left_make_btn);
-    attach (left_columns);
-    attach (left_rows);
-
-    attach (right_make_btn);
-    attach (right_columns);
-    attach (right_rows);
-
-    (*left_matrix_in).attach(*this);
-    (*right_matrix_in).attach(*this);
-}
-
-/// Destructors
-Calc_window::~Calc_window()
-{
-    delete left_matrix_in;
-    delete right_matrix_in;
-}
-
-/// Methods
-
-// Button functions
-void Calc_window::make_left(Address, Address widget) // get value of left_column and left_rows
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).in_left_col_row();
-}
-
-void Calc_window::make_right(Address, Address widget) // get value of right_column and right_rows
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).in_right_col_row();
-}
-
-void Calc_window::cb_btn(Address, Address widget) // call reference
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).reference();
-}
-
-void Calc_window::cb_quit(Address, Address widget) // call quit
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).quit();
-}
-
-void Calc_window::cb_left_trans(Address, Address widget) // call quit
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).left_trans();
-}
-void Calc_window::cb_right_trans(Address, Address widget) // call quit
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).right_trans();
-}
-void Calc_window::cb_left_mult_num(Address, Address widget) // call quit
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).left_mult_num();
-}
-void Calc_window::cb_right_mult_num(Address, Address widget) // call quit
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).right_mult_num();
-}
-void Calc_window::cb_left_del_num(Address, Address widget) // call quit
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).left_del_num();
-}
-void Calc_window::cb_right_del_num(Address, Address widget) // call quit
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).right_del_num();
-}
-
-void Calc_window::cb_plus(Address, Address widget) // call plus
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).plus();
-}
-void Calc_window::cb_minus(Address, Address widget) // call minus
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).minus();
-}
-void Calc_window::cb_mult(Address, Address widget) // call mult
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).mult();
-}
-
-void Calc_window::cb_left_triangle(Address, Address widget)
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).left_triangle();
-}
-void Calc_window::cb_right_triangle(Address, Address widget)
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).right_triangle();
-}
-void Calc_window::cb_left_diagonal(Address, Address widget)
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).left_diagonal();
-}
-void Calc_window::cb_right_diagonal(Address, Address widget)
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).right_diagonal();
-}
-void Calc_window::cb_left_inverse(Address, Address widget)
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).left_inverse();
-}
-void Calc_window::cb_right_inverse(Address, Address widget)
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).right_inverse();
-}
-
-void Calc_window::cb_left_determinant(Address, Address widget)
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).left_determinant();
-}
-void Calc_window::cb_right_determinant(Address, Address widget)
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).right_determinant();
-}
-void Calc_window::cb_left_symmetric(Address, Address widget)
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).left_symmetric();
-}
-void Calc_window::cb_right_symmetric(Address, Address widget)
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).right_symmetric();
-}
-void Calc_window::cb_left_skew_symmtric(Address, Address widget)
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).left_skew_symmtric();
-}
-void Calc_window::cb_right_skew_symmtric(Address, Address widget)
-{
-    auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).right_skew_symmtric();
-}
-
-
-void Calc_window::left_trans()
-{
-    Matrix left_matrix{left_matrix_in->read_matrix()};
-    answer(left_matrix.T());
-}
-void Calc_window::right_trans()
-{
-    Matrix right_matrix{right_matrix_in->read_matrix()};
-    answer(right_matrix.T());
-}
-void Calc_window::left_mult_num()
-{
-    Matrix left_matrix{left_matrix_in->read_matrix()};
-    long double num;
-    std::stringstream s;
-    s << num_btn.get_string();
-    s >> num;
-    answer(left_matrix*num);
-}
-void Calc_window::right_mult_num()
-{
-    Matrix right_matrix{right_matrix_in->read_matrix()};
-    long double num;
-    std::stringstream s;
-    s << num_btn.get_string();
-    s >> num;
-    answer(right_matrix*num);
-}
-void Calc_window::left_del_num()
-{
-    Matrix left_matrix{left_matrix_in->read_matrix()};
-    long double num;
-    std::stringstream s;
-    s << num_btn.get_string();
-    s >> num;
-    if (num == 0 || num != num)
-    {
-        Simple_window win_error{Point{300, 300}, 700, 300, "Error"};
-        Text error_what{Point{win_error.x_max() / 2 - 50, win_error.y_max() / 2}, "Division by zero"};
-        win_error.attach(error_what);
-        this->hide();
-        win_error.wait_for_button();
-        this->show();
-        return;
-    }
-    answer(left_matrix/num);
-}
-void Calc_window::right_del_num()
-{
-    Matrix right_matrix{right_matrix_in->read_matrix()};
-    long double num;
-    std::stringstream s;
-    s << num_btn.get_string();
-    s >> num;
-    std::cout << num;
-    if (num == 0 || num != num)
-    {
-        Simple_window win_error{Point{300, 300}, 700, 300, "Error"};
-        Text error_what{Point{win_error.x_max() / 2 - 50, win_error.y_max() / 2}, "Division by zero"};
-        win_error.attach(error_what);
-        this->hide();
-        win_error.wait_for_button();
-        this->show();
-        return;
-    }
-    answer(right_matrix/num);
-}
-
-void Calc_window::plus() // matrix sum
-{
-    Matrix left_matrix{left_matrix_in->read_matrix()};
-    Matrix right_matrix{right_matrix_in->read_matrix()};
-
-    answer(left_matrix + right_matrix);
-}
-void Calc_window::minus() // matrix difference
-{
-    Matrix left_matrix{left_matrix_in->read_matrix()};
-    Matrix right_matrix{right_matrix_in->read_matrix()};
-
-    answer(left_matrix - right_matrix);
-}
-void Calc_window::mult() // matrix multiplication
-{
-    Matrix left_matrix{left_matrix_in->read_matrix()};
-    Matrix right_matrix{right_matrix_in->read_matrix()};
-
-    answer(left_matrix * right_matrix);
-}
-
-void Calc_window::left_triangle(){
-    Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-    answer(Matrix(sqr.triangle()));
-}
-void Calc_window::right_triangle(){
-    Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-    answer(Matrix(sqr.triangle()));
-}
-void Calc_window::left_diagonal()
-{
-    Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-    answer(sqr.diagonalization());
-}
-void Calc_window::right_diagonal()
-{
-    Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-    answer(sqr.diagonalization());
-}
-void Calc_window::left_inverse()
-{
-    Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-    answer(sqr.inverse());
-}
-void Calc_window::right_inverse()
-{
-    Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-    answer(sqr.inverse());
-}
-
-void Calc_window::left_determinant(){
-    Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-    answer_num(sqr.det());
-}
-void Calc_window::right_determinant(){
-    Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-    answer_num(sqr.det());
-}
-void Calc_window::left_symmetric(){
-    Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-    answer(sqr.symmetric());
-}
-void Calc_window::right_symmetric(){
-    Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-    answer(sqr.symmetric());
-}
-void Calc_window::left_skew_symmtric(){
-    Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-    answer(sqr.skew_symmetric());
-}
-void Calc_window::right_skew_symmtric(){
-    Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-    answer(sqr.skew_symmetric());
-}
-
-void Calc_window::reference() // call void answer answer
-{
-    Matrix matrix{left_matrix_in->read_matrix()};
-    answer(matrix);
-}
-
-// Other methods
-void Calc_window::answer(Matrix matrix) // print answer
-{
-    Simple_window win{Point{100, 100}, 600, 300, "Matrix_out_window"};
-
-    Matrix_out matrix_out{Point{0, 0}, 530, 300, matrix};
-    matrix_out.attach(win);
-    matrix_out.put();
+void Calc_window::error_output(std::string ass){
+    Simple_window win{Point{300, 300}, 700, 300, "The fallibility"};
+    Text more{Point{win.x_max() / 2 - 100, win.y_max() / 2}, ass};
+    win.attach(more);
+    this->hide();
     win.wait_for_button();
+    this->show();
 }
-
-void Calc_window::answer_num(long double ans)
-{
-    Simple_window win{Point{100, 100}, 600, 300, "Matrix_out_window"};
-
-    Out_box out_box{Point{0, 0}, 530, 300, ""};
-    win.attach(out_box);
-    std::stringstream s;
-    s << ans;
-    out_box.put(s.str());
-    win.wait_for_button();
-}
-
-void Calc_window::in_left_col_row() // get count of columns and rows
-{
-    int col_count = left_columns.get_int(); // count of columns
-    int row_count = left_rows.get_int(); // count of rows
-
-    detach(*left_matrix_in); // detach old matrix
-    delete left_matrix_in;
-
-    if (col_count == row_count)
-    {
-        private_left_1_menu.show();
-        private_left_2_menu.show();
-    }
-    else
-    {
-        private_left_1_menu.hide();
-        private_left_2_menu.hide();
-    }
-
-    left_matrix_in = new Matrix_in {Point{ ind, 2 * ind }, (simple_work_place), (y_max() - 9 * ind), col_count, row_count}; // buttons = 5 indent, edges = 2 indent
-
-    (*left_matrix_in).attach(*this); // attach new matrix
-    redraw();
-}
-
-void Calc_window::in_right_col_row() // get count of columns and rows
-{
-    int col_count = right_columns.get_int(); // count of columns
-    int row_count = right_rows.get_int(); // count of rows
-
-    detach(*right_matrix_in); // detach old matrix
-    delete right_matrix_in;
-
-    if( col_count == row_count)
-    {
-        private_right_1_menu.show();
-        private_right_2_menu.show();
-    }
-    else
-    {
-        private_right_1_menu.hide();
-        private_right_2_menu.hide();
-    }
-
-    right_matrix_in = new Matrix_in { Point{ ind + simple_work_place * 2, 2 * ind}, (simple_work_place), (y_max() - 9 * ind), col_count, row_count}; // buttons = 5 indent, edges = 2 indent
-
-    (*right_matrix_in).attach(*this); // attach new matrix
-    redraw();
-}
->>>>>>> Stashed changes

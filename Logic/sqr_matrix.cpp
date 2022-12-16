@@ -13,14 +13,17 @@ Sqr_matrix::Sqr_matrix (const int d)  : // empty matrix
 
 Sqr_matrix::Sqr_matrix (const vector<long double>& num) :
     dimension{trunc(sqrt(num.size()))}, Matrix{num, trunc(sqrt(num.size())), trunc(sqrt(num.size()))}
-{}
+{
+    if (fmod(sqrt(num.size()), 1) != 0)
+        throw runtime_error("It's impossible to make Sqr_matrix from this vector (wrong size of the vector)");
+}
 
 Sqr_matrix::Sqr_matrix (const vector<vector<long double>>& num) :
     dimension{num.size()}, Matrix(num)
 {}
 
 Sqr_matrix::Sqr_matrix(const Matrix& m) :
-    dimension{m.get_length()}, Matrix{m.get_num(), m.get_length(), m.get_width()}
+    dimension{m.get_rows_count()}, Matrix{m.get_num(), m.get_rows_count(), m.get_columns_count()}
 {}
 
 Sqr_matrix::Sqr_matrix(const int d, long double value) :
@@ -60,15 +63,9 @@ Sqr_matrix Sqr_matrix:: column_sort() // returns matrix which has max element of
         long double max_num{INT_MIN};
         int max_index{-1};
         for (int j = i * dimension; j < dimension * dimension; j += dimension)
-<<<<<<< Updated upstream
-            if (m.numbers[i + j] > max_num)
-            {
-                max_num = m.numbers[i + j];
-=======
             if (abs(m.numbers[i + j]) > max_num)
             {
                 max_num = abs(m.numbers[i + j]);
->>>>>>> Stashed changes
                 max_index = j / dimension * dimension; // remember a string where max number with index (i, i) places
             }
 
@@ -134,9 +131,9 @@ Sqr_matrix Sqr_matrix::inverse() const // returns inverse matrix using adjugate 
         for (int j = 0; j < dimension; ++j)
         {
             Sqr_matrix elem_minor = this->minor(i, j); // finds the minor of (i, j) element
-            m.numbers[i * dimension + j] = pow(-1, i + j) * numbers[i * dimension + j] * elem_minor.det() / determinate;
+            m.numbers[i * dimension + j] = pow(-1, i + j) * elem_minor.det() / determinate;
         }
-    return m;
+    return m.T();
 }
 
 Sqr_matrix Sqr_matrix::symmetric() const // returns symmetric matrix
@@ -169,27 +166,13 @@ Sqr_matrix Sqr_matrix::T() const // returns transpose matrix
 Sqr_matrix Sqr_matrix:: minor(int i, int j) const // finds a minor of an element
 {
     Sqr_matrix res{dimension - 1};
+    res.numbers.clear();
     for (int row = 0; row < dimension; ++row)
         for (int column = 0; column < dimension; ++column)
             if(row != i & column != j)
                 res.numbers.push_back((*this)[row][column]);
     return res;
 }
-
-void Sqr_matrix::zeros() // fill the sqr_matrix with zeros
-{ numbers = vector<long double>(length, 0); }
-
-void Sqr_matrix::ones() // fill the sqr_matrix with ones
-{ numbers = vector<long double>(length, 1); }
-
-vector<long double> Sqr_matrix::get_num() const // returns vector numbers
-{ return numbers; }
-
-int Sqr_matrix::get_width() const // returns width
-{ return dimension; }
-
-int Sqr_matrix::get_length() const // returns length
-{ return dimension; }
 
 /// Operators
 Sqr_matrix Sqr_matrix::operator+ (const Sqr_matrix& mat) const // sum of 2 matrixes
@@ -210,24 +193,24 @@ Sqr_matrix Sqr_matrix::operator* (const Sqr_matrix& mat) const // product of 2 m
 void Sqr_matrix::operator*= (const Sqr_matrix& mat) // product of 2 matrixes
 { *this = (*this) * mat; }
 
-Sqr_matrix Sqr_matrix::operator* (const double& number) const // product of every numbers of a matrix and a number
+Sqr_matrix Sqr_matrix::operator* (const double number) const // product of every numbers of a matrix and a number
 { return Matrix(*this) * number; }
 
-void Sqr_matrix::operator*= (const double& number) // product of every numbers of a matrix and a number
+void Sqr_matrix::operator*= (const double number) // product of every numbers of a matrix and a number
 { *this = (*this) * number; }
 
-Sqr_matrix Sqr_matrix::operator/ (const double& number) const // qoutient of every numbers of a matrix and a number
+Sqr_matrix Sqr_matrix::operator/ (const double number) const // qoutient of every numbers of a matrix and a number
 { return Sqr_matrix(Matrix(*this) / number); }
 
-void Sqr_matrix::operator/= (const double& number) // quotient of every numbers of a matrix and a number
+void Sqr_matrix::operator/= (const double number) // quotient of every numbers of a matrix and a number
 { *this = (*this) / number; }
 
 ostream& operator<< (ostream& os, Sqr_matrix& mat) // to print a matrix in the console
 {
-    for (int i = 0; i < mat.get_width() * mat.get_length(); ++i)
+    for (int i = 0; i < mat.get_columns_count() * mat.get_rows_count(); ++i)
     {
         os << mat.get_num()[i] << " ";
-        if ((i + 1) % mat.get_width() == 0)
+        if ((i + 1) % mat.get_columns_count() == 0)
             os << endl;
     }
     os << endl;

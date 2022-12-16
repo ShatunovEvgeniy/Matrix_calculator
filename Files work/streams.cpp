@@ -1,167 +1,3 @@
-<<<<<<< Updated upstream
-#include "streams.h"
-
-bool in_aviable(const std::vector<string>& v, const string& a)
-{
-    for (string i : v)
-    {
-        if (a==i)
-            return true;
-    }
-    return false;
-}
-
-istream& operator>> (istream& is, vector<long double>& vector)
-{
-    double ch {0};
-    while (true)
-    {
-//        while (is.peek() == ' ')
-//            is.get();
-        if (is.peek() == '\n' || is.eof())
-        {
-            is.get();
-            break;
-        }
-        is >> ch;
-        vector.push_back(ch);
-    }
-    for (long double i : vector)
-        cout << i << " ";
-    return is;
-}
-
-void fill(ifstream& ist, vector<vector<long double>>& vec)
-{
-    while (true)
-    {
-        vector<long double> a;
-        ist >> a;
-        cout << '\n';
-        vec.push_back(a);
-        if (a.size() == 0 || ist.eof())
-            break;
-    }
-}
-
-string get_first_string(istream& ist)
-{
-    string str;
-    getline(ist, str);
-    string word;
-    for (char i: str)
-    {
-        if (!isspace(i))
-            word += i;
-    }
-    return word;
-}
-
-void write(Matrix m, const string& out_name)
-{
-    ofstream ofs{out_name};
-    if (!ofs)
-        throw runtime_error("Can't open output file");
-    ofs<<m;
-}
-
-void write_det(long double det, const string& out_name)
-{
-    ofstream ofs{out_name};
-    if (!ofs)
-        throw runtime_error("Can't open output file");
-    ofs<<det;
-}
-
-void calculate(const string& name, const string& out_name){
-    ifstream ist{name};
-    if (!ist)
-        throw runtime_error("bad file");
-
-    vector<string> aviable {"det", "triangle", "diagonalization", "transpon"};
-    vector<string> znaki {"+", "-", "*"};
-
-    string word = get_first_string(ist);
-    while (ist.peek() == ' ' || ist.peek() == '\n')
-        ist.get();
-
-    if (in_aviable(aviable, word))
-    {
-        vector<vector<long double>> v;
-        fill(ist, v);
-        Matrix m{v};
-        if (word == "det")
-        {
-            if (m.get_length() == m.get_width())
-            {
-                Sqr_matrix sq{m};
-                write_det(sq.det(), out_name);
-            }
-            else
-                throw runtime_error("Not sqr matrix");
-        }
-        if (word == "triangle")
-        {
-            if (m.get_length() == m.get_width())
-            {
-                Sqr_matrix sq{m};
-                write(sq.triangle(), out_name);
-            }
-            else
-                throw runtime_error("Not sqr matrix");
-        }
-        else if (word == "diagonalization")
-        {
-            if (m.get_length() == m.get_width())
-            {
-                Sqr_matrix sq{m};
-                write(sq.diagonalization(), out_name);
-            }
-        else if (word == "transpon")
-        {
-            write(m.T(), out_name);
-        }
-        }
-    }
-
-    else if (in_aviable(znaki, word))
-    {
-        vector<vector<long double>> v1;
-        vector<vector<long double>> v2;
-        fill(ist, v1);
-        for (vector<long double> i : v1)
-        {
-            for (long double j : i)
-                cout<<j<<' ';
-            cout<<'\n';
-        }
-        fill(ist, v2);
-        Matrix m1{v1};
-        Matrix m2{v2};
-        if (word == "+")
-        {
-            m1 += m2;
-            write(m1, out_name);
-        }
-        else if (word == "-")
-        {
-            m1 -= m2;
-            write(m1, out_name);
-        }
-        else if (word == "*")
-        {
-            m1 *= m2;
-            write(m1, out_name);
-        }
-
-    }
-
-    else
-        {
-            throw runtime_error("Bad input");
-        }
-}
-=======
 #include "streams.h"
 #include "../Logic/others_functions.h"
 
@@ -202,6 +38,7 @@ string get_first_string(istream& ist)
         if (!isspace(i))
             word += i;
     }
+    // ist >> word;
     return word;
 }
 
@@ -212,7 +49,7 @@ void write(Matrix m, ofstream& ofs) // print matrix in a file
 
 void det(Matrix& m, ofstream& ofs) // find the determinant
 {
-    if (m.get_length() == m.get_width())
+    if (m.get_rows_count() == m.get_columns_count())
     {
         Sqr_matrix sq{m};
         long double det = sq.det();
@@ -225,7 +62,7 @@ void det(Matrix& m, ofstream& ofs) // find the determinant
 
 void triangle(Matrix& m, ofstream& ofs) // make triangular form of a matrix
 {
-    if (m.get_length() == m.get_width())
+    if (m.get_rows_count() == m.get_columns_count())
     {
         Sqr_matrix sq{m};
         write(sq.triangle(), ofs);
@@ -242,7 +79,7 @@ void transpose(Matrix& m, ofstream& ofs) // transpose the matrix
 
 void inverse(Matrix& m, ofstream& ofs) // find inverse matrix
 {
-    if (m.get_length() == m.get_width())
+    if (m.get_rows_count() == m.get_columns_count())
     {
         Sqr_matrix sq{m};
         write(sq.inverse(), ofs);
@@ -253,7 +90,7 @@ void inverse(Matrix& m, ofstream& ofs) // find inverse matrix
 
 void symmetric(Matrix& m, ofstream& ofs) // find symmetric matrix
 {
-    if (m.get_length() == m.get_width())
+    if (m.get_rows_count() == m.get_columns_count())
     {
         Sqr_matrix sq{m};
         write(sq.symmetric(), ofs);
@@ -264,7 +101,7 @@ void symmetric(Matrix& m, ofstream& ofs) // find symmetric matrix
 
 void skew_symmetric(Matrix& m, ofstream& ofs) // find skew symmetric matrix
 {
-    if (m.get_length() == m.get_width())
+    if (m.get_rows_count() == m.get_columns_count())
     {
         Sqr_matrix sq{m};
         write(sq.skew_symmetric(), ofs);
@@ -287,7 +124,7 @@ void Matrix_diff(Matrix& m1, Matrix& m2, ofstream& ofs) // matrix - matrix
 
 void Matrix_product(Matrix& m1, Matrix& m2, ofstream& ofs) // matrix * matrix or matrix * number
 {
-    if (m2.get_length() == m2.get_width() || m2.get_length() == 1)
+    if (m2.get_rows_count() == m2.get_columns_count() || m2.get_rows_count() == 1)
     {
         long double number = m2.get_num()[0];
         Matrix m3 = m1 * number;
@@ -302,7 +139,7 @@ void Matrix_product(Matrix& m1, Matrix& m2, ofstream& ofs) // matrix * matrix or
 
 void Matrix_division(Matrix& m1, Matrix& m2, ofstream& ofs) // / on number
 {
-    if (m2.get_length() == m2.get_width() || m2.get_length() == 1)
+    if (m2.get_rows_count() == m2.get_columns_count() || m2.get_rows_count() == 1)
     {
         long double number = m2.get_num()[0];
         Matrix m3 = m1 / number;
@@ -421,4 +258,3 @@ void calculate(const string& name, const string& out_name) // choose an operatio
             break;
     }
 }
->>>>>>> Stashed changes

@@ -30,26 +30,26 @@ public:
     Matrix operator* (const Matrix& mat) const; // product of 2 matrixes
     void operator*= (const Matrix& mat); // product of 2 matrixes
 
-    Matrix operator* (const double& number) const; // product of every numbers of a matrix and a number
-    void operator*= (const double& number); // product of every numbers of a matrix and a number
+    Matrix operator* (const double number) const; // product of every numbers of a matrix and a number
+    void operator*= (const double number); // product of every numbers of a matrix and a number
 
-    Matrix operator/ (const double& number) const; // qoutient of every numbers of a matrix and a number
-    void operator/= (const double& number); // quotient of every numbers of a matrix and a number
+    Matrix operator/ (const double number) const; // qoutient of every numbers of a matrix and a number
+    void operator/= (const double number); // quotient of every numbers of a matrix and a number
 
     Row operator[] (const int index) const; // take a row of the matrix
 
     Matrix T() const;
 
-    virtual std::vector<long double> get_num() const; // returns vector numbers
-    virtual int get_width() const; // returns width
-    virtual int get_length() const; // returns length
+    std::vector<long double> get_num() const; // returns vector numbers
+    int get_columns_count() const; // returns count of columns
+    int get_rows_count() const; // returns count of rows
 
     virtual void zeros(); // fill the matrix with zeros
-    virtual void ones(); // fill the matrix with ones
+    virtual void ones(); // fill the main diagonal with ones
 
 protected:
-    int length{0};
-    int width{0};
+    int row_count{0};
+    int column_count{0};
     std::vector<long double> numbers;
 
 private:
