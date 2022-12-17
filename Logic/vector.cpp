@@ -49,79 +49,79 @@ long double Vectors::vec_length() const // length of the vector
 /// Operators
 Vectors Vectors::operator+ (const Vectors& vec) const // sum of 2 vectors
 {
-    Vectors result{numbers};
+    Vectors result = *this;
+    return result += vec;
+}
 
+Vectors& Vectors::operator+= (const Vectors& vec) // sum of 2 vectors
+{
     if (numbers.size() != vec.numbers.size())
         throw runtime_error("Vectors have different size");
 
     for (size_t i = 0; i < numbers.size(); i++)
-        result.numbers[i] += vec.numbers[i];
-
-    return result;
+        numbers[i] += vec.numbers[i];
+    return *this;
 }
-
-void Vectors::operator+= (const Vectors& vec) // sum of 2 vectors
-{ *this = *this + vec; }
 
 Vectors Vectors::operator- (const Vectors& vec) const // difference of 2 vectors
 {
-    Vectors result{numbers};
+    Vectors result = *this;
+    return result -= vec;
+}
 
+Vectors& Vectors::operator-= (const Vectors& vec) // difference of 2 vectors
+{
     if (numbers.size() != vec.numbers.size())
         throw runtime_error("Vectors have different size");
 
     for (size_t i = 0; i < numbers.size(); i++)
-        result.numbers[i] -= vec.numbers[i];
-
-    return result;
+        numbers[i] -= vec.numbers[i];
+    return *this;
 }
-
-void Vectors::operator-= (const Vectors& vec) // difference of 2 vectors
-{ *this = *this - vec; }
 
 Vectors Vectors::operator* (const Vectors& vec) const // scalar product
 {
-    Vectors result{numbers};
+    Vectors result = *this;
+    return result *= vec;
+}
 
+Vectors& Vectors::operator*= (const Vectors& vec) // scalar product
+{
     if (numbers.size() != vec.numbers.size())
         throw runtime_error("Vectors have different size");
     for (size_t i = 0; i < numbers.size(); i++)
-        result.numbers[i] *= vec.numbers[i];
-
-    return result;
+        numbers[i] *= vec.numbers[i];
+    return *this;
 }
-
-void Vectors::operator*= (const Vectors& vec) // scalar product
-{ *this = *this * vec; }
 
 Vectors Vectors::operator* (const double num) const // product a vector and a number
 {
-    Vectors result{numbers};
-
-    for (size_t i = 0; i < numbers.size(); i++)
-        result.numbers[i] *= num;
-
-    return result;
+    Vectors result = *this;
+    return result *= num;
 }
 
-void Vectors::operator*= (const double num) // product a vector and a number
-{ *this = *this * num; }
+Vectors& Vectors::operator*= (const double num) // product a vector and a number
+{
+    for (size_t i = 0; i < numbers.size(); i++)
+        numbers[i] *= num;
+    return *this;
+}
 
 Vectors Vectors::operator/ (const double num) const  // quotient a vector and a number
+{
+    Vectors result = *this;
+    return result /= num;
+}
+
+Vectors& Vectors::operator/= (const double num)  // quotient a vector and a number
 {
     if (num == 0)
         throw runtime_error("Division by zero");
 
-    Vectors result{numbers};
-
     for (size_t i = 0; i < numbers.size(); i++)
-        result.numbers[i] /= num;
-
-    return result;
+        numbers[i] /= num;
+    return *this;
 }
-
-void Vectors::operator/= (const double num)  // quotient a vector and a number
-{ *this = *this / num; }
 
 ostream& operator<< (ostream& os, Vectors& vec) // to print a column in the console
 {

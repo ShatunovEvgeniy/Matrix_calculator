@@ -18,16 +18,16 @@ public:
     Column(const Vectors& vec);
 
     Column operator+ (const Column& col) const; // sum of 2 columns
-    void operator+= (const Column& col);             // sum of 2 columns
+    Column& operator+= (const Column& col);      // sum of 2 columns
 
     Column operator- (const Column& col) const; // difference of 2 columns
-    void operator-= (const Column& col);             // difference of 2 Columns
+    Column& operator-= (const Column& col);      // difference of 2 Columns
 
     Column operator* (const double num) const; // product of a column and a number
-    void operator*= (const double num);             // product of a column and a number
+    Column& operator*= (const double num);      // product of a column and a number
 
     Column operator/ (const double num) const; // quotient of a column and a number
-    void operator/= (const double num);             // quotient of a column and a number
+    Column& operator/= (const double num);      // quotient of a column and a number
 
     long double operator[] (const int index) const; // take a number of the column
 

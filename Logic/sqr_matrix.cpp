@@ -178,32 +178,32 @@ Sqr_matrix Sqr_matrix:: minor(int i, int j) const // finds a minor of an element
 Sqr_matrix Sqr_matrix::operator+ (const Sqr_matrix& mat) const // sum of 2 matrixes
 { return Sqr_matrix(Matrix(*this) + Matrix(mat)); }
 
-void Sqr_matrix::operator+= (const Sqr_matrix& mat) // sum of 2 matrixes
-{ *this = *this + mat; }
+Sqr_matrix& Sqr_matrix::operator+= (const Sqr_matrix& mat) // sum of 2 matrixes
+{ return *this = *this + mat; }
 
 Sqr_matrix Sqr_matrix::operator- (const Sqr_matrix& mat) const // difference of 2 matrixes
 { return Sqr_matrix(Matrix(*this) - Matrix(mat)); }
 
-void Sqr_matrix::operator-= (const Sqr_matrix& mat) // difference of 2 Smatrixes
-{ *this = *this - mat; }
+Sqr_matrix& Sqr_matrix::operator-= (const Sqr_matrix& mat) // difference of 2 Smatrixes
+{ return *this = *this - mat; }
 
 Sqr_matrix Sqr_matrix::operator* (const Sqr_matrix& mat) const // product of 2 matrixes
 { return Matrix(*this) * Matrix(mat); }
 
-void Sqr_matrix::operator*= (const Sqr_matrix& mat) // product of 2 matrixes
-{ *this = (*this) * mat; }
+Sqr_matrix& Sqr_matrix::operator*= (const Sqr_matrix& mat) // product of 2 matrixes
+{ return *this = (*this) * mat; }
 
 Sqr_matrix Sqr_matrix::operator* (const double number) const // product of every numbers of a matrix and a number
 { return Matrix(*this) * number; }
 
-void Sqr_matrix::operator*= (const double number) // product of every numbers of a matrix and a number
-{ *this = (*this) * number; }
+Sqr_matrix& Sqr_matrix::operator*= (const double number) // product of every numbers of a matrix and a number
+{ return *this = (*this) * number; }
 
 Sqr_matrix Sqr_matrix::operator/ (const double number) const // qoutient of every numbers of a matrix and a number
 { return Sqr_matrix(Matrix(*this) / number); }
 
-void Sqr_matrix::operator/= (const double number) // quotient of every numbers of a matrix and a number
-{ *this = (*this) / number; }
+Sqr_matrix& Sqr_matrix::operator/= (const double number) // quotient of every numbers of a matrix and a number
+{ return *this = (*this) / number; }
 
 ostream& operator<< (ostream& os, Sqr_matrix& mat) // to print a matrix in the console
 {

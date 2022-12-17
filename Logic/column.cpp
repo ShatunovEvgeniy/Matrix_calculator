@@ -45,8 +45,12 @@ long double Column::operator[] (const int index) const // take a number of the c
 
 Column Column::operator+ (const Column& col) const // sum of 2 columns
 {
-    Column result{row_count};
+    Column result = *this;
+    return result += col;
+}
 
+Column& Column::operator+= (const Column& col) // sum of 2 columns
+{
     if (col.row_count != row_count)
         throw runtime_error("Columns have different size");
 
@@ -54,17 +58,18 @@ Column Column::operator+ (const Column& col) const // sum of 2 columns
         throw runtime_error("Column is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
-        result.numbers.push_back(numbers[i] + col.numbers[i]);
-    return result;
+        numbers[i] += col.numbers[i];
+    return *this;
 }
-
-void Column::operator+= (const Column& Column) // sum of 2 columns
-{ *this = *this + Column; }
 
 Column Column::operator- (const Column& col) const // difference of 2 columns
 {
-    Column result{row_count};
+    Column result = *this;
+    return result -= col;
+}
 
+Column& Column::operator-= (const Column& col) // difference of 2 columns
+{
     if (col.row_count != row_count)
         throw runtime_error("Columns have different size");
 
@@ -72,43 +77,41 @@ Column Column::operator- (const Column& col) const // difference of 2 columns
         throw runtime_error("Column is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
-        result.numbers.push_back(numbers[i] - col.numbers[i]);
-    return result;
+        numbers[i] -= col.numbers[i];
+    return *this;
 }
-
-void Column::operator-= (const Column& col) // difference of 2 columns
-{ *this = *this - col; }
 
 Column Column::operator* (const double num) const // product of a column and a number
 {
-    Column result{row_count};
+    Column result = *this;
+    return result *= num;
+}
+
+Column& Column::operator*= (const double num) // product of a column and a number
+{
     if (numbers.empty())
         throw runtime_error("Column is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
-        result.numbers.push_back(numbers[i] * num);
-    return result;
+        numbers[i] *= num;
+    return *this;
 }
-
-void Column::operator*= (const double num) // product of a column and a number
-{ *this = *this * num; }
 
 Column Column::operator/ (const double num) const // quotient of a column and a number
 {
-    Column result{row_count};
+    Column result = *this;
+    return result /= num;
+}
+
+Column& Column::operator/= (const double num) // quotient of a column and a number
+{
     if (numbers.empty())
         throw runtime_error("Column is empty");
 
-    else if (num == 0)
-        throw runtime_error("Divided by zero");
-
     for (int i = 0; i < numbers.size(); ++i)
-        result.numbers.push_back(numbers[i]/num);
-    return result;
+        numbers[i] /= num;
+    return *this;
 }
-
-void Column::operator/= (const double num) // quotient of a column and a number
-{ *this = *this / num; }
 
 ostream& operator<< (ostream& os, Column& c) // to print a column in the console
 {
