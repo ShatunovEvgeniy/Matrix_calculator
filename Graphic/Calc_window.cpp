@@ -208,7 +208,6 @@ void Calc_window::cb_right_inverse(Address, Address widget)
     auto& btn = reference_to<Graph_lib::Button>(widget);
     dynamic_cast<Calc_window&>(btn.window()).right_inverse();
 }
-
 void Calc_window::cb_left_determinant(Address, Address widget)
 {
     auto& btn = reference_to<Graph_lib::Button>(widget);
@@ -253,7 +252,7 @@ void Calc_window::left_trans()
     if(check_matrix(left_matrix_in))
     {
         Matrix left_matrix{left_matrix_in->read_matrix()};
-        answer(left_matrix.T());
+        answer(left_matrix.T(), "Transpose");
     }
 }
 void Calc_window::right_trans()
@@ -261,7 +260,7 @@ void Calc_window::right_trans()
     if(check_matrix(right_matrix_in))
     {
         Matrix right_matrix{right_matrix_in->read_matrix()};
-        answer(right_matrix.T());
+        answer(right_matrix.T(), "Transpose");
     }
 }
 void Calc_window::left_mult_num()
@@ -273,7 +272,7 @@ void Calc_window::left_mult_num()
         std::stringstream s;
         s << num_btn.get_string();
         s >> num;
-        answer(left_matrix*num);
+        answer(left_matrix * num, "Multiplication by number");
     }
 }
 void Calc_window::right_mult_num()
@@ -285,7 +284,7 @@ void Calc_window::right_mult_num()
         std::stringstream s;
         s << num_btn.get_string();
         s >> num;
-        answer(right_matrix*num);
+        answer(right_matrix * num, "Multiplication by number");
     }
 }
 void Calc_window::left_del_num()
@@ -297,12 +296,12 @@ void Calc_window::left_del_num()
         s << num_btn.get_string();
         s >> num;
         std::cout << num;
-        if (num == 0 || num != num)
+        if (num == 0 || std::isnan(num))
         {
             error_output("Division by zero");
             return;
         }
-        answer(left_matrix/num);
+        answer(left_matrix / num, "Division by number");
     }
 }
 void Calc_window::right_del_num()
@@ -314,12 +313,12 @@ void Calc_window::right_del_num()
         s << num_btn.get_string();
         s >> num;
         std::cout << num;
-        if (num == 0 || num != num)
+        if (num == 0 || std::isnan(num))
         {
             error_output("Division by zero");
             return;
         }
-        answer(right_matrix/num);
+        answer(right_matrix / num, "Division by number");
     }
 }
 
@@ -330,9 +329,13 @@ void Calc_window::plus() // matrix sum
         Matrix left_matrix{left_matrix_in->read_matrix()};
         Matrix right_matrix{right_matrix_in->read_matrix()};
         if(left_matrix.get_rows_count() == right_matrix.get_rows_count() && left_matrix.get_columns_count() == right_matrix.get_columns_count())
+<<<<<<< Updated upstream
             answer(left_matrix + right_matrix);
+=======
+            answer(left_matrix + right_matrix, "Sum of matrices");
+>>>>>>> Stashed changes
         else
-            error_output("these matrices cannot be sumed up");
+            error_output("These matrices cannot be summed up");
     }
 }
 void Calc_window::minus() // matrix difference
@@ -342,9 +345,13 @@ void Calc_window::minus() // matrix difference
         Matrix left_matrix{left_matrix_in->read_matrix()};
         Matrix right_matrix{right_matrix_in->read_matrix()};
         if(left_matrix.get_rows_count() == right_matrix.get_rows_count() && left_matrix.get_columns_count() == right_matrix.get_columns_count())
+<<<<<<< Updated upstream
             answer(left_matrix - right_matrix);
+=======
+            answer(left_matrix - right_matrix, "Difference of matrices");
+>>>>>>> Stashed changes
         else
-            error_output("these matrices cannot be minused");
+            error_output("These matrices cannot be deducted");
     }
 }
 void Calc_window::mult() // matrix multiplication
@@ -354,9 +361,13 @@ void Calc_window::mult() // matrix multiplication
         Matrix left_matrix{left_matrix_in->read_matrix()};
         Matrix right_matrix{right_matrix_in->read_matrix()};
         if(left_matrix.get_columns_count() == right_matrix.get_rows_count())
+<<<<<<< Updated upstream
             answer(left_matrix * right_matrix);
+=======
+            answer(left_matrix * right_matrix, "Product of matrices");
+>>>>>>> Stashed changes
         else
-          error_output("these matrices cannot be multiplied");
+          error_output("These matrices cannot be multiplied");
     }
 }
 
@@ -365,7 +376,7 @@ void Calc_window::left_triangle()
     if(check_matrix(left_matrix_in))
     {
         Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-        answer(Matrix(sqr.triangle()));
+        answer(Matrix(sqr.triangle()), "Triangulating");
     }
 }
 void Calc_window::right_triangle()
@@ -373,7 +384,7 @@ void Calc_window::right_triangle()
     if(check_matrix(right_matrix_in))
     {
         Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-        answer(Matrix(sqr.triangle()));
+        answer(Matrix(sqr.triangle()), "Triangulating");
     }
 }
 void Calc_window::left_diagonal()
@@ -381,7 +392,7 @@ void Calc_window::left_diagonal()
     if(check_matrix(left_matrix_in))
     {
         Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-        answer(sqr.diagonalization());
+        answer(sqr.diagonalization(), "Diagonalization");
     }
 }
 void Calc_window::right_diagonal()
@@ -389,7 +400,7 @@ void Calc_window::right_diagonal()
     if(check_matrix(right_matrix_in))
     {
         Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-        answer(sqr.diagonalization());
+        answer(sqr.diagonalization(), "Diagonalization");
     }
 }
 void Calc_window::left_inverse()
@@ -397,7 +408,10 @@ void Calc_window::left_inverse()
     if(check_matrix(left_matrix_in))
     {
         Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-        answer(sqr.inverse());
+        if (sqr.det() != 0)
+            answer(sqr.inverse(), "Inverse matrix");
+        else
+            error_output("The given matrix does not have an inverse (determinant = 0)");
     }
 }
 void Calc_window::right_inverse()
@@ -405,7 +419,7 @@ void Calc_window::right_inverse()
     if(check_matrix(right_matrix_in))
     {
         Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-        answer(sqr.inverse());
+        answer(sqr.inverse(), "Inverse matrix");
     }
 }
 
@@ -414,7 +428,7 @@ void Calc_window::left_determinant()
     if(check_matrix(left_matrix_in))
     {
         Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-        answer_num(sqr.det());
+        answer_num(sqr.det(), "Determinant");
     }
 }
 void Calc_window::right_determinant()
@@ -422,7 +436,7 @@ void Calc_window::right_determinant()
     if(check_matrix(right_matrix_in))
     {
         Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-        answer_num(sqr.det());
+        answer_num(sqr.det(), "Determinant");
     }
 }
 void Calc_window::left_symmetric()
@@ -430,7 +444,7 @@ void Calc_window::left_symmetric()
     if(check_matrix(left_matrix_in))
     {
         Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-        answer(sqr.symmetric());
+        answer(sqr.symmetric(), "Symmetric matrix");
     }
 }
 void Calc_window::right_symmetric()
@@ -438,7 +452,7 @@ void Calc_window::right_symmetric()
     if(check_matrix(right_matrix_in))
     {
         Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-        answer(sqr.symmetric());
+        answer(sqr.symmetric(), "Symmetric matrix");
     }
 }
 void Calc_window::left_skew_symmtric()
@@ -446,7 +460,7 @@ void Calc_window::left_skew_symmtric()
     if(check_matrix(left_matrix_in))
     {
         Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-        answer(sqr.skew_symmetric());
+        answer(sqr.skew_symmetric(), "Scew-symmetric matrix");
     }
 }
 void Calc_window::right_skew_symmtric()
@@ -454,7 +468,7 @@ void Calc_window::right_skew_symmtric()
     if(check_matrix(right_matrix_in))
     {
         Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-        answer(sqr.skew_symmetric());
+        answer(sqr.skew_symmetric(), "Scew-symmetric matrix");
     }
 }
 
@@ -473,18 +487,18 @@ bool Calc_window::check_matrix(Matrix_in* matrix_in){
     return true;
 }
 
-void Calc_window::answer(Matrix matrix) // print answer
+void Calc_window::answer(Matrix matrix, std::string title) // print answer
 {
-    Simple_window win{Point{100, 100}, 600, 300, "Matrix_out_window"};
+    Simple_window win{Point{100, 100}, 600, 300, title};
     Matrix_out matrix_out{Point{0, 0}, 530, 300, matrix};
     matrix_out.attach(win);
     matrix_out.put();
     win.wait_for_button();
 }
 
-void Calc_window::answer_num(long double ans)
+void Calc_window::answer_num(long double ans, std::string title)
 {
-    Simple_window win{Point{100, 100}, 600, 300, "Matrix_out_window"};
+    Simple_window win{Point{100, 100}, 600, 300, title};
     Out_box out_box{Point{0, 0}, 530, 300, ""};
     win.attach(out_box);
     std::stringstream s;
@@ -500,43 +514,43 @@ void Calc_window::in_left_col_row() // get count of columns and rows
     bool flag = true;                                        // if true, then it means a normal matrix
     std::string col_string = left_columns.get_string(); // count of columns
     std::string row_string = left_rows.get_string(); // count of rows
-    for(int i; i < (int)col_string.size() ; ++i)
+    for (int i; i < (int)col_string.size() ; ++i)
     {
-        if((col_string[i] != col_string[i]) || ((col_string[i] < 48) || (col_string[i] > 57)))
+        if (std::isnan(col_string[i]) || col_string[i] < '0' || col_string[i] > '9')
         {
-            error_output("Set the dimensions of the matrix as positive integers");
+            error_output("Set the dimensions of the matrix as natural numbers");
             flag = false;
             break;
         }
     }
-    if(flag)
+    if (flag)
     {
-        for(int i; i < (int)row_string.size() ; ++i)
+        for (int i; i < (int)row_string.size() ; ++i)
         {
-            if((row_string[i] != row_string[i]) || ((row_string[i] < 48) || (row_string[i] > 57)))
+            if (std::isnan(row_string[i]) || row_string[i] < '0' || row_string[i] > '9')
             {
-                error_output("Set the dimensions of the matrix as positive integers");
+                error_output("Set the dimensions of the matrix as natural numbers");
                 flag = false;
                 break;
             }
         }
     }
-    if(flag)
+    if (flag)
     {
-        int col_count;
-        int row_count;
+        int col_count{-1};
+        int row_count{-1};
         std::stringstream s;
         std::stringstream ss;
         s << col_string;
         s >> col_count;
         ss << row_string;
         ss >> row_count;
-        if( col_count < 1 or row_count < 1)
+        if (col_count < 1 or row_count < 1)
         {
-            error_output("Set the dimensions of the matrix as positive integers");
+            error_output("Set the dimensions of the matrix as natural numbers");
             flag = false;
         }
-        else if( col_count > 10 or row_count > 10)
+        else if (col_count > 10 or row_count > 10)
         {
             error_output("A lot of matrix cells, use the input via file");
             flag = false;
@@ -575,9 +589,9 @@ void Calc_window::in_right_col_row() // get count of columns and rows
     std::string row_string = right_rows.get_string(); // count of rows
     for(int i; i < (int)col_string.size() ; ++i)
     {
-        if((col_string[i] != col_string[i]) || ((col_string[i] < 48) || (col_string[i] > 57)))
+        if(std::isnan(col_string[i]) || col_string[i] < '0' || col_string[i] > '9')
         {
-            error_output("Set the dimensions of the matrix as positive integers");
+            error_output("Set the dimensions of the matrix as natural numbers");
             flag = false;
             break;
         }
@@ -586,9 +600,9 @@ void Calc_window::in_right_col_row() // get count of columns and rows
     {
         for(int i; i < (int)row_string.size() ; ++i)
         {
-            if((row_string[i] != row_string[i]) || ((row_string[i] < 48) || (row_string[i] > 57)))
+            if(std::isnan(row_string[i]) || row_string[i] < '0' || row_string[i] > '9')
             {
-                error_output("Set the dimensions of the matrix as positive integers");
+                error_output("Set the dimensions of the matrix as nutural numbers");
                 flag = false;
                 break;
             }
@@ -606,7 +620,7 @@ void Calc_window::in_right_col_row() // get count of columns and rows
         ss >> row_count;
         if( col_count < 1 or row_count < 1)
         {
-            error_output("Set the dimensions of the matrix as positive integers");
+            error_output("Set the dimensions of the matrix as natural numbers");
             flag = false;
         }
         else if( col_count > 10 or row_count > 10)
@@ -639,9 +653,10 @@ void Calc_window::in_right_col_row() // get count of columns and rows
     redraw();
 }
 
-void Calc_window::error_output(std::string ass){
-    Simple_window win{Point{300, 300}, 700, 300, "The fallibility"};
-    Text more{Point{win.x_max() / 2 - 100, win.y_max() / 2}, ass};
+void Calc_window::error_output(std::string er_what)
+{
+    Simple_window win{Point{300, 300}, 700, 300, "Error"};
+    Text more{Point{win.x_max() / 2 - 200, win.y_max() / 2}, er_what};
     win.attach(more);
     this->hide();
     win.wait_for_button();

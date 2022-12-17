@@ -8,12 +8,11 @@
 
 namespace Graph_lib {
 
-struct Matrix_in : Widget
+class Matrix_in : public Widget
 {
-    Matrix_in(Point xy, int w, int h, int x, int y);
+public:
+    Matrix_in(Point xy, int w, int h, int count_rows, int count_columns);
 
-    int attach (In_box& b);
-    int attach (In_box* p);
     void attach (Window& win);
 
     std::vector<long double> read_vector(); // read vector from in_boxes
@@ -30,6 +29,8 @@ private:
     Vector_ref<In_box> in_boxes; // container in_boxes
     int count_row;
     int count_column;
+    int attach (In_box& b);
+    int attach (In_box* p);
 };
 
 }

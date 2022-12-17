@@ -40,6 +40,10 @@ public:
     Sqr_matrix skew_symmetric() const; // returns skew symmetric matrix
     Sqr_matrix T() const; // returns transpose matrix
     Sqr_matrix minor(int i, int j) const; // finds a minor of an element
+<<<<<<< Updated upstream
+=======
+    Sqr_matrix matrix_pow(const int degree); // raise a sqr_matrix to a power
+>>>>>>> Stashed changes
 
     using Matrix :: zeros; // fill the column with zeros
     using Matrix :: ones;  // fill the main diagonal with ones

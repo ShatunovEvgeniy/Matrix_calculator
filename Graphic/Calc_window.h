@@ -103,9 +103,9 @@ private:
     void in_right_col_row(); // get count of columns and rows
 
     bool check_matrix(Graph_lib::Matrix_in* matrix_in);
-    void answer(Matrix matrix); // print answer
-    void answer_num(long double ans); //print number answer
-    void error_output(std::string ass);
+    void answer(Matrix matrix, std::string); // print answer
+    void answer_num(long double ans, std::string); //print number answer
+    void error_output(std::string er_what);
 };
 
 #endif // CALC_WINDOW_H

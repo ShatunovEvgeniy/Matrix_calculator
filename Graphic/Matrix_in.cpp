@@ -6,12 +6,12 @@
 using namespace Graph_lib;
 
 /// Constructors
-Matrix_in::Matrix_in(Point xy, int w, int h, int x, int y)
-    : Widget{ xy, w, h, "Matrix_in", nullptr}, count_row{x}, count_column{y}
+Matrix_in::Matrix_in(Point xy, int w, int h, int count_rows, int count_columns)
+    : Widget{ xy, w, h, "Matrix_in", nullptr}, count_row{count_rows}, count_column{count_columns}
 {
-    for(int j = 0; j < y; ++j)
-        for(int i = 0; i < x; ++i)
-            in_boxes.push_back(new In_box{Point{xy.x + w / x * i, xy.y + h / y * j}, w / x, h / y, ""}); // last arg is the same to make a sqr
+    for(int j = 0; j < count_columns; ++j)
+        for(int i = 0; i < count_rows; ++i)
+            in_boxes.push_back(new In_box{Point{xy.x + w / count_rows * i, xy.y + h / count_columns * j}, w / count_rows, h / count_columns, ""}); // last arg is the same to make a sqr
 }
 
 /// Methods
@@ -21,15 +21,10 @@ int Matrix_in::attach(In_box& b)
     b.height = height;
     in_boxes.push_back (b);
     return int(in_boxes.size()-1);
-    // Menu does not delete &b
 }
 
 int Matrix_in::attach (In_box* p)
-{
-    // owned.push_back(p);
-    return attach (*p);
-    // Menu deletes p
-}
+{ return attach (*p); }
 
 void Matrix_in::attach (Window& win) // attach all in_boxes
 {
@@ -61,9 +56,13 @@ std::vector<long double> Matrix_in::read_vector() // read vector from in_boxes
 
             char first;
             ss >> first;
+<<<<<<< Updated upstream
             if((first != first) && ((first < '0') || (first > '9')))
+=======
+            if((std::isnan(first)) && ((first < '0') || (first > '9')))
+>>>>>>> Stashed changes
             {
-                std::string str{"Matrix has NO number, what this shit? masafaka, please rewrite NUMBER for Matrix"};
+                std::string str{ "Please rewtire the matrix. Matrix can only contain numbers" };
                 throw str;
             }
             ss.putback(first);
@@ -74,12 +73,12 @@ std::vector<long double> Matrix_in::read_vector() // read vector from in_boxes
             std::cout << ost;
             if(ost != ""){
                 if(ost[0] == ','){
-                    std::string str = ost + "We used '.', please rewrite number";
+                    std::string str = "Error: '" + ost + "'  Use '.' for float numbers";
                     throw str;
                 }
                 else
                 {
-                    std::string str{ost +" : what this shit? masafaka, please rewrite NUMBER"};
+                    std::string str{ "Unexpected symbol : " + ost };
                     throw str;
                 }
             }

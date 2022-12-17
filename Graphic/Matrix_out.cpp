@@ -22,15 +22,10 @@ int Matrix_out::attach(Out_box& b)
     b.height = height;
     out_boxes.push_back (&b);
     return int(out_boxes.size()-1);
-    // Menu does not delete &b
 }
 
 int Matrix_out::attach (Out_box* p)
-{
-    // owned.push_back(p);
-    return attach (*p);
-    // Menu deletes p
-}
+{ return attach (*p); }
 
 void Matrix_out::attach (Window& win) // attach all In_box
 {
@@ -39,7 +34,8 @@ void Matrix_out::attach (Window& win) // attach all In_box
     own = &win;
 }
 
-void Matrix_out::put(){
+void Matrix_out::put()
+{
     std::vector<long double> mat = matrix.get_num();
     for(int i = 0; i < out_boxes.size(); ++i)
     {
