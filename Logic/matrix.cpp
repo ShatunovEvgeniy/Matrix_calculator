@@ -41,7 +41,7 @@ Matrix::Matrix(const vector<long double>& num, const int len, const int wid) : /
     numbers{num}, row_count{len}, column_count{wid}
 {
     if (len * wid != num.size())
-        throw runtime_error("Vector have wrong size");
+        throw runtime_error("Vector has wrong size");
     if (len <= 0 and wid <= 0)
         throw runtime_error("Dimensions of a matrix have to be more than zero");
 }
@@ -102,89 +102,87 @@ Row Matrix::operator[] (const int index) const // take a row of the matrix
 
 Matrix Matrix::operator+ (const Matrix& mat) const // sum of 2 matrixes
 {
-    Matrix result{row_count, column_count};
-
-    if (mat.row_count != row_count || mat.column_count != column_count)
-    {
-        throw runtime_error("You can't sum matrixes of different sizes");
-    }
-    else if (numbers.empty() || mat.get_num().empty())
-    {
-        throw runtime_error("The matrix are empty");
-    }
-
-    for (int i = 0; i < numbers.size(); ++i)
-        result.numbers.push_back(numbers[i] + mat.numbers[i]);
-    return result;
+    Matrix result = *this;
+    return result += mat;
 }
 
-void Matrix::operator+= (const Matrix& mat) // sum of 2 matrixes
-{ *this = *this + mat; }
-
-Matrix Matrix::operator- (const Matrix& mat) const // difference of 2 matrixes
+Matrix& Matrix::operator+= (const Matrix& mat) // sum of 2 matrixes
 {
-    Matrix result{row_count, column_count};
-
     if (mat.row_count != row_count || mat.column_count != column_count)
-    {
-        throw runtime_error("You can't subtract matrixes of different sizes");
-    }
+        throw runtime_error("You can't sum matrixes of different sizes");
+
     else if (numbers.empty() || mat.get_num().empty())
-    {
         throw runtime_error("The matrix are empty");
-    }
 
     for (int i = 0; i < numbers.size(); ++i)
-        result.numbers.push_back(numbers[i] - mat.numbers[i]);
-    return result;
+        numbers[i] += mat.numbers[i];
+    return *this;
 }
 
-void Matrix::operator-= (const Matrix& mat) // difference of 2 matrixes
-{ *this = *this - mat; }
+Matrix Matrix::operator- (const Matrix& mat) const //difference of 2 matrixes
+{
+    Matrix result = *this;
+    return result -= mat;
+}
+
+Matrix& Matrix::operator-= (const Matrix& mat) // difference of 2 matrixes
+{
+    if (mat.row_count != row_count || mat.column_count != column_count)
+        throw runtime_error("You can't sum matrixes of different sizes");
+
+    else if (numbers.empty() || mat.get_num().empty())
+        throw runtime_error("The matrix are empty");
+
+    for (int i = 0; i < numbers.size(); ++i)
+        numbers[i] -= mat.numbers[i];
+    return *this;
+}
 
 Matrix Matrix::operator* (const double number) const // product of every numbers of a matrix and a number
 {
-    Matrix result {row_count, column_count};
-
-    if (numbers.empty())
-    {
-        throw runtime_error("The matrix are empty");
-    }
-
-    for (int i = 0; i < numbers.size(); ++i)
-        result.numbers.push_back(numbers[i] * number);
-    return result;
+    Matrix result = *this;
+    return result *= number;
 }
 
-void Matrix::operator*= (const double number) // product of every numbers of a matrix and a number
-{ *this = *this * number; }
-
-Matrix Matrix::operator/ (const double number) const // product of every numbers of a matrix and a number
+Matrix& Matrix::operator*= (const double number) // product of every numbers of a matrix and a number
 {
-    Matrix result {row_count, column_count};
-
-    if (number == 0)
-        throw runtime_error("Division by zero");
-
     if (numbers.empty())
-    {
         throw runtime_error("The matrix are empty");
-    }
 
-    for (int i = 0; i < numbers.size(); ++i)
-        result.numbers.push_back(numbers[i] / number);
-    return result;
+    for (int i = 0; i < column_count * row_count; ++i)
+        numbers[i] *= number;
+    return *this;
 }
 
-void Matrix::operator/= (const double number) // product of every numbers of a matrix and a number
-{ *this = *this / number; }
+Matrix Matrix::operator/(const double number) const // qoutient of every numbers of a matrix and a number
+{
+    Matrix result = *this;
+    return result /= number;
+}
+
+Matrix& Matrix::operator/= (const double number) // qoutient of every numbers of a matrix and a number
+{
+    if (numbers.empty())
+        throw runtime_error("The matrix are empty");
+
+    for (int i = 0; i < column_count * row_count; ++i)
+        numbers[i] /= number;
+    return *this;
+}
 
 Matrix Matrix::operator* (const Matrix& mat) const // product of 2 matrixes
+{
+    Matrix result = *this;
+    return result *= mat;
+}
+
+Matrix& Matrix::operator*= (const Matrix& mat) // product of 2 matrixes
 {
     if (column_count != mat.row_count)
         throw runtime_error("Wrong size of matrixes");
 
     Matrix result{row_count, mat.column_count};
+    result.numbers.clear();
     for (int i = 0; i < row_count; ++i)
         for (int j = 0; j < mat.column_count; ++j)
         {
@@ -195,11 +193,9 @@ Matrix Matrix::operator* (const Matrix& mat) const // product of 2 matrixes
                 sum += numbers[i * column_count + k] * mat.numbers[k * mat.column_count + j];
             result.numbers.push_back(sum);
         }
-    return result;
+    *this = result;
+    return *this;
 }
-
-void Matrix::operator*= (const Matrix& mat) // product of 2 matrixes
-{ *this = (*this) * mat; }
 
 ostream& operator<< (ostream& os, Matrix& mat) // to print a matrix in the console
 {
