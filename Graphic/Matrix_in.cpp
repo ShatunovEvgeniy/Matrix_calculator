@@ -56,11 +56,7 @@ std::vector<long double> Matrix_in::read_vector() // read vector from in_boxes
 
             char first;
             ss >> first;
-<<<<<<< Updated upstream
-            if((first != first) && ((first < '0') || (first > '9')))
-=======
             if((std::isnan(first)) && ((first < '0') || (first > '9')))
->>>>>>> Stashed changes
             {
                 std::string str{ "Please rewtire the matrix. Matrix can only contain numbers" };
                 throw str;

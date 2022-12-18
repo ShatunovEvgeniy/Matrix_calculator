@@ -329,11 +329,7 @@ void Calc_window::plus() // matrix sum
         Matrix left_matrix{left_matrix_in->read_matrix()};
         Matrix right_matrix{right_matrix_in->read_matrix()};
         if(left_matrix.get_rows_count() == right_matrix.get_rows_count() && left_matrix.get_columns_count() == right_matrix.get_columns_count())
-<<<<<<< Updated upstream
-            answer(left_matrix + right_matrix);
-=======
             answer(left_matrix + right_matrix, "Sum of matrices");
->>>>>>> Stashed changes
         else
             error_output("These matrices cannot be summed up");
     }
@@ -345,11 +341,7 @@ void Calc_window::minus() // matrix difference
         Matrix left_matrix{left_matrix_in->read_matrix()};
         Matrix right_matrix{right_matrix_in->read_matrix()};
         if(left_matrix.get_rows_count() == right_matrix.get_rows_count() && left_matrix.get_columns_count() == right_matrix.get_columns_count())
-<<<<<<< Updated upstream
-            answer(left_matrix - right_matrix);
-=======
             answer(left_matrix - right_matrix, "Difference of matrices");
->>>>>>> Stashed changes
         else
             error_output("These matrices cannot be deducted");
     }
@@ -361,11 +353,7 @@ void Calc_window::mult() // matrix multiplication
         Matrix left_matrix{left_matrix_in->read_matrix()};
         Matrix right_matrix{right_matrix_in->read_matrix()};
         if(left_matrix.get_columns_count() == right_matrix.get_rows_count())
-<<<<<<< Updated upstream
-            answer(left_matrix * right_matrix);
-=======
             answer(left_matrix * right_matrix, "Product of matrices");
->>>>>>> Stashed changes
         else
           error_output("These matrices cannot be multiplied");
     }

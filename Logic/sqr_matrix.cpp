@@ -125,8 +125,6 @@ Sqr_matrix Sqr_matrix::inverse() const // returns inverse matrix using adjugate 
     long double determinate = this->det();
     if (determinate == 0)
         throw runtime_error("Impossible to find inverse matrix: determinate = 0");
-<<<<<<< Updated upstream
-=======
 
     Sqr_matrix m{dimension, 0};
     for (int i = 0; i < dimension; ++i)
@@ -147,36 +145,6 @@ Sqr_matrix Sqr_matrix::symmetric() const // returns symmetric matrix
     return m;
 }
 
-Sqr_matrix Sqr_matrix::skew_symmetric() const // returns skew symmetric matrix
-{
-    Sqr_matrix m = *this;
-    for (int i = 0; i < dimension; ++i)
-        for (int k = 0; k < dimension - i - 1; ++k)
-            m.numbers[(dimension - k - 1) * dimension + dimension - i - 1] = numbers[i * dimension + k];
-    return m;
-}
->>>>>>> Stashed changes
-
-    Sqr_matrix m{dimension, 0};
-    for (int i = 0; i < dimension; ++i)
-        for (int j = 0; j < dimension; ++j)
-        {
-            Sqr_matrix elem_minor = this->minor(i, j); // finds the minor of (i, j) element
-            m.numbers[i * dimension + j] = pow(-1, i + j) * elem_minor.det() / determinate;
-        }
-    return m.T();
-}
-
-Sqr_matrix Sqr_matrix::symmetric() const // returns symmetric matrix
-{
-    Sqr_matrix m = *this;
-    for (int i = 1; i < dimension; ++i)
-        for (int k = 0; k < i; ++k)
-            m.numbers[i * dimension + k] = numbers[k * dimension + i];
-    return m;
-}
-
-<<<<<<< Updated upstream
 Sqr_matrix Sqr_matrix::skew_symmetric() const // returns skew symmetric matrix
 {
     Sqr_matrix m = *this;
@@ -206,18 +174,6 @@ Sqr_matrix Sqr_matrix:: minor(int i, int j) const // finds a minor of an element
     return res;
 }
 
-=======
-Sqr_matrix Sqr_matrix:: minor(int i, int j) const // finds a minor of an element
-{
-    Sqr_matrix res{dimension - 1};
-    res.numbers.clear();
-    for (int row = 0; row < dimension; ++row)
-        for (int column = 0; column < dimension; ++column)
-            if(row != i & column != j)
-                res.numbers.push_back((*this)[row][column]);
-    return res;
-}
-
 Sqr_matrix Sqr_matrix::matrix_pow(const int degree) // raise a sqr_matrix to a power
 {
     Sqr_matrix result = *this;
@@ -226,7 +182,6 @@ Sqr_matrix Sqr_matrix::matrix_pow(const int degree) // raise a sqr_matrix to a p
     return result;
 }
 
->>>>>>> Stashed changes
 /// Operators
 Sqr_matrix Sqr_matrix::operator+ (const Sqr_matrix& mat) const // sum of 2 matrixes
 { return Sqr_matrix(Matrix(*this) + Matrix(mat)); }
