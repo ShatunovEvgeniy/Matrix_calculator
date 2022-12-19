@@ -1,3 +1,5 @@
+#include "iostream"
+
 #include "Matrix_in.h"
 #include <sstream>
 
@@ -47,8 +49,8 @@ void Matrix_in::hide ()
 std::vector<long double> Matrix_in::read_vector() // read vector from in_boxes
 {
     std::vector<long double> vec;
-    for(int j = 0; j < count_row; ++j)
-        for(int i = 0; i < count_column; ++i)
+    for(int j = 0; j < count_column; ++j)
+        for(int i = 0; i < count_row; ++i)
         {
             std::stringstream ss;
             ss << in_boxes[i + j * count_row].get_string(); // put string number from inbox to stringstream
@@ -86,20 +88,21 @@ std::vector<long double> Matrix_in::read_vector() // read vector from in_boxes
 
 Matrix Matrix_in::read_matrix()
 {
-    return Matrix {this->read_vector(), count_row, count_column};
+    Matrix mat{read_vector(), count_row, count_column};
+    return mat;
 }
 
 Sqr_matrix Matrix_in::read_sqr_matrix()
 {
-    return Sqr_matrix {this->read_vector()};
+    return Sqr_matrix {read_vector()};
 }
 
 Row Matrix_in::read_row()
 {
-    return Row {this->read_vector()};
+    return Row {read_vector()};
 }
 
 Column Matrix_in::read_column()
 {
-    return Column {this->read_vector()};
+    return Column {read_vector()};
 }
