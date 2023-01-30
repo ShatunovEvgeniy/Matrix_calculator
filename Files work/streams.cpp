@@ -54,7 +54,7 @@ void det(Matrix& m, ofstream& ofs) // find the determinant
         Sqr_matrix sq{m};
         long double det = sq.det();
         ofs << det;
-        ofs << '\n\n';
+        ofs << "\n\n";
     }
     else
         throw runtime_error("Not sqr matrix");
@@ -126,7 +126,7 @@ void Matrix_product(Matrix& m1, Matrix& m2, ofstream& ofs) // matrix * matrix or
 {
     if (m2.get_rows_count() == m2.get_columns_count() || m2.get_rows_count() == 1)
     {
-        long double number = m2.get_num()[0];
+        double number = m2.get_num()[0];
         Matrix m3 = m1 * number;
         write(m3, ofs);
     }

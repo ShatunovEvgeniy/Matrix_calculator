@@ -1,6 +1,7 @@
 #include "matrix.h"
 #include "row.h"
 #include "column.h"
+#include "vector.h"
 #include "sqr_matrix.h"
 
 #include <iomanip>
@@ -58,6 +59,10 @@ Matrix::Matrix(const Sqr_matrix& m) :
     row_count {m.get_rows_count()}, column_count {m.get_columns_count()}, numbers {m.get_num()}
 {}
 
+Matrix::Matrix(const Vectors& v) :
+    row_count {v.get_rows_count()}, column_count{1}, numbers {v.get_num()}
+{}
+
 /// Methods
 vector<long double> Matrix:: get_num() const // returns vector numbers
 { return numbers; }
@@ -81,9 +86,9 @@ void Matrix::ones() // fill the matrix with ones
 Matrix Matrix::T() const
 {
     Matrix m(this->column_count, this->row_count, 0);
-    for (int i = 0; i < m.row_count; ++i)
-        for (int j = 0; j < m.column_count; ++j)
-            m.numbers[i * m.column_count + j] = numbers[j * m.row_count + i];
+    for (int i = 0; i < m.column_count; ++i)
+        for (int j = 0; j < m.row_count; ++j)
+            m.numbers[i * m.row_count + j] = numbers[j * m.column_count + i];
     return m;
 }
 /// Operators

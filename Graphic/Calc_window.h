@@ -20,10 +20,10 @@ private:
 
     Graph_lib::Menu general_left_menu; // left menu for functions for all objects
     Graph_lib::Menu general_right_menu; // right menu for functions for all objects
-    Graph_lib::Menu private_left_1_menu; // left menu for fuctions for special objects such as sqr_matrix and vector
-    Graph_lib::Menu private_right_1_menu; // rigth menu for fuctions for special objects such as sqr_matrix and vector
-    Graph_lib::Menu private_left_2_menu; // left menu for fuctions for special objects such as sqr_matrix and vector
-    Graph_lib::Menu private_right_2_menu; // rigth menu for fuctions for special objects such as sqr_matrix and vector
+    Graph_lib::Menu sqr_left_1_menu; // left menu for fuctions for sqr_matrix
+    Graph_lib::Menu sqr_right_1_menu; // rigth menu for fuctions for sqr_matrix
+    Graph_lib::Menu sqr_left_2_menu; // left menu for fuctions for sqr_matrix
+    Graph_lib::Menu sqr_right_2_menu; // rigth menu for fuctions for sqr_matrix
     Graph_lib::Menu middle_menu; // central menu
 
     Graph_lib::Button using_vec; // using vector's window
@@ -44,8 +44,8 @@ private:
     Graph_lib::Matrix_in* right_matrix_in = nullptr; // right matrix in
 
     // buttons realization
-    static void make_left(Graph_lib::Address, Graph_lib::Address widget); // get value of left_column and left_rows
-    static void make_right(Graph_lib::Address, Graph_lib::Address widget); // get value of right_column and right_rows
+    static void cb_make_left(Graph_lib::Address, Graph_lib::Address widget); // get value of left_column and left_rows
+    static void cb_make_right(Graph_lib::Address, Graph_lib::Address widget); // get value of right_column and right_rows
     static void cb_left_trans(Graph_lib::Address, Graph_lib::Address widet);
     static void cb_right_trans(Graph_lib::Address, Graph_lib::Address widet);
     static void cb_left_mult_num(Graph_lib::Address, Graph_lib::Address widet);
@@ -54,6 +54,7 @@ private:
     static void cb_right_del_num(Graph_lib::Address, Graph_lib::Address widet);
 
     static void cb_save_file(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_vector_menu(Graph_lib::Address, Graph_lib::Address widget); // call funcition to use vector menu
 
     static void cb_quit(Graph_lib::Address, Graph_lib::Address widget); // call quit
     static void cb_plus(Graph_lib::Address, Graph_lib::Address widget); // call plus
@@ -67,14 +68,15 @@ private:
     static void cb_right_inverse(Graph_lib::Address, Graph_lib::Address widget);
     static void cb_left_determinant(Graph_lib::Address, Graph_lib::Address widget);
     static void cb_right_determinant(Graph_lib::Address, Graph_lib::Address widget);
-    static void cb_left_symmetric(Graph_lib::Address, Graph_lib::Address widget);
-    static void cb_right_symmetric(Graph_lib::Address, Graph_lib::Address widget);
-    static void cb_left_skew_symmtric(Graph_lib::Address, Graph_lib::Address widget);
-    static void cb_right_skew_symmtric(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_left_ones(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_ones(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_left_degree(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_degree(Graph_lib::Address, Graph_lib::Address widget);
 
 
     void quit(){ hide(); } // hide window
     void save_file();
+    void vector_menu();
     void left_trans();
     void right_trans();
     void left_mult_num();
@@ -93,10 +95,10 @@ private:
     void right_inverse();
     void left_determinant();
     void right_determinant();
-    void left_symmetric();
-    void right_symmetric();
-    void left_skew_symmtric();
-    void right_skew_symmtric();
+    void left_ones();
+    void right_ones();
+    void left_degree();
+    void right_degree();
 
 
     void in_left_col_row(); // get count of columns and rows

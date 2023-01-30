@@ -60,16 +60,16 @@ Sqr_matrix Sqr_matrix:: column_sort() // returns matrix which has max element of
 
     for (int i = 0; i < dimension; ++i)
     {
-        long double max_num{INT_MIN};
+        long double min_num{INT_MAX};
         int max_index{-1};
         for (int j = i * dimension; j < dimension * dimension; j += dimension)
-            if (abs(m.numbers[i + j]) > max_num)
+            if (abs(m.numbers[i + j]) < min_num && m.numbers[i + j] != 0)
             {
-                max_num = abs(m.numbers[i + j]);
+                min_num = abs(m.numbers[i + j]);
                 max_index = j / dimension * dimension; // remember a string where max number with index (i, i) places
             }
 
-        if (max_index != i * dimension)
+        if (max_index != i * dimension && max_index != -1)
         {
             m.permutations++;
             for (int j = 0; j < dimension; ++j)
@@ -177,7 +177,15 @@ Sqr_matrix Sqr_matrix:: minor(int i, int j) const // finds a minor of an element
 Sqr_matrix Sqr_matrix::matrix_pow(const int degree) // raise a sqr_matrix to a power
 {
     Sqr_matrix result = *this;
-    for (int i = 1; i < degree; ++i)
+    if (degree == 0)
+    {
+        result.ones();
+        return result;
+    }
+    else if (degree < 0)
+        result = result.inverse();
+
+    for (int i = 1; i < abs(degree); ++i)
         result *= *this;
     return result;
 }

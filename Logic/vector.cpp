@@ -26,9 +26,11 @@ Vectors::Vectors(const Column& c) :
 /// Methods
 Vectors Vectors::vec_prod(const Vectors& vec) const // vector product
 {
-    if (!(numbers.size() == vec.numbers.size() == 3))
+    if (!(numbers.size() == vec.numbers.size()) && numbers.size() == 3 && vec.numbers.size() == 3)
+    {
+        cout << numbers.size() << endl << vec.numbers.size() << endl;
         throw runtime_error("Vectors have to have 3 coordinates");
-
+    }
     long double x = numbers[1] * vec.numbers[2] - numbers[2] * vec.numbers[1];
     long double y = numbers[2] * vec.numbers[0] - numbers[0] * vec.numbers[2];
     long double z = numbers[0] * vec.numbers[1] - numbers[1] * vec.numbers[0];

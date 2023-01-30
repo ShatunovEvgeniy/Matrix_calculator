@@ -13,7 +13,7 @@ def make_test(func, mat_count, sqr_mat):
         matrix2 = []
         matrix = []
         result = []
-        if mat_count == 2 and not sqr_mat:
+        if mat_count == 2:
             if mat_count == 2:
                 length = rd.randint(2, 10)
                 width = rd.randint(2, 10)
@@ -25,13 +25,13 @@ def make_test(func, mat_count, sqr_mat):
                     matrix2 = np.random.randint(10, size=(length, width))
 
                 for i in range(len(matrix1)):
-                    if i != length - 2:
+                    if i != len(matrix1) - 1:
                         f_write.write(' '.join([str(j) for j in matrix1[i]]) + '\n')
                     else:
                         f_write.write(' '.join([str(j) for j in matrix1[i]]) + '\n\n')
 
                 for i in range(len(matrix2)):
-                    if i != length - 2:
+                    if i != len(matrix2) - 1:
                         f_write.write(' '.join([str(j) for j in matrix2[i]]) + '\n')
                     else:
                         f_write.write(' '.join([str(j) for j in matrix2[i]]) + '\n\n')
@@ -62,8 +62,8 @@ def make_test(func, mat_count, sqr_mat):
 
                 if func == 'transpose':
                     result = np.transpose(matrix)
-                elif func == 'triangle':
-                    result = np.triu(matrix)
+                elif func == 'inverse':
+                    result = np.linalg.inv(matrix)
 
                 for i in range(len(result)):
                     if i != len(result) - 1:
@@ -73,12 +73,12 @@ def make_test(func, mat_count, sqr_mat):
 
 
 make_test('+', 2, False)
+
+make_test('inverse', 1, True)
 make_test('-', 2, False)
 make_test('*', 2, False)
 
 make_test('transpose', 1, True)
-make_test('triangle', 1, True)
-
 # det
 for i in range(10):
     f_write.write('det' + '\n\n')

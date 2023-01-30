@@ -46,7 +46,7 @@ void Matrix_in::hide ()
         in_boxes[i].hide();
 }
 
-std::vector<long double> Matrix_in::read_vector() // read vector from in_boxes
+std::vector<long double> Matrix_in::read_std_vector() // read vector from in_boxes
 {
     std::vector<long double> vec;
     for(int j = 0; j < count_column; ++j)
@@ -88,21 +88,21 @@ std::vector<long double> Matrix_in::read_vector() // read vector from in_boxes
 
 Matrix Matrix_in::read_matrix()
 {
-    Matrix mat{read_vector(), count_row, count_column};
+    Matrix mat{read_std_vector(), count_row, count_column};
     return mat;
 }
 
 Sqr_matrix Matrix_in::read_sqr_matrix()
 {
-    return Sqr_matrix {read_vector()};
+    return Sqr_matrix {read_std_vector()};
 }
 
 Row Matrix_in::read_row()
 {
-    return Row {read_vector()};
+    return Row {read_std_vector()};
 }
 
 Column Matrix_in::read_column()
 {
-    return Column {read_vector()};
+    return Column {read_std_vector()};
 }

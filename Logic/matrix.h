@@ -8,6 +8,7 @@
 class Column;
 class Row;
 class Sqr_matrix;
+class Vectors;
 
 class Matrix
 {
@@ -20,6 +21,7 @@ public:
     Matrix(const Column& c);
     Matrix(const Row& r);
     Matrix(const Sqr_matrix& m);
+    Matrix(const Vectors& v);
 
     Matrix operator+ (const Matrix& mat) const ; // sum of 2 matrixes
     Matrix& operator+= (const Matrix& mat); // sum of 2 matrixes

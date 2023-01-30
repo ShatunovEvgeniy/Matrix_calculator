@@ -34,3 +34,4 @@ vector<T> slicing(vector<T> const& v, int X, int Y) // slice of a vector
     // Return the results
     return vec;
 }
+

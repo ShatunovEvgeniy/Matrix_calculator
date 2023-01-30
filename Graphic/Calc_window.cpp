@@ -1,6 +1,9 @@
 #include "Calc_window.h"
 #include "Matrix_out.h"
 #include "../Logic/matrix.h"
+#include "../Files work/streams.h"
+#include "vector_window.h"
+
 #include <sstream>
 
 #include <Graph_lib/Simple_window.h>
@@ -14,26 +17,26 @@ Calc_window::Calc_window(Point xy, int w, int h, const std::string& title) // th
     , general_left_menu{Point{ind, y_max() - 7 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_gl"}
     , general_right_menu{Point{x_max() - ind - simple_work_place, y_max() - 7 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_gr"}
 
-    , private_left_1_menu{Point{ind, y_max() - 5 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_pl"}
-    , private_right_1_menu{Point{x_max() - ind - simple_work_place, y_max() - 5 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_pr"}
+    , sqr_left_1_menu{Point{ind, y_max() - 5 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_pl"}
+    , sqr_right_1_menu{Point{x_max() - ind - simple_work_place, y_max() - 5 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_pr"}
 
-    , private_left_2_menu{Point{ind, y_max() - 3 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_pl"}
-    , private_right_2_menu{Point{x_max() - ind - simple_work_place, y_max() - 3 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_pr"}
+    , sqr_left_2_menu{Point{ind, y_max() - 3 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_pl"}
+    , sqr_right_2_menu{Point{x_max() - ind - simple_work_place, y_max() - 3 * ind}, simple_work_place / btn_count, 2 * ind, Menu::horizontal,"Buttons_pr"}
 
     , middle_menu{Point{x_max() / 2 - simple_work_place / btn_count / 2, 4* ind}, simple_work_place / btn_count, 2 * ind, Menu::vertical,"Buttons_ml"}
 
-    , using_vec{Point{x_max() / 2 - simple_work_place / 4, ind}, simple_work_place / 2, 2 * ind, "Using vector", cb_quit}
+    , using_vec{Point{x_max() / 2 - simple_work_place / 4, ind}, simple_work_place / 2, 2 * ind, "Use vector menu", cb_vector_menu}
     , num_btn{Point{x_max() / 2 - ind, y_max() - 13 * ind}, simple_work_place / 4, 2 * ind, "Input a number"}
     , input_file{Point{x_max() / 2 - simple_work_place / 4, y_max() - 10 * ind}, simple_work_place / 2, 2 * ind, "Input file"}
     , output_file{Point{x_max() / 2 - simple_work_place / 4, y_max() - 7 * ind}, simple_work_place / 2, 2 * ind, "Output file"}
     , save_btn{Point{x_max() / 2 - simple_work_place / btn_count / 2, y_max() - 4 * ind}, simple_work_place / btn_count, 2 * ind, "Save", cb_save_file}
 
 
-    , left_make_btn{Point{ind + length_top_inbox * 2, ind}, simple_work_place / 3, ind, "Make", make_left}
+    , left_make_btn{Point{ind + length_top_inbox * 2, ind}, simple_work_place / 3, ind, "Make", cb_make_left}
     , left_columns{Point{ind + length_top_inbox / 2, ind}, simple_work_place / 3 / 2, ind, "Сolumn:"}
     , left_rows{Point{ind + length_top_inbox*3/2, ind}, simple_work_place / 3 / 2, ind, "Row:"}
 
-    , right_make_btn{Point{ind + simple_work_place * 2 + length_top_inbox * 2, ind}, simple_work_place / 3, ind, "Make", make_right}
+    , right_make_btn{Point{ind + simple_work_place * 2 + length_top_inbox * 2, ind}, simple_work_place / 3, ind, "Make", cb_make_right}
     , right_columns{Point{ind + simple_work_place * 2 + length_top_inbox / 2, ind}, simple_work_place / 3 / 2, ind, "Сolumn:"}
     , right_rows{Point{ind + simple_work_place * 2 + length_top_inbox * 3 / 2, ind}, simple_work_place / 3 / 2, ind, "Row:"}
 
@@ -53,25 +56,25 @@ Calc_window::Calc_window(Point xy, int w, int h, const std::string& title) // th
     general_right_menu.attach(new Button(Point{0, 0}, 0, 0, "/ number", cb_right_del_num));
     attach (general_right_menu);
 
-    private_left_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Triangulating", cb_left_triangle));
-    private_left_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Diagonalization", cb_left_diagonal));
-    private_left_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Inverse", cb_left_inverse));
-    attach (private_left_1_menu);
+    sqr_left_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Triangulating", cb_left_triangle));
+    sqr_left_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Diagonalization", cb_left_diagonal));
+    sqr_left_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Inverse", cb_left_inverse));
+    attach (sqr_left_1_menu);
 
-    private_right_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Triangulating", cb_right_triangle));
-    private_right_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Diagonalization", cb_right_diagonal));
-    private_right_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Inverse", cb_right_inverse));
-    attach (private_right_1_menu);
+    sqr_right_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Triangulating", cb_right_triangle));
+    sqr_right_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Diagonalization", cb_right_diagonal));
+    sqr_right_1_menu.attach(new Button(Point{0, 0}, 0, 0, "Inverse", cb_right_inverse));
+    attach (sqr_right_1_menu);
 
-    private_left_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Determinant", cb_left_determinant));
-    private_left_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Symmetric", cb_left_symmetric));
-    private_left_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Skew symmetric", cb_left_skew_symmtric));
-    attach (private_left_2_menu);
+    sqr_left_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Determinant", cb_left_determinant));
+    sqr_left_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Ones", cb_left_ones));
+    sqr_left_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Degree", cb_left_degree));
+    attach (sqr_left_2_menu);
 
-    private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Determinant", cb_right_determinant));
-    private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Symmetric", cb_right_symmetric));
-    private_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Skew symmetric", cb_right_skew_symmtric));
-    attach (private_right_2_menu);
+    sqr_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Determinant", cb_right_determinant));
+    sqr_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Ones", cb_right_ones));
+    sqr_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Degree", cb_right_degree));
+    attach (sqr_right_2_menu);
 
     middle_menu.attach(new Button(Point{0, 0}, 0, 0, "+", cb_plus));
     middle_menu.attach(new Button(Point{0, 0}, 0, 0, "-", cb_minus));
@@ -106,13 +109,13 @@ Calc_window::~Calc_window()
 /// Methods
 
 // Button functions
-void Calc_window::make_left(Address, Address widget) // get value of left_column and left_rows
+void Calc_window::cb_make_left(Address, Address widget) // get value of left_column and left_rows
 {
     auto& btn = reference_to<Graph_lib::Button>(widget);
     dynamic_cast<Calc_window&>(btn.window()).in_left_col_row();
 }
 
-void Calc_window::make_right(Address, Address widget) // get value of right_column and right_rows
+void Calc_window::cb_make_right(Address, Address widget) // get value of right_column and right_rows
 {
     auto& btn = reference_to<Graph_lib::Button>(widget);
     dynamic_cast<Calc_window&>(btn.window()).in_right_col_row();
@@ -128,6 +131,12 @@ void Calc_window::cb_quit(Address, Address widget) // call quit
 {
     auto& btn = reference_to<Graph_lib::Button>(widget);
     dynamic_cast<Calc_window&>(btn.window()).quit();
+}
+
+void Calc_window::cb_vector_menu(Address, Address widget) // call fintion to use vector menu
+{
+    auto& btn = reference_to<Graph_lib::Button>(widget);
+    dynamic_cast<Calc_window&>(btn.window()).vector_menu();
 }
 
 
@@ -218,34 +227,48 @@ void Calc_window::cb_right_determinant(Address, Address widget)
     auto& btn = reference_to<Graph_lib::Button>(widget);
     dynamic_cast<Calc_window&>(btn.window()).right_determinant();
 }
-void Calc_window::cb_left_symmetric(Address, Address widget)
+void Calc_window::cb_left_ones(Address, Address widget)
 {
     auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).left_symmetric();
+    dynamic_cast<Calc_window&>(btn.window()).left_ones();
 }
-void Calc_window::cb_right_symmetric(Address, Address widget)
+void Calc_window::cb_right_ones(Address, Address widget)
 {
     auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).right_symmetric();
+    dynamic_cast<Calc_window&>(btn.window()).right_ones();
 }
-void Calc_window::cb_left_skew_symmtric(Address, Address widget)
+void Calc_window::cb_left_degree(Address, Address widget)
 {
     auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).left_skew_symmtric();
+    dynamic_cast<Calc_window&>(btn.window()).left_degree();
 }
-void Calc_window::cb_right_skew_symmtric(Address, Address widget)
+void Calc_window::cb_right_degree(Address, Address widget)
 {
     auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).right_skew_symmtric();
+    dynamic_cast<Calc_window&>(btn.window()).right_degree();
 }
 
 
 void Calc_window::save_file()
 {
-    input_file.get_string();
-    output_file.get_string();
+    std::string in_file (input_file.get_string());
+    std::string out_file(output_file.get_string());
+    try
+    {
+        calculate(in_file, out_file);
+        error_output("All done");
+    }
+    catch(std::runtime_error e)
+    {
+        error_output(e.what());
+    }
 }
-
+void Calc_window::vector_menu()
+{
+    this->hide();
+    Vector_window vec_win{Point{100, 100}, 1200, 600, "Vector_window"};
+    Graph_lib::gui_main();
+}
 
 void Calc_window::left_trans()
 {
@@ -427,36 +450,52 @@ void Calc_window::right_determinant()
         answer_num(sqr.det(), "Determinant");
     }
 }
-void Calc_window::left_symmetric()
+void Calc_window::left_ones()
 {
     if(check_matrix(left_matrix_in))
     {
         Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-        answer(sqr.symmetric(), "Symmetric matrix");
+        sqr.ones();
+        answer(sqr, "Ones");
     }
 }
-void Calc_window::right_symmetric()
+void Calc_window::right_ones()
 {
     if(check_matrix(right_matrix_in))
     {
         Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-        answer(sqr.symmetric(), "Symmetric matrix");
+        sqr.ones();
+        answer(sqr, "Ones");
     }
 }
-void Calc_window::left_skew_symmtric()
+void Calc_window::left_degree()
 {
     if(check_matrix(left_matrix_in))
     {
         Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-        answer(sqr.skew_symmetric(), "Scew-symmetric matrix");
+        long double num;
+        std::stringstream s;
+        s << num_btn.get_string();
+        s >> num;
+        if (std::isnan(num))
+            error_output("Input a degree");
+        else
+            answer(sqr.matrix_pow(num), "Degree");
     }
 }
-void Calc_window::right_skew_symmtric()
+void Calc_window::right_degree()
 {
     if(check_matrix(right_matrix_in))
     {
         Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-        answer(sqr.skew_symmetric(), "Scew-symmetric matrix");
+        long double num;
+        std::stringstream s;
+        s << num_btn.get_string();
+        s >> num;
+        if (std::isnan(num))
+            error_output("Input a degree");
+        else
+            answer(sqr.matrix_pow(num), "Degree");
     }
 }
 
@@ -547,21 +586,21 @@ void Calc_window::in_left_col_row() // get count of columns and rows
         {
             if (col_count == row_count)
             {
-                private_left_1_menu.show();
-                private_left_2_menu.show();
+                sqr_left_1_menu.show();
+                sqr_left_2_menu.show();
             }
             else
             {
-                private_left_1_menu.hide();
-                private_left_2_menu.hide();
+                sqr_left_1_menu.hide();
+                sqr_left_2_menu.hide();
             }
             left_matrix_in = new Matrix_in {Point{ ind, 2 * ind }, (simple_work_place), (y_max() - 9 * ind), col_count, row_count}; // buttons = 5 indent, edges = 2 indent
         }
     }
     if(!flag)
     {
-        private_left_1_menu.show();
-        private_left_2_menu.show();
+        sqr_left_1_menu.show();
+        sqr_left_2_menu.show();
         left_matrix_in = new Matrix_in {Point{ind, 2 * ind}, simple_work_place, y_max() - ind * 9, 3, 3};
     }
     (*left_matrix_in).attach(*this); // attach new matrix
@@ -620,21 +659,21 @@ void Calc_window::in_right_col_row() // get count of columns and rows
         {
             if (col_count == row_count)
             {
-                private_right_1_menu.show();
-                private_right_2_menu.show();
+                sqr_right_1_menu.show();
+                sqr_right_2_menu.show();
             }
             else
             {
-                private_right_1_menu.hide();
-                private_right_2_menu.hide();
+                sqr_right_1_menu.hide();
+                sqr_right_2_menu.hide();
             }
             right_matrix_in = new Matrix_in {Point{ind + simple_work_place * 2, 2 * ind}, simple_work_place, y_max() - ind * 9, col_count, row_count};
         }
     }
     if(!flag)
     {
-        private_right_1_menu.show();
-        private_right_2_menu.show();
+        sqr_right_1_menu.show();
+        sqr_right_2_menu.show();
         right_matrix_in = new Matrix_in {Point{ind + simple_work_place * 2, 2 * ind}, simple_work_place, y_max() - ind * 9, 3, 3};
     }
     (*right_matrix_in).attach(*this); // attach new matrix
