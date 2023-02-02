@@ -1,4 +1,7 @@
 #include "streams.h"
+#include "others_functions.h"
+#include <iomanip>
+
 
 bool in_aviable(const std::vector<string>& v, const string& a)
 {
@@ -10,35 +13,16 @@ bool in_aviable(const std::vector<string>& v, const string& a)
     return false;
 }
 
-istream& operator>> (istream& is, vector<long double>& vector)
-{
-    double ch {0};
-    while (true)
-    {
-//        while (is.peek() == ' ')
-//            is.get();
-        if (is.peek() == '\n' || is.eof())
-        {
-            is.get();
-            break;
-        }
-        is >> ch;
-        vector.push_back(ch);
-    }
-    for (long double i : vector)
-        cout << i << " ";
-    return is;
-}
-
-void fill(ifstream& ist, vector<vector<long double>>& vec)
+void fill(istream& ist, vector<vector<long double>>& vec)
 {
     while (true)
     {
         vector<long double> a;
-        ist >> a;
-        cout << '\n';
+        ist>>a;
+        if (a.size() == 0)
+            break;
         vec.push_back(a);
-        if (a.size() == 0 || ist.eof())
+        if (ist.eof())
             break;
     }
 }
@@ -56,107 +40,219 @@ string get_first_string(istream& ist)
     return word;
 }
 
-void write(Matrix m, const string& out_name)
+void write(Matrix m, ofstream& ofs)
 {
-    ofstream ofs{out_name};
-    if (!ofs)
-        throw runtime_error("Can't open output file");
     ofs<<m;
 }
 
-void write_det(long double det, const string& out_name)
+void det(Matrix& m, ofstream& ofs)
 {
-    ofstream ofs{out_name};
-    if (!ofs)
-        throw runtime_error("Can't open output file");
-    ofs<<det;
+    if (m.get_columns_count() == m.get_rows_count())
+    {
+        Sqr_matrix sq{m};
+        long double det = sq.det();
+        ofs<<det;
+        ofs<<'\n'<<'\n';
+    }
+    else
+        throw runtime_error("Not sqr matrix");
 }
 
+void triangle(Matrix& m, ofstream& ofs)
+{
+    if (m.get_columns_count() == m.get_rows_count())
+    {
+        Sqr_matrix sq{m};
+        write(sq.triangle(), ofs);
+    }
+    else
+        throw runtime_error("Not sqr matrix");
+}
+
+void transpose(Matrix& m, ofstream& ofs)
+{
+    Matrix t {m.T()};
+    write(t, ofs);
+}
+
+void inverse(Matrix& m, ofstream& ofs)
+{
+    if (m.get_columns_count() == m.get_rows_count())
+    {
+        Sqr_matrix sq{m};
+        write(sq.inverse(), ofs);
+    }
+    else
+        throw runtime_error("Not sqr matrix");
+}
+
+void symmetric(Matrix& m, ofstream& ofs)
+{
+    if (m.get_columns_count() == m.get_rows_count())
+    {
+        Sqr_matrix sq{m};
+        write(sq.symmetric(), ofs);
+    }
+    else
+        throw runtime_error("Not sqr matrix");
+}
+
+void skew_symmetric(Matrix& m, ofstream& ofs)
+{
+    if (m.get_columns_count() == m.get_rows_count())
+    {
+        Sqr_matrix sq{m};
+        write(sq.skew_symmetric(), ofs);
+    }
+    else
+        throw runtime_error("Not sqr matrix");
+}
+
+void Matrix_sum(Matrix& m1, Matrix& m2, ofstream& ofs)
+{
+    Matrix m3 = m1 + m2;
+    write(m3, ofs);
+}
+
+void Matrix_diff(Matrix& m1, Matrix& m2, ofstream& ofs)
+{
+    Matrix m3 = m1 - m2;
+    write(m3, ofs);
+}
+
+void Matrix_product(Matrix& m1, Matrix& m2, ofstream& ofs)
+{
+    if (m2.get_columns_count() == m2.get_rows_count() || m2.get_columns_count() == 1)
+    {
+        long double number = m2.get_num()[0];
+        Matrix m3 = m1 * number;
+        write(m3, ofs);
+    }
+    else
+    {
+        Matrix m3 = m1 * m2;
+        write(m3, ofs);
+    }
+}
+
+void Matrix_division(Matrix& m1, Matrix& m2, ofstream& ofs)
+{
+    if (m2.get_columns_count() == m2.get_rows_count() || m2.get_columns_count() == 1)
+    {
+        long double number = m2.get_num()[0];
+        Matrix m3 = m1 / number;
+        write(m3, ofs);
+    }
+    else
+        throw runtime_error("division by matrix");
+}
+//оператор ввода для вектор
+
 void calculate(const string& name, const string& out_name){
-    ifstream ist{name};
+    ifstream ist{name};     ///opening the input stream
     if (!ist)
         throw runtime_error("bad file");
 
-    vector<string> aviable {"det", "triangle", "diagonalization", "transpon"};
-    vector<string> znaki {"+", "-", "*"};
+    ofstream ofs{out_name};     //opening the output stream
+    if (!ofs)
+        throw runtime_error("Can't open output file");
+    ofs<<fixed<<setprecision(2)<<setfill(' ')<<setw(6);
 
-    string word = get_first_string(ist);
-    while (ist.peek() == ' ' || ist.peek() == '\n')
-        ist.get();
 
-    if (in_aviable(aviable, word))
+    vector<string> aviable {"det", "triangle", "transpose", "inverse", "symmetric", "skew_symmetric"};    //possible operations with a single matrix
+    vector<string> znaki {"+", "-", "*", "/"};   //possible operations with two matrices
+
+    string operation; ///to read the operation
+
+    while (true)
     {
-        vector<vector<long double>> v;
-        fill(ist, v);
-        Matrix m{v};
-        if (word == "det")
+        while (ist.peek() == ' ' || ist.peek() == '\n')     //removing extra spaces
+            ist.get();
+
+        operation = get_first_string(ist);      //get the operation
+
+        while (ist.peek() == ' ' || ist.peek() == '\n')     //removing extra spaces
+            ist.get();
+
+        if (in_aviable(aviable, operation))     //if the operation is unary
         {
-            if (m.get_length() == m.get_width())
+            vector<vector<long double>> v;
+
+            fill(ist, v);   //filling in the vector
+            Matrix m{v};    //initialize the matrix with a vector
+
+            if (operation == "det")
             {
-                Sqr_matrix sq{m};
-                write_det(sq.det(), out_name);
+                det(m, ofs);    //calculates determinant and writes in output file
+            }
+
+            else if (operation == "triangle")
+            {
+                triangle(m, ofs);   //converts the matrix to a triangular form and output
+            }
+
+            else if (operation == "transpose")
+            {
+                transpose(m, ofs);      //Transposes the matrix
+            }
+            else if (operation == "inverse")
+            {
+                inverse(m, ofs);    //
+            }
+            else if (operation == "symmetric")
+            {
+                symmetric(m, ofs);
             }
             else
-                throw runtime_error("Not sqr matrix");
-        }
-        if (word == "triangle")
-        {
-            if (m.get_length() == m.get_width())
             {
-                Sqr_matrix sq{m};
-                write(sq.triangle(), out_name);
+                skew_symmetric(m, ofs);
+            }
+        }
+
+        else if (in_aviable(znaki, operation))  //if the operation is binarys
+        {
+            vector<vector<long double>> v1;
+            vector<vector<long double>> v2;
+
+            fill(ist, v1);      //filling in the vector
+
+            while (ist.peek() == '\n' || ist.peek() == ' ')     //removing extra spaces
+                ist.get();
+
+            fill(ist, v2);      //filling in the vector
+
+            Matrix m1{v1};
+            Matrix m2{v2};
+
+            if (operation == "+")
+            {
+                Matrix_sum(m1, m2, ofs);  //dum of 2 matrixes
+            }
+
+            else if (operation == "-")
+            {
+                Matrix_diff(m1, m2, ofs); //differences of 2 matrix
+            }
+
+            else if (operation == "*")
+            {
+                Matrix_product(m1, m2, ofs);  //product of 2 matrixes
             }
             else
-                throw runtime_error("Not sqr matrix");
-        }
-        else if (word == "diagonalization")
-        {
-            if (m.get_length() == m.get_width())
             {
-                Sqr_matrix sq{m};
-                write(sq.diagonalization(), out_name);
+                Matrix_division(m1, m2, ofs);
             }
-        else if (word == "transpon")
+        }
+
+        else
         {
-            write(m.T(), out_name);
+            throw runtime_error("Bad input");  //If unexcepted input
         }
-        }
+
+        while (ist.peek() == ' ' || ist.peek() == '\n')     //removing extra spaces
+            ist.get();
+
+        if (ist.eof())      //end of file
+            break;
     }
-
-    else if (in_aviable(znaki, word))
-    {
-        vector<vector<long double>> v1;
-        vector<vector<long double>> v2;
-        fill(ist, v1);
-        for (vector<long double> i : v1)
-        {
-            for (long double j : i)
-                cout<<j<<' ';
-            cout<<'\n';
-        }
-        fill(ist, v2);
-        Matrix m1{v1};
-        Matrix m2{v2};
-        if (word == "+")
-        {
-            m1 += m2;
-            write(m1, out_name);
-        }
-        else if (word == "-")
-        {
-            m1 -= m2;
-            write(m1, out_name);
-        }
-        else if (word == "*")
-        {
-            m1 *= m2;
-            write(m1, out_name);
-        }
-
-    }
-
-    else
-        {
-            throw runtime_error("Bad input");
-        }
 }

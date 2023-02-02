@@ -1,5 +1,6 @@
 #include "column.h"
 #include "row.h"
+#include "vector.h"
 
 using namespace std;
 
@@ -9,7 +10,7 @@ Column::Column(const int len) : // empty column
 {}
 
 Column::Column(const vector <long double>& num) :
-    Matrix{num, (int)num.size(), 1}
+    Matrix{num, num.size(), 1}
 {}
 
 Column::Column(const std::vector<std::vector<long double>>& num) :
@@ -20,22 +21,11 @@ Column::Column(const int len, const long double value) : // column with same num
     Matrix(len, 1, value)
 {}
 
+Column::Column(const Vectors& vec) :
+    Matrix(vec.get_num(), vec.get_rows_count(), 1)
+{}
+
 /// Methods
-vector<long double> Column::get_num() const // returns vector numbers
-{ return numbers; }
-
-int Column::get_width() const // returns width
-{ return width; }
-
-int Column:: get_length() const  // returns length
-{ return length; }
-
-void Column::zeros() // fill the column with zeros
-{ numbers = vector<long double>(length, 0); }
-
-void Column::ones() // fill the column with ones
-{ numbers = vector<long double>(length, 1); }
-
 Row Column::T() const
 {
     return Row(this->numbers);
@@ -55,70 +45,73 @@ long double Column::operator[] (const int index) const // take a number of the c
 
 Column Column::operator+ (const Column& col) const // sum of 2 columns
 {
-    Column result{length};
+    Column result = *this;
+    return result += col;
+}
 
-    if (col.length != length)
+Column& Column::operator+= (const Column& col) // sum of 2 columns
+{
+    if (col.row_count != row_count)
         throw runtime_error("Columns have different size");
 
     else if (numbers.empty() || col.get_num().empty())
         throw runtime_error("Column is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
-        result.numbers.push_back(numbers[i] + col.numbers[i]);
-    return result;
+        numbers[i] += col.numbers[i];
+    return *this;
 }
-
-void Column::operator+= (const Column& Column) // sum of 2 columns
-{ *this = *this + Column; }
 
 Column Column::operator- (const Column& col) const // difference of 2 columns
 {
-    Column result{length};
+    Column result = *this;
+    return result -= col;
+}
 
-    if (col.length != length)
+Column& Column::operator-= (const Column& col) // difference of 2 columns
+{
+    if (col.row_count != row_count)
         throw runtime_error("Columns have different size");
 
     else if (numbers.empty() || col.get_num().empty())
         throw runtime_error("Column is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
-        result.numbers.push_back(numbers[i] - col.numbers[i]);
-    return result;
+        numbers[i] -= col.numbers[i];
+    return *this;
 }
-
-void Column::operator-= (const Column& col) // difference of 2 columns
-{ *this = *this - col; }
 
 Column Column::operator* (const double num) const // product of a column and a number
 {
-    Column result{length};
+    Column result = *this;
+    return result *= num;
+}
+
+Column& Column::operator*= (const double num) // product of a column and a number
+{
     if (numbers.empty())
         throw runtime_error("Column is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
-        result.numbers.push_back(numbers[i] * num);
-    return result;
+        numbers[i] *= num;
+    return *this;
 }
-
-void Column::operator*= (const double num) // product of a column and a number
-{ *this = *this * num; }
 
 Column Column::operator/ (const double num) const // quotient of a column and a number
 {
-    Column result{length};
+    Column result = *this;
+    return result /= num;
+}
+
+Column& Column::operator/= (const double num) // quotient of a column and a number
+{
     if (numbers.empty())
         throw runtime_error("Column is empty");
 
-    else if (num == 0)
-        throw runtime_error("Divided by zero");
-
     for (int i = 0; i < numbers.size(); ++i)
-        result.numbers.push_back(numbers[i]/num);
-    return result;
+        numbers[i] /= num;
+    return *this;
 }
-
-void Column::operator/= (const double num) // quotient of a column and a number
-{ *this = *this / num; }
 
 ostream& operator<< (ostream& os, Column& c) // to print a column in the console
 {

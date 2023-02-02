@@ -5,8 +5,9 @@
 
 #include <Graph_lib/Graph.h>
 
-struct Calc_window : Graph_lib::Window
+class Calc_window : public Graph_lib::Window
 {
+public:
     Calc_window(Graph_lib::Point xy, int w, int h, const std::string& title);
     ~Calc_window();
 
@@ -19,10 +20,10 @@ private:
 
     Graph_lib::Menu general_left_menu; // left menu for functions for all objects
     Graph_lib::Menu general_right_menu; // right menu for functions for all objects
-    Graph_lib::Menu private_left_1_menu; // left menu for fuctions for special objects such as sqr_matrix and vector
-    Graph_lib::Menu private_right_1_menu; // rigth menu for fuctions for special objects such as sqr_matrix and vector
-    Graph_lib::Menu private_left_2_menu; // left menu for fuctions for special objects such as sqr_matrix and vector
-    Graph_lib::Menu private_right_2_menu; // rigth menu for fuctions for special objects such as sqr_matrix and vector
+    Graph_lib::Menu sqr_left_1_menu; // left menu for fuctions for sqr_matrix
+    Graph_lib::Menu sqr_right_1_menu; // rigth menu for fuctions for sqr_matrix
+    Graph_lib::Menu sqr_left_2_menu; // left menu for fuctions for sqr_matrix
+    Graph_lib::Menu sqr_right_2_menu; // rigth menu for fuctions for sqr_matrix
     Graph_lib::Menu middle_menu; // central menu
 
     Graph_lib::Button using_vec; // using vector's window
@@ -43,25 +44,73 @@ private:
     Graph_lib::Matrix_in* right_matrix_in = nullptr; // right matrix in
 
     // buttons realization
-    static void make_left(Graph_lib::Address, Graph_lib::Address widget); // get value of left_column and left_rows
-    static void make_right(Graph_lib::Address, Graph_lib::Address widget); // get value of right_column and right_rows
-    static void cb_btn(Graph_lib::Address, Graph_lib::Address widget); // call reference
+    static void cb_make_left(Graph_lib::Address, Graph_lib::Address widget); // get value of left_column and left_rows
+    static void cb_make_right(Graph_lib::Address, Graph_lib::Address widget); // get value of right_column and right_rows
+    static void cb_left_trans(Graph_lib::Address, Graph_lib::Address widet);
+    static void cb_right_trans(Graph_lib::Address, Graph_lib::Address widet);
+    static void cb_left_mult_num(Graph_lib::Address, Graph_lib::Address widet);
+    static void cb_right_mult_num(Graph_lib::Address, Graph_lib::Address widet);
+    static void cb_left_del_num(Graph_lib::Address, Graph_lib::Address widet);
+    static void cb_right_del_num(Graph_lib::Address, Graph_lib::Address widet);
+
+    static void cb_save_file(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_vector_menu(Graph_lib::Address, Graph_lib::Address widget); // call funcition to use vector menu
+
     static void cb_quit(Graph_lib::Address, Graph_lib::Address widget); // call quit
     static void cb_plus(Graph_lib::Address, Graph_lib::Address widget); // call plus
     static void cb_minus(Graph_lib::Address, Graph_lib::Address widget); // call minus
     static void cb_mult(Graph_lib::Address, Graph_lib::Address widget); // call mult
+    static void cb_left_triangle(Graph_lib::Address, Graph_lib::Address widget); //call triangle
+    static void cb_right_triangle(Graph_lib::Address, Graph_lib::Address widget); //call triangle
+    static void cb_left_diagonal(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_diagonal(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_left_inverse(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_inverse(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_left_determinant(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_determinant(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_left_ones(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_ones(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_left_degree(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_degree(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_left_adjugate(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_adjugate(Graph_lib::Address, Graph_lib::Address widget);
 
-    void reference(); // call void answer answer
+
     void quit(){ hide(); } // hide window
+    void save_file();
+    void vector_menu();
+    void left_trans();
+    void right_trans();
+    void left_mult_num();
+    void right_mult_num();
+    void left_del_num();
+    void right_del_num();
+
     void plus(); // matrix sum
     void minus(); // matrix difference
     void mult(); // matrix multiplication
-
+    void left_triangle();
+    void right_triangle();
+    void left_diagonal();
+    void right_diagonal();
+    void left_inverse();
+    void right_inverse();
+    void left_determinant();
+    void right_determinant();
+    void left_ones();
+    void right_ones();
+    void left_degree();
+    void right_degree();
+    void left_adjugate();
+    void right_adjugate();
 
     void in_left_col_row(); // get count of columns and rows
     void in_right_col_row(); // get count of columns and rows
 
-    void answer(Matrix matrix); // print answer
+    bool check_matrix(Graph_lib::Matrix_in* matrix_in);
+    void answer(Matrix matrix, std::string); // print answer
+    void answer_num(long double ans, std::string); //print number answer
+    void error_output(std::string er_what);
 };
 
 #endif // CALC_WINDOW_H

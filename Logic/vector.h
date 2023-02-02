@@ -14,19 +14,19 @@ public:
     Vectors(const Column& c);
 
     Vectors operator+ (const Vectors& vec) const; // sum of 2 vectors
-    void operator+= (const Vectors& vec); // sum of 2 vectors
+    Vectors& operator+= (const Vectors& vec); // sum of 2 vectors
 
     Vectors operator- (const Vectors& vec) const; // difference of 2 vectors
-    void operator-= (const Vectors& vec); // difference of 2 vectors
+    Vectors& operator-= (const Vectors& vec); // difference of 2 vectors
 
     Vectors operator* (const Vectors& vec) const; // scalar product
-    void operator*= (const Vectors& vec); // scalar product
+    Vectors& operator*= (const Vectors& vec); // scalar product
 
     Vectors operator* (const double num) const; // product a vector and a number
-    void operator*= (const double num); // product a vector and a number
+    Vectors& operator*= (const double num); // product a vector and a number
 
     Vectors operator/ (const double num) const; // quotient a vector and a number
-    void operator/= (const double num); // quotient a vector and a number
+    Vectors& operator/= (const double num); // quotient a vector and a number
 
     using Column::operator[];
 
@@ -34,12 +34,13 @@ public:
 
     long double vec_length() const; // length of the vector
 
-    std::vector<long double> get_num() const override; // returns vector numbers
-    int get_width() const override; // returns width
-    int get_length() const override; // returns length
+    using Matrix :: zeros; // fill the column with zeros
+    using Matrix :: ones;  // fill the main diagonal with ones
 
-    void zeros() override; // fill the vector with zeros
-    void ones() override; // fill the vector with ones
+    using Matrix :: get_num; // returns vector numbers
+    using Matrix :: get_rows_count; // returns count of columns
+    using Matrix :: get_columns_count; // returns count of rows
+
 
 private:
     Vectors() = delete;

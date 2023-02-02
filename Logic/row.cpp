@@ -21,21 +21,6 @@ Row::Row(const int len, const long double value) : // row with same numbers
 {}
 
 /// Methods
-vector<long double> Row::get_num() const // returns vector numbers
-{ return numbers; }
-
-int Row::get_width() const // returns width
-{ return width; }
-
-int Row:: get_length() const // returns length
-{ return length; }
-
-void Row::zeros() // fill the row with zeros
-{ numbers = vector<long double>(length, 0); }
-
-void Row::ones() // fill the row with ones
-{ numbers = vector<long double>(length, 1); }
-
 Column Row::T() const
 {
     return Column(this->numbers);
@@ -55,70 +40,77 @@ long double Row::operator[] (const int index) const // take a number of the row
 
 Row Row::operator+ (const Row& row) const // sum of 2 rows
 {
-    Row result{length};
+    Row result = *this;
+    return result += row;
+}
 
-    if (row.length != length)
+Row& Row::operator+= (const Row& row) // sum of 2 rows
+{
+    if (row.row_count != row_count)
         throw runtime_error("Rows have different size");
 
     else if (numbers.empty() || row.get_num().empty())
         throw runtime_error("Row is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
-            result.numbers.push_back(numbers[i] + row.numbers[i]);
-    return result;
-}
+            numbers[i] += row.numbers[i];
 
-void Row::operator+= (const Row& row) // sum of 2 rows
-{ *this = *this + row; }
+    return *this;
+}
 
 Row Row::operator- (const Row& row) const // difference of 2 rows
 {
-    Row result{length};
+    Row result = *this;
+    return result -= row;
+}
 
-    if (row.length != length)
+Row& Row::operator-= (const Row& row) // difference of 2 rows
+{
+    if (row.row_count != row_count)
         throw runtime_error("Rows have different size");
 
     else if (numbers.empty() || row.get_num().empty())
         throw runtime_error("Row is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
-            result.numbers.push_back(numbers[i] - row.numbers[i]);
-    return result;
-}
+            numbers[i] -= row.numbers[i];
 
-void Row::operator-= (const Row& row) // difference of 2 rows
-{ *this = *this - row; }
+    return *this;
+}
 
 Row Row::operator* (const double num) const // product of a row and a number
 {
-    Row result{length};
+    Row result = *this;
+    return result;
+}
+
+Row& Row::operator*= (const double num) // product of a row and a number
+{
     if (numbers.empty())
         throw runtime_error("Row is empty");
 
     for (int i = 0; i < numbers.size(); ++i)
-            result.numbers.push_back(numbers[i] * num);
-    return result;
-}
+            numbers[i] *= num;
 
-void Row::operator*= (const double num) // product of a row and a number
-{ *this = *this * num; }
+    return *this;
+}
 
 Row Row::operator/ (const double num) const // quotient of a row and a number
 {
-    Row result{length};
-    if (numbers.empty())
-        throw runtime_error("Row is empty");
-
-    else if (num == 0)
-        throw runtime_error("Divided by zero");
-
-    for (int i = 0; i < numbers.size(); ++i)
-            result.numbers.push_back(numbers[i]/num);
+    Row result = *this;
     return result;
 }
 
-void Row::operator/= (const double num) // quotient of a row and a number
-{ *this = *this / num; }
+Row& Row::operator/= (const double num) // quotient of a row and a number
+{
+    if (numbers.empty())
+        throw runtime_error("Row is empty");
+
+    for (int i = 0; i < numbers.size(); ++i)
+            numbers[i] *= num;
+
+    return *this;
+}
 
 ostream& operator<< (ostream& os, Row& r) // to print a row in the console
 {

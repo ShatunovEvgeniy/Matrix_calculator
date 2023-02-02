@@ -6,12 +6,11 @@
 
 namespace Graph_lib {
 
-struct Matrix_out : Widget
+class Matrix_out : public Widget
 {
+public:
     Matrix_out(Point xy, int w, int h, Matrix mat);
 
-    int attach (Out_box& b);
-    int attach (Out_box* p);
     void attach (Window& win);
 
     void show (); // show all out_boxes
@@ -21,6 +20,8 @@ struct Matrix_out : Widget
 private:
     Vector_ref<Out_box> out_boxes; // container out_boxes
     Matrix matrix;
+    int attach (Out_box& b);
+    int attach (Out_box* p);
 };
 
 }

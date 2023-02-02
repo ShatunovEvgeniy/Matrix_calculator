@@ -10,9 +10,9 @@ using namespace Graph_lib;
 Matrix_out::Matrix_out(Point xy, int w, int h, Matrix mat)
     : Widget{ xy, w, h, "Matrix_in", nullptr}, matrix{mat}
 {
-    for(int j = 0; j < matrix.get_width(); ++j)
-        for(int i = 0; i < matrix.get_length(); ++i)
-            out_boxes.push_back(new Out_box{Point{xy.x + w / matrix.get_length() * i, xy.y + h / matrix.get_width() * j}, w / matrix.get_length(), h / matrix.get_width(), ""}); // last arg is the same to make a sqr
+    for(int j = 0; j < matrix.get_columns_count(); ++j)
+        for(int i = 0; i < matrix.get_rows_count(); ++i)
+            out_boxes.push_back(new Out_box{Point{xy.x + w / matrix.get_rows_count() * i, xy.y + h / matrix.get_columns_count() * j}, w / matrix.get_rows_count(), h / matrix.get_columns_count(), ""}); // last arg is the same to make a sqr
 }
 
 /// Methods
@@ -22,15 +22,10 @@ int Matrix_out::attach(Out_box& b)
     b.height = height;
     out_boxes.push_back (&b);
     return int(out_boxes.size()-1);
-    // Menu does not delete &b
 }
 
 int Matrix_out::attach (Out_box* p)
-{
-    // owned.push_back(p);
-    return attach (*p);
-    // Menu deletes p
-}
+{ return attach (*p); }
 
 void Matrix_out::attach (Window& win) // attach all In_box
 {
@@ -39,7 +34,8 @@ void Matrix_out::attach (Window& win) // attach all In_box
     own = &win;
 }
 
-void Matrix_out::put(){
+void Matrix_out::put()
+{
     std::vector<long double> mat = matrix.get_num();
     for(int i = 0; i < out_boxes.size(); ++i)
     {

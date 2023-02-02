@@ -14,27 +14,28 @@ public:
     Row(const int len, const long double value); // row with same numbers
 
     Row operator+ (const Row& row) const; // sum of 2 rows
-    void operator+= (const Row& row); // sum of 2 rows
+    Row& operator+= (const Row& row); // sum of 2 rows
 
     Row operator- (const Row& row) const; // difference of 2 rows
-    void operator-= (const Row& row); // difference of 2 rows
+    Row& operator-= (const Row& row); // difference of 2 rows
 
     Row operator* (const double num) const; // product of a row and a number
-    void operator*= (const double num); // product of a row and a number
+    Row& operator*= (const double num); // product of a row and a number
 
     Row operator/ (const double num) const; // quotient of a row and a number
-    void operator/= (const double num); // quotient of a row and a number
+    Row& operator/= (const double num); // quotient of a row and a number
 
     Column T() const;
 
     long double operator[] (const int i) const; // take a number of the row
 
-    std::vector<long double> get_num() const override; // returns vector numbers
-    int get_width() const override; // returns width
-    int get_length() const override; // returns length
+    using Matrix :: zeros; // fill the column with zeros
+    using Matrix :: ones;  // fill the main diagonal with ones
 
-    void zeros() override; // fill the row with zeros
-    void ones() override; // fill the row with ones
+    using Matrix :: get_num; // returns vector numbers
+    using Matrix :: get_rows_count; // returns count of columns
+    using Matrix :: get_columns_count; // returns count of rows
+
 
 private:
     Row() = delete;

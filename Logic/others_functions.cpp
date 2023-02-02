@@ -2,6 +2,24 @@
 
 using namespace std;
 
+istream& operator>> (istream& is, vector<long double>& vector)
+{
+    double ch {0};
+    while (true)
+    {
+        while (is.peek() == ' ')
+            is.get();
+        if (is.peek() == '\n' || is.peek() == '\0' || is.eof())
+        {
+            is.get();
+            break;
+        }
+        is>>ch;
+        vector.push_back(ch);
+    }
+    return is;
+}
+
 template <typename T>
 vector<T> slicing(vector<T> const& v, int X, int Y) // slice of a vector
 {
@@ -16,3 +34,4 @@ vector<T> slicing(vector<T> const& v, int X, int Y) // slice of a vector
     // Return the results
     return vec;
 }
+

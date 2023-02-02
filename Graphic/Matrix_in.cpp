@@ -1,3 +1,5 @@
+#include "iostream"
+
 #include "Matrix_in.h"
 #include <sstream>
 
@@ -6,12 +8,12 @@
 using namespace Graph_lib;
 
 /// Constructors
-Matrix_in::Matrix_in(Point xy, int w, int h, int x, int y)
-    : Widget{ xy, w, h, "Matrix_in", nullptr}, count_row{x}, count_column{y}
+Matrix_in::Matrix_in(Point xy, int w, int h, int count_rows, int count_columns)
+    : Widget{ xy, w, h, "Matrix_in", nullptr}, count_row{count_rows}, count_column{count_columns}
 {
-    for(int j = 0; j < y; ++j)
-        for(int i = 0; i < x; ++i)
-            in_boxes.push_back(new In_box{Point{xy.x + w / x * i, xy.y + h / y * j}, w / x, h / y, ""}); // last arg is the same to make a sqr
+    for(int j = 0; j < count_columns; ++j)
+        for(int i = 0; i < count_rows; ++i)
+            in_boxes.push_back(new In_box{Point{xy.x + w / count_rows * i, xy.y + h / count_columns * j}, w / count_rows, h / count_columns, ""}); // last arg is the same to make a sqr
 }
 
 /// Methods
@@ -19,17 +21,12 @@ int Matrix_in::attach(In_box& b)
 {
     b.width = width;
     b.height = height;
-    in_boxes.push_back (&b);
+    in_boxes.push_back (b);
     return int(in_boxes.size()-1);
-    // Menu does not delete &b
 }
 
 int Matrix_in::attach (In_box* p)
-{
-    // owned.push_back(p);
-    return attach (*p);
-    // Menu deletes p
-}
+{ return attach (*p); }
 
 void Matrix_in::attach (Window& win) // attach all in_boxes
 {
@@ -49,17 +46,65 @@ void Matrix_in::hide ()
         in_boxes[i].hide();
 }
 
-Matrix Matrix_in::read_matrix() // read matrix from in_boxes
+std::vector<long double> Matrix_in::read_std_vector() // read vector from in_boxes
 {
     std::vector<long double> vec;
-    for(int j = 0; j < this->count_row; ++j)
-        for(int i = 0; i < this->count_column; ++i)
+    for(int j = 0; j < count_column; ++j)
+        for(int i = 0; i < count_row; ++i)
         {
             std::stringstream ss;
-            ss << in_boxes[i + j * this->count_row].get_string(); // put string number from inbox to stringstream
+            ss << in_boxes[i + j * count_row].get_string(); // put string number from inbox to stringstream
             long double num = 0;
+
+            char first;
+            ss >> first;
+            char x = '0';
+            char y = '9';
+            if((std::isnan(first)) || !((first >= '0') && (first <= '9')))
+            {
+                std::string str{ "Please rewtire the matrix. Matrix can contain only numbers" };
+                throw str;
+            }
+            ss.putback(first);
+
             ss >> num;
-            vec.push_back(num);
+            std::string ost;
+            ss >> ost;
+            std::cout << ost;
+            if(ost != ""){
+                if(ost[0] == ','){
+                    std::string str = "Error: '" + ost + "'  Use '.' for float numbers";
+                    throw str;
+                }
+                else
+                {
+                    std::string str{ "Unexpected symbol : " + ost };
+                    throw str;
+                }
+            }
+            else
+                vec.push_back(num);
         }
-    return Matrix {vec, this->count_row, this->count_column};
+    return vec;
+}
+
+Matrix Matrix_in::read_matrix()
+{
+    Matrix mat{read_std_vector(), count_row, count_column};
+    return mat;
+}
+
+Sqr_matrix Matrix_in::read_sqr_matrix()
+{
+    return Sqr_matrix {read_std_vector()};
+}
+
+Row Matrix_in::read_row()
+{
+    return Row {read_std_vector()};
+}
+
+Column Matrix_in::read_column()
+{
+    return Column {read_std_vector()};
 }

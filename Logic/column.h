@@ -5,6 +5,8 @@
 
 #include <vector>
 
+class Vectors;
+
 class Column : protected Matrix
 {
 public:
@@ -13,28 +15,30 @@ public:
     Column(const std::vector<std::vector<long double>>& num);
     Column(const int len, const long double value); // column with same numbers
 
+    Column(const Vectors& vec);
+
     Column operator+ (const Column& col) const; // sum of 2 columns
-    void operator+= (const Column& col);             // sum of 2 columns
+    Column& operator+= (const Column& col);      // sum of 2 columns
 
     Column operator- (const Column& col) const; // difference of 2 columns
-    void operator-= (const Column& col);             // difference of 2 Columns
+    Column& operator-= (const Column& col);      // difference of 2 Columns
 
     Column operator* (const double num) const; // product of a column and a number
-    void operator*= (const double num);             // product of a column and a number
+    Column& operator*= (const double num);      // product of a column and a number
 
     Column operator/ (const double num) const; // quotient of a column and a number
-    void operator/= (const double num);             // quotient of a column and a number
+    Column& operator/= (const double num);      // quotient of a column and a number
 
     long double operator[] (const int index) const; // take a number of the column
 
     Row T() const;
 
-    std::vector<long double> get_num() const override; // returns vector numbers
-    int get_width() const override;  // returns width
-    int get_length() const override; // returns length
+    using Matrix :: zeros; // fill the column with zeros
+    using Matrix :: ones; // fill the main diagonal with ones
 
-    void zeros() override; // fill the column with zeros
-    void ones() override;  // fill the column with ones
+    using Matrix :: get_num; // returns vector numbers
+    using Matrix :: get_rows_count; // returns count of columns
+    using Matrix :: get_columns_count; // returns count of rows
 
 private:
     Column() = delete;
