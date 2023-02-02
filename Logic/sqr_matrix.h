@@ -3,7 +3,7 @@
 
 #include "matrix.h"
 #include "row.h"
-#include "others_functions.h"
+#include "../Files work/others_functions.h"
 
 class Sqr_matrix : private Matrix
 {
@@ -41,6 +41,7 @@ public:
     Sqr_matrix T() const; // returns transpose matrix
     Sqr_matrix minor(int i, int j) const; // finds a minor of an element
     Sqr_matrix matrix_pow(const int degree); // raise a sqr_matrix to a power
+    Sqr_matrix adjugate() const;  // returns adjugade matrix
 
     using Matrix :: zeros; // fill the column with zeros
     using Matrix :: ones;  // fill the main diagonal with ones

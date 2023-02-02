@@ -67,12 +67,12 @@ Calc_window::Calc_window(Point xy, int w, int h, const std::string& title) // th
     attach (sqr_right_1_menu);
 
     sqr_left_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Determinant", cb_left_determinant));
-    sqr_left_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Ones", cb_left_ones));
+    sqr_left_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Adjugate", cb_left_adjugate));
     sqr_left_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Degree", cb_left_degree));
     attach (sqr_left_2_menu);
 
     sqr_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Determinant", cb_right_determinant));
-    sqr_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Ones", cb_right_ones));
+    sqr_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Adjugate", cb_right_adjugate));
     sqr_right_2_menu.attach(new Button(Point{0, 0}, 0, 0, "Degree", cb_right_degree));
     attach (sqr_right_2_menu);
 
@@ -227,15 +227,15 @@ void Calc_window::cb_right_determinant(Address, Address widget)
     auto& btn = reference_to<Graph_lib::Button>(widget);
     dynamic_cast<Calc_window&>(btn.window()).right_determinant();
 }
-void Calc_window::cb_left_ones(Address, Address widget)
+void Calc_window::cb_left_adjugate(Address, Address widget)
 {
     auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).left_ones();
+    dynamic_cast<Calc_window&>(btn.window()).left_adjugate();
 }
-void Calc_window::cb_right_ones(Address, Address widget)
+void Calc_window::cb_right_adjugate(Address, Address widget)
 {
     auto& btn = reference_to<Graph_lib::Button>(widget);
-    dynamic_cast<Calc_window&>(btn.window()).right_ones();
+    dynamic_cast<Calc_window&>(btn.window()).right_adjugate();
 }
 void Calc_window::cb_left_degree(Address, Address widget)
 {
@@ -450,22 +450,22 @@ void Calc_window::right_determinant()
         answer_num(sqr.det(), "Determinant");
     }
 }
-void Calc_window::left_ones()
+void Calc_window::left_adjugate()
 {
     if(check_matrix(left_matrix_in))
     {
         Sqr_matrix sqr{left_matrix_in->read_sqr_matrix()};
-        sqr.ones();
-        answer(sqr, "Ones");
+        sqr.adjugate();
+        answer(sqr, "Adjugate");
     }
 }
-void Calc_window::right_ones()
+void Calc_window::right_adjugate()
 {
     if(check_matrix(right_matrix_in))
     {
         Sqr_matrix sqr{right_matrix_in->read_sqr_matrix()};
-        sqr.ones();
-        answer(sqr, "Ones");
+        sqr.adjugate();
+        answer(sqr, "Adjugate");
     }
 }
 void Calc_window::left_degree()
@@ -542,26 +542,21 @@ void Calc_window::in_left_col_row() // get count of columns and rows
     std::string col_string = left_columns.get_string(); // count of columns
     std::string row_string = left_rows.get_string(); // count of rows
     for (int i; i < (int)col_string.size() ; ++i)
-    {
-        if (std::isnan(col_string[i]) || col_string[i] < '0' || col_string[i] > '9')
+        if (std::isnan(col_string[i]) || !(col_string[i] >= '0' && col_string[i] <= '9'))
         {
             error_output("Set the dimensions of the matrix as natural numbers");
             flag = false;
             break;
         }
-    }
+
     if (flag)
-    {
         for (int i; i < (int)row_string.size() ; ++i)
-        {
-            if (std::isnan(row_string[i]) || row_string[i] < '0' || row_string[i] > '9')
+            if (std::isnan(col_string[i]) || !(col_string[i] >= '0' && col_string[i] <= '9'))
             {
                 error_output("Set the dimensions of the matrix as natural numbers");
                 flag = false;
                 break;
             }
-        }
-    }
     if (flag)
     {
         int col_count{-1};
@@ -597,12 +592,14 @@ void Calc_window::in_left_col_row() // get count of columns and rows
             left_matrix_in = new Matrix_in {Point{ ind, 2 * ind }, (simple_work_place), (y_max() - 9 * ind), col_count, row_count}; // buttons = 5 indent, edges = 2 indent
         }
     }
-    if(!flag)
+
+    if (!flag)
     {
         sqr_left_1_menu.show();
         sqr_left_2_menu.show();
         left_matrix_in = new Matrix_in {Point{ind, 2 * ind}, simple_work_place, y_max() - ind * 9, 3, 3};
     }
+
     (*left_matrix_in).attach(*this); // attach new matrix
     redraw();
 }
@@ -614,28 +611,24 @@ void Calc_window::in_right_col_row() // get count of columns and rows
     bool flag = true;                                        // if true, then it means a normal matrix
     std::string col_string = right_columns.get_string(); // count of columns
     std::string row_string = right_rows.get_string(); // count of rows
-    for(int i; i < (int)col_string.size() ; ++i)
-    {
-        if(std::isnan(col_string[i]) || col_string[i] < '0' || col_string[i] > '9')
+    for (int i; i < (int)col_string.size() ; ++i)
+        if (std::isnan(col_string[i]) || !(col_string[i] >= '0' && col_string[i] <= '9'))
         {
             error_output("Set the dimensions of the matrix as natural numbers");
             flag = false;
             break;
         }
-    }
-    if(flag)
-    {
-        for(int i; i < (int)row_string.size() ; ++i)
-        {
-            if(std::isnan(row_string[i]) || row_string[i] < '0' || row_string[i] > '9')
+
+    if (flag)
+        for (int i; i < (int)row_string.size() ; ++i)
+            if (std::isnan(row_string[i]) || !(row_string[i] >= '0' && row_string[i] <= '9'))
             {
                 error_output("Set the dimensions of the matrix as nutural numbers");
                 flag = false;
                 break;
             }
-        }
-    }
-    if(flag)
+
+    if (flag)
     {
         int col_count;
         int row_count;
@@ -645,7 +638,7 @@ void Calc_window::in_right_col_row() // get count of columns and rows
         s >> col_count;
         ss << row_string;
         ss >> row_count;
-        if( col_count < 1 or row_count < 1)
+        if ( col_count < 1 or row_count < 1)
         {
             error_output("Set the dimensions of the matrix as natural numbers");
             flag = false;
@@ -670,12 +663,14 @@ void Calc_window::in_right_col_row() // get count of columns and rows
             right_matrix_in = new Matrix_in {Point{ind + simple_work_place * 2, 2 * ind}, simple_work_place, y_max() - ind * 9, col_count, row_count};
         }
     }
-    if(!flag)
+
+    if (!flag)
     {
         sqr_right_1_menu.show();
         sqr_right_2_menu.show();
         right_matrix_in = new Matrix_in {Point{ind + simple_work_place * 2, 2 * ind}, simple_work_place, y_max() - ind * 9, 3, 3};
     }
+
     (*right_matrix_in).attach(*this); // attach new matrix
     redraw();
 }

@@ -58,9 +58,11 @@ std::vector<long double> Matrix_in::read_std_vector() // read vector from in_box
 
             char first;
             ss >> first;
-            if((std::isnan(first)) && ((first < '0') || (first > '9')))
+            char x = '0';
+            char y = '9';
+            if((std::isnan(first)) || !((first >= '0') && (first <= '9')))
             {
-                std::string str{ "Please rewtire the matrix. Matrix can only contain numbers" };
+                std::string str{ "Please rewtire the matrix. Matrix can contain only numbers" };
                 throw str;
             }
             ss.putback(first);

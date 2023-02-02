@@ -120,20 +120,26 @@ Sqr_matrix Sqr_matrix::diagonalization() const // returns matrix in diagonale fo
     return m;
 }
 
+Sqr_matrix Sqr_matrix::adjugate() const // returns adjugate matrix
+{
+    Sqr_matrix m{dimension, 0};
+    for (int i = 0; i < dimension; ++i)
+        for (int j = 0; j < dimension; ++j)
+        {
+            Sqr_matrix elem_minor = this->minor(i, j); // finds the minor of (i, j) element
+            m.numbers[i * dimension + j] = pow(-1, i + j) * elem_minor.det();
+        }
+    return m;
+}
+
 Sqr_matrix Sqr_matrix::inverse() const // returns inverse matrix using adjugate matrix divided by detemination
 {
     long double determinate = this->det();
     if (determinate == 0)
         throw runtime_error("Impossible to find inverse matrix: determinate = 0");
 
-    Sqr_matrix m{dimension, 0};
-    for (int i = 0; i < dimension; ++i)
-        for (int j = 0; j < dimension; ++j)
-        {
-            Sqr_matrix elem_minor = this->minor(i, j); // finds the minor of (i, j) element
-            m.numbers[i * dimension + j] = pow(-1, i + j) * elem_minor.det() / determinate;
-        }
-    return m.T();
+    Sqr_matrix adjugate_mat = this->adjugate();
+    return adjugate_mat.T() / determinate;
 }
 
 Sqr_matrix Sqr_matrix::symmetric() const // returns symmetric matrix

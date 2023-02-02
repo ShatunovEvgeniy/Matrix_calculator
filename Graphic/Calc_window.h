@@ -72,6 +72,8 @@ private:
     static void cb_right_ones(Graph_lib::Address, Graph_lib::Address widget);
     static void cb_left_degree(Graph_lib::Address, Graph_lib::Address widget);
     static void cb_right_degree(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_left_adjugate(Graph_lib::Address, Graph_lib::Address widget);
+    static void cb_right_adjugate(Graph_lib::Address, Graph_lib::Address widget);
 
 
     void quit(){ hide(); } // hide window
@@ -99,7 +101,8 @@ private:
     void right_ones();
     void left_degree();
     void right_degree();
-
+    void left_adjugate();
+    void right_adjugate();
 
     void in_left_col_row(); // get count of columns and rows
     void in_right_col_row(); // get count of columns and rows
