@@ -442,7 +442,7 @@ void Vector_window::in_right_dimension() // get right dimension
             else if (dim == 3)
             {
             }
-            right_vector_in = new Matrix_in {Point{ ind, 2 * ind }, (simple_work_place), (y_max() - 9 * ind), dim, 1}; // buttons = 5 indent, edges = 2 indent
+            right_vector_in = new Matrix_in {Point{ind + simple_work_place * 2, 2 * ind}, simple_work_place, y_max() - ind * 9, 3, 1};
         }
     }
 
